@@ -1,0 +1,56 @@
+Facciamo partire il radar e il mbot control (cioè sistema per controllare il robottino).
+Per il progetto Unity abbiamo sia l'exe generato che i sorgenti, quindi può andare su Linux e Mac. Nel caso su Linux ci sia qualche malfunzionamento quindi bisogna ricompilare i sorgenti per Linux.
+Apriamo il caseStudy1.pdf a pagina 12-13.
+Avviamo progetto unity ("/iss2018/it.unibo.issMaterial/issdocs/Lab/virtualRobot/VirtualRobotE80.exe"). NB: AVVIARE DA TERMINALE CON "wine VirtualRobotE80").
+Pull su repo lab, poi avviamo i due programmi jar: uno è il radar e l'altro serve per controllare il robottino (entrambi in "/iss2018Lab/it.unibo.mbot.intro/runnable/").
+Guardiamo la figura di riferimento a pagina 11 del caseStudy1.
+Quando avviamo il robot deve vedersi "rover START".
+Apriamo un browser e scriviamo "http://localhost:8080/", compare una finestra. Ci sono dei bottoni, per guidare il robottino. Follow è un tasto che servirà solamente al robottino fisico per seguire la linea. Ci interessa il tasto "Unity". Premendolo deve comparire il robottino nel mondo virtuale di Unity. [da me non compare, verificare Unity e, se necessario, trovare il modo di ricompilare il progetto Unity per Linux).
+A volte il robot non compare su Unity, riprovare ad avviare prima Unity poi il robot. Può aiutare avere il radar spento (forse).
+L'obiettivo che ci poniamo oggi è vedere il valore del dato del sonar virtuale, che intercetta i movimenti del robot virtuale, nel radar.
+Bisogna utilizzare l'insieme dei pezzi che ci sono dati per far comparire le info provenienti dai sonar (che normalmente saranno 4, i due blocchi verdi nel mondo virtuale, uno sul muso del robot virtuale, e uno sul robot fisico) nel radar.
+L'idea è di costruirci un metodo, in modo che se cambiano i requisiti sappiamo comunque come muoverci.
+Il problema adesso è porsi le giuste domande.
+Andiamo nella pagina con la cronistoria delle lezioni. C'è un template Latex, dovrebbe scaricare un file zip. 
+
+*** Seguire il template per la prossima settimana, cambiare foto alla fine e mettere nome e cognome all'inizio. Poi portare UNA pagina con quei dati fronte e retro (o massimo due). ***
+
+C'è un indice, ricorda ing. del sw (Requirement analysis, Project, Implementation...). Può essere che non venga seguito in maniera sequenziale? Sì, perchè non seguiremo un progetto di sviluppo a cascata. Verrà probabilmente letto in ordine sequenziale. Noi seguiremo un modello di sviluppo a spirale e iterativo. Io posso intervenire con una flessibiltà notevole, l'idea è pensare, codificare e interagire subito col committente, finchè il progetto è piccolo.
+Non è una relazione quella del documento, il gioco non è sviluppo il codice -> compilo il documento. L'idea è che questo sia uno storyboard, è un modo per appuntarci info rilevanti durante il processo di sviluppo. Dobbiamo scrivere frasi rilevanti.
+*** Facciamo copia-incolla tel punto 2 del pdf caseStudy1 ("the problem to solve") e lo mettiamo sul documento Latex. ***
+Analizziamo quello che abbiamo copia-incollato nel template. Cos'è l'mbot? Quando ci poniamo questa domanda siamo nel punto 3, analisi dei requisiti. Quindi in questo momento sono una persona che cerca di capire un'altra persona (committente).
+Il mio obiettivo è tradurre quello che mi dice il committente in maniera formale dove devo ottenere un modello. Quindi farò domande appropriate per capire struttura, interazione e comportamento (ad es. del robot).
+Qual è il fine? L'interazione è la cosa che mi interessa di più, perchè voglio usare l'mbot dal punto di vista del sw, quindi le mie domande saranno orientate in quel senso.
+Forse il committente ha già in mano un modello dell'mbot, in tal caso partiamo già da un buon punto.
+Andiamo a vedere se riusciamo a trovare, nei documenti che abbiamo, una definizione utile di mbot. Andiamo a pag. 8 del caseStudy1, ma non è un modello.
+Nel paragrafo 3.3 vediamo che c'è scritto "is formally described", questo è un segnale che può essere capito da me come da una macchina (quindi un modello).
+Edge + middleware + cloud: il robot è un sistema a tre parti. A noi adesso non interessano i dettagli di tutte queste tre parti, bisogna catturare i concetti al giusto livello di astrazione.
+Che differenza c'è tra codice e modello?
+Un pezzo di codice java è un modello? Un'interfaccia lo è, perchè dà le caratteristiche essenziali in primo piano sull'entità modellata dall'interfaccia. Può essere vista come portatrice di info su struttura, interazione e forse anche comportamento. Nell'interfaccia ci sono dichiarazioni di metodi, non metodi. Chi implementa l'interfaccia realizza il passaggio dal cosa al come.
+Quindi quand'è che posso dire che un pezzo di codice è modello? Quando cattura gli aspetti essenziali (secondo noi) sull'entità presa in considerazione.
+Perchè non ci è stata data un'interfaccia di mbot ma un modello QA? Perchè l'mbot non è un oggetto. Gli oggetti java non hanno un flusso di controllo proprio, sono passivi. Gli viene trasferito il controllo temporaneamente e lo restituiscono con "return". 
+Io non posso interagire con l'mbot tramite chiamata di procedura, interagisco tramite scambio di messaggi. Perchè? A me non interessa con che linguaggio è scritto l'mbot, solo come ci interagisco. Le interfacce sono elemento chiave per passare dal concentrato al distribuito.
+SOA verrà saltato nel corso, noi vedremo "micro services". Quindi l'idea è che il mondo sia popolato da micro servizi.
+Un pezzo di codice NON è assimilabile a un modello quando mi costringe a seguire troppi dettagli per catturarne gli aspetti essenziali. Va benissimo per la macchina ma non per l'analista.
+In un sist. dist. lavorerò a scambio di messaggi. In java c'è qualcosa che cattura il concetto di riusabilità del codice? Sì, l'ereditarietà.
+Abstraction gap: gap di astrazione tra quello che vorrei esprimere e quello che mi trovo a disposizione nel linguaggio che uso. Quando questo gap è intollerabile sarebbe bene che la tecnologia evolvesse. Quando passo dal concentrato al distribuito l'Abstraction gap è notevole, bisogna colmare questo disavanzo. Qui entra in gioco il linguaggio di modellazione custom QActor, nato per catturare ciò che per noi è rilevante.
+*** Per prendere conoscenza del linguaggio vedere (e, se necessario, stampare) il file "iss2018/it.unibo.issMaterial/issdocs/Material/IntroductionQa2017.pdf". ***
+
+Torniamo alla domanda "cos'è un mbot"? Paragrafo 3.3 in caseStudy1. Ci sono eventi (Event) definiti, con nome e paload (contenuto informativo). Ci possono essere variabili, con struttura qualsiasi in sintassi Prolog. 
+Gli eventi "usercmd" sono emessi dall'interfaccia grafica.
+Eventi "sonar" emessi  dal virtual sonar.
+Eventi sonarDetect1...
+Un contesto è un contenitore di QActor. Si veda paragrafo 1.3 di IntroductionQa2017.pdf, c'è la rappresentazione di due contesti. C'è una "port" che definisce la parto da utilizzare, ci sono QAsender e QAreceiver. Il sender, al suo livello di astrazione, lavorerà con il nome di un altro QActor.
+In una delle due librerie fornite c'è il codice per la realizzazione di questo supporto alla comunicazione tra gli actor.
+Il contesto, quando nasce, nasce con una porta di comunicazione.
+Cosa fa il CtxServerAgent? Attende che qualcuno mandi un messaggio, ma siccome siamo su TCP, si stabilisce anche una connessione prima.
+Il parametro -httpserver serve per attivare un server http con cui è possibile interagire tramite browser.
+Il robot è standalone, non ha bisogno di altri supporti per girare.
+Paragrafo 3.3.1: cosa fa nel piano (automa a stati finiti) "WaitUserCmd"? Non fa niente finchè non c'è un messaggio, dopodichè ci sarà una transizione di stato.
+Paragrafo 3.3.3: assumo che qualcuno abbia realizzato del codice in java per pilotare i motori in un qualche modo, codice che eseguirò con comando "javaRun". In questo modo posso muovere il motore o fermarlo. Ci sono delle guardie (ternary condition) con esecuzione di comandi che non sono java ma built in. Ad esempio c'è controllo se Unity è attivo o meno, nel caso mando il comando anche a Unity per vedere anche lì il movimento del robot.
+Paragrafo 3.3.2: c'è l'indirizzo localhost, l'idea è che Unity sia in esecuzione su macchina locale, ma potrebbe andare anche su macchina remota. C'è una porta (6000) per la comunicazione. C'è "addRule unityOn", aggiunge alla knowledge base questa info.
+Paragrafo 3.3.4: come faccio ad esprimere "vai dritto, a meno che..."? Uso le info dei sonar per vedere ostacoli. Il robot è reattivo o proattivo? Proattivo vuol dire che deve far girare i motori, ma deve anche essere reattivo, perchè se c'è un'anomalia devono essere fermati i motori per fare qualcos'altro. 
+"reactive onward 40 time( 15000 )" è una transizione, lavora con Unity. Dice di andare "onward" per 15 secondi, a meno che non si verifichino eventi definiti successivamente alla dichiarazione di transizione (whenEnd, whenTout...). Qual è la parte adibita alla reattività di "sonarDetect"? E' il suo handler (handleRobotSonarDetect), definito in mbotControl.qa. Se voglio cambiare quello che voglio eseguire in caso di "sonarDetect" quindi agirò su questo punto del codice, ad esempio cambiando "mbotStop" in "mbotLeft". 
+Abbiamo quindi risposto alla domanda "cos'è un mbot?", tramite la risposta che ci ha dato il committente. Ci basta?
+
+*** leggere con attenzione la parte finale di caseStudy1 (probabilmente necessario pull, è da pagina 10 in poi), è importante perchè fa capire come l'mbot diventa un attore ***

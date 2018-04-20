@@ -1,0 +1,59 @@
+fondamentale aver seguito il corso di linguaggi di Denti.
+utilizzo di linguaggio javascript, più nodejs e mongo (novità di quest'anno).
+necessario ma non sufficiente avere conoscenza linguaggi OO (java, C#).
+javascript non è basato su classi, non c'è più ereditarietà ma delegazione. ci sono solo istanze.
+c'è quindi un cambio di paradigma, funzioni come oggetti (first class entities, posso passarle come argomenti).
+js è il rappresentante del paradigma funzionale, js appartiene ai linguaggi funzionali.
+essenza di un ling. funzionale è che ???
+LISP, tra i primi linguaggi funzionali, nato ai tempi di Fortran. I linguaggi imperativi hanno vinto la battaglia nello scorso secolo, perchè c'era poca memoria.
+Stile funzionale: non ho contatore come nel mondo a oggetti, perchè il concetto di stato non esiste. Questo è il "cambiamento di paradigma", cambia il
+modo di ragionare. A volte ho effetti collaterali, sembra controproducente come atteggiamento.
+Quando ho esecuzione in parallelo ho problemi sullo stato. I thread sono fonte di problemi, li voglio eliminare. Devo quindi cambiare paradigma.
+Tutte le computazioni sono fatti con un unico thread. Questo è fatto da Node, libreria di js. Il motore di Chrome fa girare Node (ai nostri occhi js).
+Node lavora con un unico thread ma sfrutta asincronismi. Lascia il controllo quando è inevitabile lasciarlo, ad esempio se il web server deve
+recuperare un file Html da restituire al client. Quindi si lancia l'apertura del file, non aspetto che il file venga letto e il controllo passa subito
+alla CPU. Quando il file è stato letto e quella parte è pronta mi verrà detto e farò l'elaborazione necessaria. Questo permette di gestire più richieste.
+Quindi con node ho solo un thread che gira.
+Prolog è l'esempio di programmazione logica basato su logica aristotelica (logica del primo ordine).
+esigenza -> problema -> analisi problema -> analisi requisiti -> progetto > codice
+Abbiamo quindi tre paradigmi: imperativo, funzionale e logico. Dobbiamo far collaborare i tre in base alle nostre esigenze.
+UML: modified modeling language. è quindi un linguaggio. c'è differenza con java che è un linguaggio di programmazione.
+UML nasce per l'uomo, perchè è più facile da leggere rispetto al codice.
+I casi d'uso modellano le funzionalità del sistema, non l'interazione con l'utente.
+Linguaggi come ali o catene, cioè posso avere vantaggi in base alle caratteristiche di un linguaggio, ma posso anche trovarmi molto distante per ottenere
+quello che voglio ed essere quindi "legato" a quel dato codice.
+Abstraction gap: capisco che ho limiti enormi, dati dal linguaggio in uso, per raggiungere la soluzione del problema
+Ling. computazionalmente completo: può risolvere qualsiasi problema che ha soluzione (Turing).
+In quanto informatico mi servono i linguaggi, questi non devono essere scelti a priori ma vanno scelti in base al problema (o meglio, alle singole sottoparti
+del problema). Quindi analizzo il problema e, in seguito, scelgo il (o i) linguaggi più adatti a risolvere facilmente, efficientemente e in tempi minimi il problema.
+Se non trovo nessun linguaggio che mi interessa posso farmi da solo il linguaggio che mi serve (DSL, domain specific languages).
+Arduino: microcontrollore, si programma in C o C++. Architettura di von Neumann (come i pc "classici"), diversa dai computer quantistici.
+Operazioni di fetch ed execute, letture, scritture e computazioni, loop eseguiti all'infinito. Se voglio sleep devo fargli fare dei "giri a vuoto".
+IOT: edge + middleware + cloud. 
+Edge è ciò che attacco sugli oggetti per renderli "smart" e connessi a internet. è il livello più basso.
+middleware è ad esempio Raspberry, architettura computazionale diversa da Arduino (tipo pc standard). è quel pezzo che rende possibile l'interazione tra il basso
+livello e il cloud. In questo modo dall'esterno si comunica con Raspberry, ed esso comunicherà con Arduino.
+Cloud è su un server fisico.
+Connetto la "thing" (Arduino) al Raspberry, attraverso il cavo seriale.
+Arduino attende dati sulla seriale.
+
+[esempio robot]
+creata una rete hotspot nat con telefono android, poi collego il pc a quella rete.
+se uso il web passo da IOT a Web of things, più semplice.
+da pc mi collego al server (web) che gira su Raspberry. da lì riesco a dare comandi al robot tramite interfaccia web.
+c'è una websocket oltre alla comunicazione classica client-server.
+[fine esempio]
+
+c'è un progetto unity, in modo da avere un robot virtuale oltre a quello fisico. avrò quindi movimenti in entrambi i mondi.
+
+progetto mbot.intro -> file mbotControl.qa ---> scritto in un linguaggio inventato, interazione a scambio di messaggi o eventi, lavorano come automi a stati finiti.
+questa è l'architettura del sistema, quindi info su STRUTTURA, INTERAZIONE e COMPORTAMENTO.
+Nella parte iniziale ho definizione di eventi con sintassi prolog-like.
+Vengono definiti dei piani, con azioni (automa di Moore). C'è una transizione con azioni da eseguire nel caso si verifichino determinati eventi.
+la logica applicativa può essere messa su edge, middleware o cloud.
+
+Copiati i due jar di xtext in eclipse/dropins, iniziato un progetto java vuoto, creato un file first.qa. Deve chiedere di convertire in Xtext project.
+Poi modifico il file e salvo, mi crea cartelle più file gradle. Posso modificare il file gradle. Apro una console da eclipse e eseguo i comandi indicati
+nel file di gradle.
+
+*** compilare il questionario online e far andare xtext***

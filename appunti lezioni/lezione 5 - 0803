@@ -1,0 +1,34 @@
+Fatto il pull dei due repository.
+Copiati i nuovi plugin Xtext (v1.5.10) nella cartella "dropins" di Eclipse.
+Scompattato ed avviato VirtualRobotE80.exe (tramite wine).
+Aperto file di istruzioni pdf ("/home/giova/Documents/Università/Ingegneria dei Sistemi Software M/iss2018/it.unibo.issMaterial/issdocs/Material/caseStudy1(radar).pdf")
+Avvio del radar con java -jar ("/home/giova/Documents/Università/Ingegneria dei Sistemi Software M/iss2018Lab/it.unibo.mbot.intro/runnable/it.unibo.ctxRadarBase.MainCtxRadarBase-1.0/")
+Analizziamo il caseStudy1.pdf: c'è un programma che avvia il radar e un secondo programma che invia messaggi al programma del radar. I messaggi vengono mandati usando una TCP connection sulla porta 8033. Quindi la app radar non ha un'interfaccia nota esposta, semplicemente è aperta su una porta e dobbiamo interagire con un linguaggio noto ad entambi. Questo linguaggio è QA, ad esempio vedi 1.1 su pdf (msg(...)). Quello che è in maiuscolo dipende da noi, il resto è fisso. L'idea è quindi parlare con quell'applicazione con quel determinato linguaggio attraverso le opportune frasi.
+Quindi devo aprire una socket TCP come client con il linguaggio che preferisco, al momento verso "localhost" su porta 8033. Poi mando su questa connessione un po' di messaggi aspettandomi di vedere cambiamenti sulla app radar. Il client lo faccio in un altro linguaggio, cioè javascript. 
+Abbiamo una app già fatta per comunicare col radar, ed è in "iss2018Lab/it.unibo.mbot.intro/nodeCode/TcpClientToRadar.js"
+*** provare a realizzare un client TCP che invia messaggi all'app radar in linguaggi diversi da js, tipo java, python o go ***
+Invece di controllare se viene fuori il puntino sul radar voglio prevedere una suite di test, è impensabile continuare senza di essi. Useremo Junit.
+Punto 1.2 del caseStudy1: c'è una descrizione di alto livello del radar, non andiamo nel dettaglio dell'implementazione. La descrizione rappresenta un modello.
+Cos'è un modello?
+Apriamo il file "file:///home/giova/Documents/Universit%C3%A0/Ingegneria%20dei%20Sistemi%20Software%20M/iss2018/it.unibo.issMaterial/issdocs/Material/LectureBologna1718.html", il file fa un recap delle lezioni.
+"file:///home/giova/Documents/Universit%C3%A0/Ingegneria%20dei%20Sistemi%20Software%20M/iss2018/it.unibo.issMaterial/issdocs/NatMolBook/bookEntry.html" è una pagina molto utile con un recap delle nozioni richieste per il corso.
+MODELLO: il termine modello va primariamente inteso come un insieme di concetti e proprietà volti a catturare aspetti essenziali di un sistema, collocandosi in un preciso spazio concettuale.
+Es. se ho un elefante e lo guardo troppo da vicino non sto catturando l'aspetto essenziale dell'elefante. Devo valutarlo nel suo complesso.
+Quali sono gli strumenti per fare un modello? La propria testa.
+Non c'è codice senza progetto e non c'è progetto senza analisi del problema.
+Chi decide cosa è essenziale o meno? E' l'analista del problema, che identifica gli aspetti essenziali del sistema. Lo spazio concettuale è il modo in cui metto gli occhiali per guardare il problema.
+Perchè il nostro spazio concettuale è ragionare ad oggetti? Nel file js del TcpClientToRadar non ci sono oggetti, lavora a funzioni.
+Quali sono gli aspetti essenziali del radar che ci è stato dato? Voglio parlarne come modello, come aspetti essenziali, non come codice. Dobbiamo scrivere un modello per il radar.
+Se ho un sistema, che è un insieme di componenti, devo descriverne struttura, interazione e comportamento.
+Quindi se devo fare un modello del sistema radar devo descrivere le proprietà delle tre categorie sopra citate.
+Ci sono entità che non hanno un comportamento intrinseco, ma danno informazioni, mentre altre che hanno azioni.
+Gli oggetti (senza thread) sono contenitori di stato, sono inattivi, non hanno il controllo, gli viene solo trasferito temporaneamente.
+Il radar quindi è un'entità attiva con un flusso di controllo autonomo. Si mette in ascolto e io posso interagire con esso tramite scambio di messaggi. Quindi non ho più il modello vecchio degli oggetti dove ho elementi passivi su cui invoco funzioni. Il comportamento è che il radar prende il contenuto informativo dei messaggi e trasforma l'informazione in "pallini" grafici. Questo è il modello di radar.
+Chi ha fatto il radar ci dà il modello (paragrafo 1.2 del pdf).
+Struttura: il radar è strutturato come QActor.
+Interazione: ho degli eventi dichiarati, cioè informazioni prodotte che saranno utilizzate da chi è in ascolto
+Comportamento: è rappresentato dal modello in figura, che è stato generato da un tool. E' anche il corpo del QActor, equivalente alla figura.
+
+Paragrafo 3.4: il robot è quell'entità che ha il sonar, unity è l'ambiente in cui il robot si muove.
+
+*** a casa fare questo: lanciare simulazione unity, poi lanciare il radar, poi il robot. Noi dobbiamo realizzare una applicazione che sia in grado di ottenere le info dai sonar del robot e sparare le info sul radar. Pensare come fare come modello e struttura ***

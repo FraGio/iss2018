@@ -1,0 +1,54 @@
+Fatto pull per entrambe le repository.
+Copiate nuove versioni delle librerie in eclipse/dropins.
+Aprire sorgente documento finale per tenere traccia dei punti da fissare.
+Meglio lavorare su un workspace nuovo.
+In issdocs/Material/LectureBologna1718.html troviamo l'elenco delle lezioni aggiornato.
+Dove scrivo la frase "Dalle tecnologie alla analisi e al progetto logico e ritorno alle tecnologie" all'interno del documento finale? Il template non è documentazione, è la fotografia in un certo tempo dello sviluppo del sw. Dobbiamo appuntare via via le cose che riteniamo rilevanti, così da avere uno stato dei lavori.
+L'introduzione dà un macroriferimento a quello che siamo facendo.
+La visione è una frase che ci fa ricordare qual è l'approccio con il quale affrontiamo le cose nel processo di sviluppo. Ad es. "io non mi muovo se non mi dici qual è il linguaggio" o "mi muovo indipendentemente dal linguaggio con cui lavorerò".
+Se non ho requisiti non posso partire.
+Una possibile visione alternativa potrebbe essere ???
+Cosa devo produrre alla fine dell'analisi dei requisiti? L'obiettivo pragmatico è parlare sì col committente, produrrò sì dei documenti in word, ma il mio obiettivo principale sarà quello di eliminare il legame col linguaggio naturale che è prono ad errori. L'obiettivo reale sarà rendere il mio lavoro il più formale possibile. In che senso formale? 
+Devo poter dimostrare che un dato fatto è vero o falso. La macchina è in grado di dedurre dagli assiomi se un fatto è vero o falso, tramite dimostrazione matematica.
+La formalizzazione è quindi una dimostrazione, che può fare anche una macchina, basata sugli assiomi. L'unica cosa che fa una macchina è applicare regole di riscrittura, cercando di fare match con la frase che noi vogliamo sia una verità. I matematici sono alla base di questo metodo logico (1800).
+Nella visione (non una verità assoluta), quando faccio l'analisi dei req. io voglio arrivare alla produzione di un modello che deriva, come prodotto sw, dall'analisi. Dove lo inserisco questo modello nel documento?
+Scopo vision: capire pragmaticamente quello che il committente vuole e produrre, a fine analisi, uno o più modelli legati a questa analisi.
+Possibile intro: "Chi si occupa di fare sw può agire bottom-up o top-down". Quindi quando aggredisco i requisiti nell'analisi posso scegliere uno dei due approcci. La parola soluzione NON si può mettere prima della fase di progettazione.
+Altro punto sulla vision: "il mondo si divide in due grandi categorie: chi affronta il problema in modo olistico e chi in modo riduzionistico". Cosa vuol dire? Olistico è più vicino a top-down, cioè comincio dall'alto, il sistema ha una sua identità che trascende dall'implementazione di basso livello. L'olismo corre il rischio di essere "fuffoso", il riduzionismo è più "pratico".
+Dov'è che abbiamo sentito il problema di raccogliere info dai sensori e mostrarli sul radar? File caseStudy, pagina 7, paragrafo 2.
+Qual è l'obiettivo primario che abbiamo? Non è risolvere il problema, ma è passare in maniera sistematica dai problemi a un prodotto sw. Perchè sistemi? Perchè abbiamo più parti che collaborano in maniera distribuita, in ambito IOT. Perchè IOT? E' un campo che ha grosso bisogno di sistemi più complessi che programmatori assembler. L'idea è di raccogliere le info dal robot e portarle su altri sistemi, come ad esempio cloud. In questo modo potremmo, teoricamente, far collaborare tutti i nostri robot.
+Noi abbiamo un robot e un radar già pronti, il nostro obiettivo è sì far arrivare le info raccolte al radar, ma il principale è affrontare tutti gli step della progettazione (in termini di analisi, test, progettazione, sviluppo...) di un sistema sw complesso e distribuito.
+Cosa produce la tecnica di machine learning? Nuova conoscenza, perchè dati degli esempi positivi o negativi è in grado di inferire se qualcosa è vero o falso quando gli viene dato in pasto.
+Partendo dal foglio bianco significa che nella mia testa non c'è nessuna ipotesi tecnologica. Non c'è niente che mi possa orientare, o prevenire, l'uso di determinate tecnologie.
+Ipotesi: andiamo al tempo dei romani con il foglio dei requisiti, loro cosa capiscono di robot, sonar, ecc.? Niente. Quindi come facciamo noi ad affrontare il problema senza un'ipotesi tecnologica? E' praticamente impossibile. Ognuno di noi ha dei pregiudizi (o preconoscenze), dei "bias", sulle tecnologie da utulizzare. Dove mettiamo la frase "ipotesi tecnologica"? Probabilmente nella vision. Qual è l'ipotesi tecnologica che il prof. dà per comune a tutti noi? Che tutti noi conosciamo Java, linguaggio imperativo, ma non può assumere altri tipi di linguaggi (funzionale -> js, logici -> prolog).
+Possibile intro: la questione che mi pongo è se devo partire bottom-up (approccio riduzionistico), cioè parto dalle tecnologie a mia disposizione e cerco di arrivare alla soluzione usando gli strumenti che conosco. Un esempio sarebbe costruire un oggetto con un lego a partire da una scatola di lego. L'alternativa a questo approccio quale potrebbe essere? L'approccio olistico, top-down, dove so che ci sono certe tecnologie (bias), ma non voglio partire a priori con nessuna di esse, perchè voglio trovare la tecnologia giusta al momento giusto. Nell'esempio lego non ho una scatola predefinita, analizzo quello che devo fare prima, poi compro la scatola dei lego che più mi aiuta a risolvere il mio problema.
+Abstraction gap: potrei analizzare un problema, capisco di cosa ho bisogno (es. casco telepatico) ma so che quella cosa non esiste o non è possibile ottenerla (per costi o limiti di altro tipo). Devo quindi mettere in conto che dopo l'analisi del problema potrei dover colmare un Abstraction gap. Se questo gap ricorre problema dopo problema sono dei guai, voglio affrontarlo solo in una prima fase. Lavoro con un concetto di riusabilità.
+Io analista non posso pensare di non essere contaminato dall'ipotesi tecnologica. Posso essere contaminato o locked, la differenza è che con la seconda voglio usare solo quella tecnologia, con la prima invece so che sono più, o meno, esperto su differenti tecnologie ma cerco l'ispirazione per cercare le tecnologie che mi sono più utili.
+
+Sempre da mettere nella intro: o sviluppiamo per la business logic, cioè quello che produce per il mio business, o il sw infrastrutturale, cioè quello di contorno per far funzionare il codice di business. Se il tempo passato per il secondo è molto superiore al primo ho lavoro solo per colmare Abstraction gap.
+
+Tornando alla frase "Dalle tecnologie alla analisi e al progetto logico e ritorno alle tecnologie": cosa faccio se mi serve una tecnologia che non ho?
+
+Le dispense non solo vanno lette, ma bisogna seguire passo passo gli esercizi proposti.
+
+Cosa è descritto nel paragrafo 1.1 del caseStudy? Come interagisco col il radar. Paragrafo 1.2? Mi dice il modello del radar.
+Scrivere una app java che fa comparire un puntino sul radar in una certa posizione. Mi sono stati dati i requisiti, qual è il passo successivo? L'analisi del problema. La domanda che si pone l'analista è "come faccio ad inviare info al radar?".
+Come faccio a sapere come è fatto il radar senza avere il codice sorgente? O tramite documentazione, oppure, nel nostro caso, tramite modello, cioè struttura + interazione + comportamento, che cattura le caratteristiche essenziali dell'entità presa in considerazione.
+Il modello mi dice che il radar è, strutturalmente, un QActor, cioè un'entità attiva che interagisce con altri QActor tramite scambio di messaggi od eventi (si vedano le info di interazione a inizio modello).
+L'entità radar avrà uno stato iniziale di init, dove farà un comando "javaRun", cioè sto riutilizzando un pezzo di codice fatto da uno specialista fatto in java. La seconda fase della vita del radar sarà quella di rimanere in attesa di eventi o messaggi, nel caso di arrivo di uno dei due si transiterà verso uno stato comune, perchè il paload avrà una struttura uguale (prolog).
+Come fanno a comparire i puntini nel radar quando lo avviamo? Con un QActor aggiuntivo.
+Ogni QActor è modellato come un attore Akka (l'infrastruttura di appoggio per gli attori). L'idea è che non si può pensare che ogni actor sia legato ad uno specifico thread.
+Come interagisco quindi col radar? Approccio bottom-up: realizzo un pezzo di codice (es. in java) che apra una connessione TCP su una determinata porta e che invii un messaggio con una certa sintassi. Approggio più high level: posso lavorare con i modelli, ad esempio con un file QA. In questo caso sono a livello logico, di modellazione, non devo aprire manualmente una connessione TCP. Siamo capaci di fare una cosa simile? Si fa un altro sistema in un altro contesto che deve interagire col contesto del radar. Il contesto del radar lo sappiamo (ctxRadarBase con indirizzo e porta). Ci sarà un "emit polar" che emette l'evento (o il messaggio) ad altri attori.
+L'idea, dopo aver preparato questo modello dell'emettitore, è che qualcuno traduca il modello che ho fatto in codice eseguibile.
+
+Paragrafo 7: la mia idea è che il radar non rimane isolato a livello di QActor, ma che usa paradigma pub-sub con tecnologia mqtt. Il radar dovrebbe sottoscriversi, all'avvio, a un topic chiamato in un certo modo (radar), in questo modo appena arrivano info su questo topic esso può leggerle. In questo modo il radar non è locked alla tecnologia QActor.
+Concetto di riutilizzo: radarPojo è fatto in java, mi serve quando devo interagire con la GUI. Il QActor è costruito intorno al pojo e permette l'interazione con l'esterno.
+L'mbot è l'altra cosa che abbiamo a nostra disposizione.
+L'actor da realizzare dovrebbe essere sensibile ai dati forniti dal robot e girarli al radar -> specifica a pag. 13 del caseStudy
+Il nodo "nuovo" è "ctxRobotRadarAppl", che non fa niente. Come è possibile che il sistema funzioni? Perchè dice semplicemente che devo prendere quei due pezzi sfusi e fare un sistema, cioè il nuovo nodo sarà il collante tra i due.
+In questo modo, con l'approccio a modello anzichè low-level, risparmio tempo e ho molta più flessibilità perchè non sono legato a protocollo utilizzato, a linguaggio, ecc.
+
+In base a quanto detto cosa fa il modello a pag.23? Il nuovo pezzo che si chiama "radareventsubscriber" è un'estensione del radar, capace di sottoscriversi a un topic, in questo modo chi invia i messaggi al radar non invierà messaggi direttamente a lui ma a un sistema di scambio di messaggi (mqtt). Chi farà la publish? L'estensione del robot.
+
+
+*** da fare giovedì: ho una lampadina che può essere accesa da remoto. Bisogna fare analisi del problema (botton-up o top-down, olistico o riduzionistico) riempiendo il template nei punti corretti. Il risultato dell'analisi dev'essere l'architettura logica, il modello del sistema. Non ci dev'essere la parola soluzione. Possiamo scrivere anche un file QA con la modellazione. ***

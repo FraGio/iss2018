@@ -1,0 +1,56 @@
+Repository con materiale (iss2018) e con codice di laboratorio (iss2018Lab). Iss0 non è più utilizzata.
+Letto il file dal prof. (iss2018/it.unibo.issMaterial/issdocs/Material/caseStudy1(radar).pdf), c'è da clonare la repo lab.
+Nel materiale c'è un file html con la cronistoria delle lezioni, per vedere cosa è stato fatto.
+Abilitiamo la vista sui repo Git su Eclipse (Git Repositories), poi facciamo la "add" della location dove abbiamo clonato i repo (lab e materiale).
+Faremo "pull" tutte le volte che vogliamo aggiornare la repo.
+Poi Eclipse -> tasto dx su progetto -> Import Project -> Show other specialized imports wizards -> spunta su "copy projects into workspace"  --- bisogna importarlo COPIANDOLO all'interno del workspace. Come root directory ho ".../iss2018Lab/it.unibo.mbot.intro". Questo perchè vogliamo lavorare sulla copia, non sul progetto vero e proprio. VIA ALTERNATIVA più semplice: File - Import - General - Existing Project - spuntare "copy proj. into workspace".
+Fare "pull" per scaricare cartella "runnable" da repo del lab.
+
+Filmato della scorsa lezioni: ci vuole distinzione tra fasi di analisi e progettazione, il punto essenziale è che la parte strategica, nella fase iniziale del progetto, è l'analisi. Un deficit sull'analisi mi fa correre il rischio di non completare il progetto.
+
+Analizziamo il materiale nello zip scaricato (in "/home/giova/Documents/Università/Ingegneria dei Sistemi Software M/iss2018Lab/it.unibo.mbot.intro/runnable/it.unibo.ctxRadarBase.MainCtxRadarBase-1.0").
+
+leggiamo il documento "caseStudy1.pdf": in cosa consiste l'analisi dei requisiti, visti i punti esposti nel paragrafo 2? Cosa facciamo materialmente?
+L'analista dei requisiti ha l'obiettivo di capire cosa vuole il committente. C'è un metodo: prendo le frasi scritte dal committente, per ogni sostantivo e verbo trovato mi chiedo quale è il suo significato. Sostantivi identificano le entità in gioco, verbi identificano le azioni. Voglio formalizzare quello che faccio con un modello.
+Cosa vuol dire modelli?
+Cosa vuol dire formalizzare? vuol dire scrivere qualcosa che sia comprensibile anche ad una macchina, non solo ad un umano. L'UML è nato per questo, ma ha il problema di non essere eseguibile, questo vuol dire che i diagrammi risultano scorrelati dal codice che io dovrò generare. I cambiamenti che farò li farò sul codice, difficilmente sul modello, quindi ho un disallineamento e rischia di diventare una perdita di tempo. 
+Voglio un modello eseguibile, voglio catturare solo gli aspetti fondamentali. In questo modo riesco a fare un prototipo del sistema in tempi molto brevi, in modo da mostrarlo al committente e vedere se la direzione intrapresa è quella giusta o meno.
+Cos'è un mbot o un virtual environment o un sonar? Devo fare un modello di queste entità, in modo da catturare struttura + interazione + comportamento. Qual è l'info fondamentale che devo acquisire da questi modelli? E' l'interazione tra i componenti del sistema Software, cioè come i componenti presenti nel mio sistema si scambiano informazioni. Quindi la questione non è tanto "come è fatto l'mbot?" ma "come interagisce nel sistema?".
+Esempio: come fa un sonar a scambiare info via sw con gli altri componenti del sistema? 
+Variabili comuni in memoria è una prima possibilità.
+Una seconda possibilità sono gli eventi:  prof si paragona a un button, ci dev'essere un'altra persona che interagisce con esso. C'è una generazione di un evento.
+L'idea di evento deve cambiare in un'ottica di pattern Observer, cioè il button è l'observable, il software è l'observer. Devo capire cosa succede quando qualcuno cambia lo stato dell'observable. Verrnno chiamati metodi registrati dagli observer. Observer e observable lavorano su thread differenti, es. il bottone lavora su thread della piattaforma grafica. Quindi è l'observable che CHIAMA l'observer, il quale non rimane in attesa della chiamata, è totalmente passivo. L'observable inietta una computazione.  Non parleremo quindi più di eventi, ma di pattern Observer (che è la terza possibilità). Quando genero un evento non posso pensare che si sia un accoppiamento molto forte tra observer ed observable, se no se c'è un observer che si blocca poi tutti gli altri non riceveranno l'evento.
+Quarta possibilità: scambio di messaggi. La differenza con gli eventi è che in questo caso ho un destinatario. E' un request-response, faccio una richiesta e non mi aspetto niente subito, voglio solo che prima o poi verrà eseguita un'azione. Se lancio un evento può accadere di tutto, es. il prof chiede a tutti di andare ad aprire la porta, potrebbero aprirla tutti come nessuno.
+
+Questo tipo di ragionamento è fondamentale nell'analisi dei requisiti.
+
+Dispatch è un messaggio inviato al fine di far eseguire un'azione.
+Sincrono è sinonimo di unbuffered, asincrono di buffered. Quindi se invio un messaggio asincrono ho un buffer (coda) sul quale depositare un messaggio. Nel caso sincrono, se il ricevente non è in ascolto, o perdo il messaggio o io produttore rimango in attesa finchè non viene letto.
+Noi useremo il caso asincrono.
+
+Non confondere concetto con implementazione. Es. non riesco a fare comunicare con pattern observer un programma java e uno js, devo passare per una socket (quindi scambio di messaggi).
+
+Actor è un'entità attiva che interagisce con scambio di messaggi (paragonato al thread).
+
+In fase di analisi butto via la parola "come", perchè è il progettista che deve passare dal "cosa" al "come".
+
+Per il sonar chiedo al committente se devo partire da zero o se c'è qualcosa di già fatto. L'idea è che il sonar possa emettere eventi o che manda messaggi.
+Se devo costruire qualcosa che devo vendere lo venderò con il supporto al pattern observer. Il sonar sarà quindi un emettitore di eventi, che deve essere formalizzato.
+Il sonar emette dei QActor event, cioè il concetto di eventi e messaggi sono rappresentabili dal linguaggio creato da zero QA. Viene utilizzato Prolog come linguaggio per emettere eventi (vedi slide 6 di caseStudy1.pdf). Come payload (contenuto informativo presente in ogni messaggio od evento) avrò "sonarname", "target" (nel nostro caso sempre uguale a "rover") e "distance". Questo è il sonar virtuale.
+C'è anche un secondo sonar virtuale che non dà la distanza ??
+
+Il sonar è un componente attivo, perchè ogni tot tempo emette informazioni. Non ci interessa, al momento, come è fatto il sonar al suo interno, ci interessa solo come interagisce con il resto del sistema.
+
+L'applicazione che dobbiamo sviluppare fa parte di un dominio applicativo delle IOT. Perchè si chiama "application domain"? Perchè posso riutlizzare i componenti su altre applicazioni appartenenti allo stesso dominio applicativo.
+
+Eseguiamo il jar del radar (presente in "/home/giova/Documents/Università/Ingegneria dei Sistemi Software M/iss2018Lab/it.unibo.mbot.intro/runnable/it.unibo.ctxRadarBase.MainCtxRadarBase-1.0/"). Questa è un'applicazione fornita gratuitamente dal committente, devo solo usarla opportunamente. C'è un trace di messaggi o eventi. Guardare attentamente la struttura dei messaggi perchè sarà quella usata sempre.
+
+msg(polarMsg,dispatch,tester_ctrl,radarguibase,p(80,0),1) ---> polarMsg è il messaggio inviato, dispatch è il tipo del messaggio, tester_ctrl è il nome del sender, radarguibase è il nome del ricevente, p() è il payload e "1" è un n° di messaggio (progressivamente incrementato).
+
+Come faccio a far comparire i punti che voglio io? Mando messaggi sulla porta TCP 8033. In java so già farlo, noi vogliamo usare js (nello specifico Node.js).
+Le socket in node sono asincrone.
+
+TCPClientToRadar.js (cartella "nodeCode" del progetto lab) è un file javascript. Verifichiamo poi la versione di node, eseguendo "node -v". Infine eseguiamo l'applicazione del radar, poi quella "TCPClientToRadar.js" (tramite "node TCPClientToRadar.js"). In questo modo abbiamo pieno controllo della situazione, manipolando il file js. E' interpretato, quindi lo esegue in sequenza (ma fare attenzione a chiamate asincrone). Ci sono legami di eventi (su socket della connessione) e di chiusure (cioè funzioni event handler). Ricordiamo che tutta la macchina node esegue in un singolo thread.
+
+Cosa succede se nella linea 13 del file scrivo "while(true){}"? Siccome è un event loop ???
+Cosa succede se commento tutte le sendMsgAftertime e sostituirle con una semplice sendMsg()? Ho invio di messaggi uno dietro l'altro causa invio asincrono, quindi il radar non riesce a visualizzare tutti i cambiamenti e, se ci va bene, vediamo solo l'ultimo.

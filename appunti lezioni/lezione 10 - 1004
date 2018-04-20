@@ -1,0 +1,65 @@
+Pull su entrambe le repo e reinstalliamo librerie xtext.
+Il supporto che fa girare tutto è qa18Akka.jar, va aggiornata nel nostro progetto se si fa un pull dal repo del prof.
+Cominciamo a creare reti virtuali locali per lavorare con mqtt, perchè la rete wifi Unibo taglia le comunicazioni.
+
+*** fare l'esercizio dell'anno scorso, dove il robot deve fermarsi quando passa sotto un sonar e deve mostrare certe info sul radar ***
+
+Il punto focale di oggi è "divide et impera", ma questo approccio è bene o male per noi?
+Un piatto di porcellana (concentrato) se viene lasciato cadere si rompe in mille pezzi (distribuito), che sono riutilizzabili e componibili ma perdono la coesione del piatto iniziale. Quindi anche noi nel distribuito non avremo più la coesione che avremmo avuto nel concentrato.
+Un sist. sw è, per noi, fatto a microservizi (non più procedure call), e i microservizi interagiscono tramite scambio di messaggi. In altre parole se la rete viene a mancare il sistema non funziona più. Stiamo entrando in un'era in cui la rete è essenziale.
+Aprire il caseStudy1. Abbiamo iniziato nel caso A, dove qualcuno aveva previsto un primo microservizio (il Radar), che è capace di ricevere info in forma di stringa e mostra un'informazione visiva. Si può usare questo servizio perchè sappiamo come interagire con esso. L'interazione non avviene ancora con mqtt, ma con una socket.
+
+*** necessario acquisto di Raspberry, più due schede sd, i cavi (compreso cavo di rete e di alimentazione), possibilmente un arduino. Le schede sd servono per caricare il SO messo a disposizione all'inizio delle lezioni. In alternativa a tutto questo comprare l'Mbot, ma costa di più ***
+
+Mi interessa come interagisco con l'mbot, più che la sua struttura. Per questo è stato creato un servizio chiamato mbotExecutor che va in rete in due modi: porta 8080 (accessibile via browser), e porta 8029 (simile alla 8033 del radar, riceve messaggi via TCP tramite socket).
+
+Radar ed mbotExecutor possono esere considerati come elementi riutilizzabili. Se fossero stati oggetti Java ci sarebbero state interfacce per interagire con queste entità, invece noi lavoriamo con un'architettura slegata dal classico metodo di sviluppo che è a microservizi.
+
+Come posso fare perchè le info del robot executor vegano ricevute dal radar, prima fase di analisi (non si può dire soluzione, perchè si deve solo analizzare il problema) poi fase di progettazione.
+Il punto cruciale della figura in fase di analisi è la "scatolina" polar: p(D,A), perchè devo conoscere se è un messaggio (cioè ha un destinatario che devo conoscere) o se è un evento (non c'è un destinatario specifico). Non è detto che se un sistema emette messaggi un altro sistema riceve messaggi, potrebbero ricevere o emettere eventi.
+
+Apriamo l'"mbotExecutor.qa" nel progetto "it.unibo.mbot". Non si è ancora parlato di QActor ma di servizi, questo perchè il QActor è solo un modo specifico di realizzare microservizi. Riusciamo da questo modello capire cos'è nello specifico "polar: p(D,A)"? Sì, è un evento.
+L'informazione da un nodo all'altro del sistema è trasferito dall'infrastruttura in maniera automatica.
+Per quanto riguarda il radar, sempre da analista, auspico che il radar prenda in ingresso "polar" come evento, perchè in tal caso non dovrei realizzare altri componenti per il mio sistema. Nel caso radar si aspetti un messaggio l'analista deve capire che ci sarà qualcuno che dovrà realizzare il mapping tra eventi e messaggi.
+
+Introduciamo nella figura l'mbotAgent. E' un entità che si attacca a mbotExecutor. Siccome tutte le entità in gioco sono microservizi espressi come QActor, vuol dire che implicitamente sotto c'è un'infrastruttura, ad esempio il "polar" viene ricevuto sia dall'agent che dal radar.
+L'agent è la mente, se arriva un info dal mondo virtuale inoltro l'evento "usercmd" all'esecutore. Lo usercmd proveniente dall'agent e quello proveniente dal webserver sono la stessa cosa, quindi l'executor può ricevere lo stesso evento da due sorgenti differenti, questo perchè fanno tutti parte dello stesso sistema.
+L'executor in un colpo solo tenta di comandare sia il robot virtuale che quello reale.
+
+C'è un progetto che tratta solamente il virtual robot, con entità rover.
+Nel progetto "it.unibo.mbot.real" troviamo l'entità mbot. Qeusta entità è interessato all'info di ingresso "mind", offre anche un'interfaccia web.
+Qeuste entità costituiscono un sistema? L'idea è che il piatto si sia rotto in 4 entità: radar, roveragent, rover ed mbot. Non viene più esplicitato che questi componenti sono QActor. Voglio modificare il meno possibile il mio componente. Predispongo un mqtt server che fa da tramite tra tutte le entità, lavorando con paradigma topic, quindi tutti i subscriber ricevono i messaggi depositati sul topic.
+
+Analizziamo il roverExecutor.qa in "it.unibo.mbot.virtual". Ci sono alcuni eventi, poi un dispatch "moveRover" che ha lo stesso payload dell'evento. C'è anche l'indicazione dell'mqtt server. Subito dopo Context troviamo un EventHandler, dove possiamo elencare eventi da gestire. In particolare c'è un set molto limitato di azioni che inietta nel modello un meccanismo event driven. Faccio un mapping da evento a un dispatch (messaggio), cioè faccio la trasformazione degli eventi usercmd o mindcmd, in messaggio.
+Perchè il QActor "mindtobody" è commentato? Perchè non è più utile, adesso abbiamo l'EventHandler che permette di non perdere nemmeno un messaggio a differenza del QActor mindtobody, inoltre si vede la differenza tra event-driven ed event-based.
+Guardiamo il QActor rover: per ogni evento alarm ricevuto emette un evento alarmev (mapping evento-evento). Quando arriva un messaggio "moveRover" verà eseguito il plan "execMove", dove c'è pattern matching e sostituzione di variabili (stile Prolog).
+Dentro ogni QActor c'è una sezione "Rules" dove possiamo esprimere dei fatti di configurazione.
+Guardiamo il QActor "sonardetector": nel piano "sendToRadar" emetterò sonarSensor sempre, mentre uscirà un solo sonar (in base al matching).
+
+src-gen: sorgenti automaticamente generati
+srcMore: file aggiuntivi per capire meglio e avere più info
+
+In src-gen troviamo classi astratte, come ad esempio mentre in src troveremo la classe che estende la classe astratta AbstractRover.
+Analizziamo ulteriormente la classe astratta AbstractRover.
+
+Proviamo a far girare il tutto: apriamo un prompt e lanciamo mosquitto. Lanciamo poi il java mbotExecutor (???), poi usiamo la gui web per lanciare unity e per comandare il bot (NOTA: il bot non si vede mai al primo avvio).
+
+Dobbiamo realizzare un event logger, cioè un entità che registra eventi. Dove li registra? Su database, ma non sql (mongodb). In "it.unibo.mbot.agent/src" troviamo l'event logger, modellato dal QA "elog.qa".
+
+Lanciamo roverAgent, un embrione di logica applicativa.
+
+E' unity ad inviare gli eventi del sonar (observable), tramite il canale di comunicazione prestabilito.
+Chi genera alarmmsg? mbotAgent, che trasforma alarmev in alarmmsg per non perdere info su allarmi.
+Non ho capacità espressiva per dire che un'azione può essere interrotta, ho abstraction gap. Se l'allarme fosse stato emesso mentre stavo eseguendo altro l'avrei perso.
+Con l'mbotAgent in esecuzione il robot virtuale si ferma quando passa sotto a un sonar. Quindi il codice vecchio è rimasto inalterato, abbiamo introdotto un'entità che fa da mente nel sistema.
+
+In mbotAgent.qa vediamo cosa succede quando il bot passa sotto ai vari sonar. Cosa succede nel caso di sonar 2? All'inizio il bot va un po' indietro, per evitare di sbattere, poi si ferma.
+Cosa fa il plan "alarmHandlePolicy"? Pubblica su un topic comune un messaggio destinato a un entità che si chiama in un certo modo ("rover"), il messaggio è chiamato moveRover. Poi userò JavaOp, implica l'esecuzione di funzionalità di java (metodo), mettendo in esecuzione "sendMsg(...)".
+Voglio mettere in comunicazione pezzi che non si conoscono.
+
+Dov'è implementata la "sendMsg"? Nella libreria.
+In AbstractRoveragent.java (it.unibo.mbot.agent) c'è una zona dove lavora con mqtt, si può analizzare la sendMsgToMqtt.
+
+*** provare a casa ad avviare il tutto: mqtt (forse da caricare dll?), mbot, rover, roveragent e radar. ***
+
+Il prof si collega con putty al Raspberry, poi lancia il jar del ctxMbotExecutor. Il sistema si collegherà ad arduino. Posso accedere all'interfaccia grafica del webserver avviato sul Raspberry, da lì dò dei comandi al bot.

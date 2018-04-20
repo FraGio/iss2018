@@ -1,0 +1,45 @@
+Git pull dalle repository.
+
+*** per 26 aprile fare analisi del problema, da esprimere in maniera sintetica sul template dato. Scrivere cose utili ed appropriate in analisi requisiti, analisi problema e work plan ***
+
+Concepire analisi e progettazione prima di mettere mano alle tecnologie di basso livello, non dobbiamo essere guidati dalle tecnologie perchè potrebbero portarci fuori strada.
+Per accendere un led tramite raspberry? cosa devo fare: posso ragionare top-down o bottom-up. 
+Come prima cosa cosa bisogna fare? Devo sapere come utilizzare i pin del raspberry. Se parto dai pin sto lavorando bottom-up.
+Se voglio lavorare top-down mi devo chiedere come il mio sw deve vedere il led, come si rapporta con il led.
+Mi interessa come interagisco con il led. Come faccio? O trasferisco il controllo a lui per un periodo limitato di tempo (procedure call), oppure emetto un evento un evento a cui lui reagisce, oppure mando un messaggio che il led legge. Per il led la scelta è ovviamente effettuare una procedure call, non si vuole complicare troppo la cosa. Il led come lo modelliamo (senza sapere come è fatto)? Non come un attore ma come un oggetto.
+
+Aperto file lowLevelZooming.pdf, sezione 1.1. Si può copiare il codice per accendere il led. Questo non è un driver, mi sto rivolgendo al SO che tratta tutto come un file.
+C'è una libreria GPIO per controllare i led, in questo modo ho un po' elevato il livello di astrazione rispetto ai driver.
+
+Capitolo 13 del caseStudy: ci sono nuovi requisiti, per cui copiamo tutti i "new requirements" tali e quali nella sezione 6 del documento finale.
+
+*** fare anche questa copia sul documento ***
+
+L'idea è che quando il led è acceso il robot sarà catturato, se il led è spento chiunque può prenotarlo.
+Sempre analizzando i requisiti il capitolo 13, l'utente manderà al sistema (cosa sia il sistema dipenderà dal nostro progetto) un booking request. Il sistema dovrà rispondere con un access token se la risposta è positiva, altirmenti la risposta è negativa.
+Se l'utente riceve il token deve anche dare un'interfaccia (command interface) entro un certo tempo al robot.
+Si può utilizzare il robot per un tempo prefissato, ma prima che finisca il tempo io posso rilasciare la risorsa (robot) che quindi tornerà disponibile.
+L'idea è che ci sono molti utenti che potrebbero richiedere l'accesso al robot, e alcune richieste potrebbero avvenire contemporaneamente.
+La sequenza delle richieste emesse e ricevute non è la stessa, in quanto siamo in un sistema distribuito.
+
+Il punto chiave non è che vogliamo pilotare il robot, o accendere il led, ma vogliamo produrre e sviluppare sw con criteri di qualità in termini di prodotto e di processo. 
+Devo cercare di resistere all'impulso di scrivere codice immediatamente, prima devo chiarire le intenzioni reali del cliente e non devo dare niente per scontato. L'analisi dei requisiti ha questo obiettivo principale, non devo produrre soluzioni, al massimo produco dei modelli. Quindi finita l'analisi dei requisiti inizio a fare un modello di quello con cui ho a che fare. Quando si modella un'entità c'è un problema di linguaggio (dal punto di vista semantico, non sintattico). Con che linguaggio si modella? UML può funzionare ma non è il più adatto, va bene se devo fare un sistema concentrato, mentre nel distribuito è meno utile.
+In che fase introduciamo la parola QActor? 
+L'analisi è contemplativa, deve interpretare il problema e valutare se vale la pena trattarlo, in termini anche di budget, mentre la progettazione porta a soluzioni.
+Arrivati al modello di qualcosa, passo ad analizzare il problema per identificare i critical points, quindi guardo il problema per valutarne le problematiche. Che differenza c'è? Il problema è un'istanza, la problematica potrebbe spaziare su più problemi.
+L'obiettivo non fuffoso dell'analisi è individuare l'architettura logica del problema, cioè struttura, interazione e comportamento.
+Se ogni analista produce modelli diversi per lo stesso problema cosa mi aspetto? Avrò modelli diversi tra loro, può esserci un analista che non vede una cosa che l'altro vede.
+
+L'uso di una tecnologia specifica tendo a rimandarlo il più possibile, perchè voglio che prevalga la parte logica.
+Cosa vuol dire che nella fasi di analisi devo individuare i più importanti abstraction gap? Se la tecnologia di riferimento è vicina al problema l'abstraction gap è limitato, in caso contrario ho un abstraction gap notevole, cioè ho individuato una problematica importante. Se la problematica compare una sola volta devo pensare se questo gap mi ricapiterà in futuro, e in questo caso può valere la pena investire in una nuova tecnologia che i permetta di colmare questo gap.
+E' qui che entra in gioco l'innovazione tecnologica. Quand'è che per un softwarista c'è innovazione tecnologica? Quando ho linguaggi, librierie o infrastrutture che mi facilitano la progettazione e lo sviluppo. Se colmo io l'astrazione non devo aspettare che qualcun'altro, e ho il vantaggio di tenermi in mano la tecnologia custom (anche se ho un costo aggiuntivo).
+Tutto questo è fondamentale per passare dall'essere un tecnico ad essere uno stratega.
+
+La fase di progetto non è ancora fase di implementazione, infatti il progetto dice come si risolve il problema, ma sempre dal punto di vista logico.
+
+Finchè non cambia il problema (cioè finchè non cambiano i requisiti) ci si aspetta un'unica architettura logica prodotta dalla fase di analisi, ma possono esserci tante diverse architetture di progetto. Queste architetture di progetto devono, però, essere relazionate con l'unica architettura logica. Saranno quindi "specializzazioni" dell'architettura logica.
+
+Ci dovremo occupare anche del processo produttivo, in cui ci saranno due scuole in contrasto: l'agile (di cui scrum è un esempio) e model based (prima del codice fai il modello, poi fai il codice e tieni sempre aggiornato il modello).
+Qui entra in gioco il testing, che è fondamentale. I test possono essere fatti non solo alla fine della costruzione del sistema, ma anche durante. In più i test possono anche essere resi automatizzati.
+
+*** nel deliverable il punto 3 si può immaginare come se fossero altre persone a fare la progettazione ***
