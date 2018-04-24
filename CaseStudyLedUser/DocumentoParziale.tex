@@ -195,7 +195,7 @@ ways: \\
 \labelsec{ReqAnalysis}
 Le entità coinvolte in questo scenario sono:
 un robot fisico, cioè un componente descrivibile come un sotto-sistema controllabile remotamente, in grado di muoversi nello spazio fisico. 
-1. Un led è un componente elettronico in grado di emettere luce; il led dovrà essere collocato in maniera visibile sul robot fisico e collegato elettricamente alla parte di middleware (raspberry); \\
+1. Un led è un componente elettronico in grado di emettere luce; il led dovrà essere collocato in maniera visibile sul robot fisico e collegato ad esso; \\
 2. Il robot non dovrà essere accessibile pubblicamente come lo era in precedenza; \\
 3. Il robot sarà controllabile da un solo utente alla volta, e, per poter controllare il robot, sarà necessario che l'utente utilizzi un sistema di prenotazione; questo sistema, in fase di robot libero, garantirà l'acceso immediato al controllo dello stesso, altrimenti porrà l'utilizzatore in uno stato di attesa che gli venga notificato il cambiamento di stato del robot; \\
 Un access token è un elemento consegnato, dal sistema di prenotazione, all'utilizzatore quando gli viene concesso l'accesso al robot; \\
@@ -212,12 +212,22 @@ Un access token è un elemento consegnato, dal sistema di prenotazione, all'utili
 \labelssec{Scenarios}
 
 \subsection{(Domain)model}
+Modello formale / non formale
+1. Utente: entità che può essere uomo o macchina, in grado di interagire col sistema in qualità di utilizzatore finale. E' in grado di comandare il robot, utilizzando una intefaccia di comando che gli viene messa a disposizione;\\
+2. Robot: dispositivo fisico in grado di ricevere comandi e di muoversi di conseguenza; E' dotato di ruote che gli permettono il movimento nello spazio fisico, di motori che azionano le ruote stesse, di un sonar posto nella parte anteriore e di un led visibile. E' composto, a basso livello, da un edge, cioè un elemento che rende "smart" e connesso a internet il robot stesso.
+E' dotato anche di un middleware, architettura computazionale che rende possibile l'interazione tra il basso livello e il cloud. La parte cloud non è presente fisicamente sul robot ma su server esterni ad esso; 
+Per comandare il robot è necessario inviare ad esso comandi opportunamente strutturati;\\
+3. Command interface: sistema interposto tra utilizzatore e robot in grado di ricevere comandi e inoltrarli alla parte esecutiva del robot, in maniera che esso riesca a comprenderli ed attuarli. Può essere esposta in maniera differente a seconda del tipo di utente (macchina o umano), in modo che sia utilizzabile da tutti;\\
+4. Booking system: è un sistema software che comunica via rete, in grado di gestire richieste di utilizzo del robot da parte degli utenti. In fase di ricezione della richiesta deve controllare lo stato del robot, e, nel caso esso sia disponibile, concedere un token di accesso al richiedente, mentre nel caso il robot sia occupato deve tenere conto dell'identità dell'utilizzatore che si è prenotato e notificarlo quando il robot si rende disponibile;\\
+5. Led: è un componente elettronico in grado di emettere luce in seguito a determinati impulsi. E' collegabile ad un middleware e pilotabile dallo stesso.;\\
+
 
 \subsection{Test plan}
 
 %===========================================================================
 \section{Problem analysis}
 \labelsec{ProblemAnalysis}
+
 %===========================================================================
 \subsection{Logic architecture}
 \subsection{Abstraction gap}
@@ -228,6 +238,8 @@ Il linguaggio per descrivere il modello (QActor) risulta, in questo caso, un po'
 %===========================================================================
 \section{Work plan}
 \labelsec{wplan}
+Ci dovremo occupare anche del processo produttivo, in cui ci saranno due scuole in contrasto: l'agile (di cui scrum è un esempio) e model based (prima del codice fai il modello, poi fai il codice e tieni sempre aggiornato il modello).
+Qui entra in gioco il testing, che è fondamentale. I test possono essere fatti non solo alla fine della costruzione del sistema, ma anche durante. In più i test possono anche essere resi automatizzati.
 %===========================================================================
 
 %===========================================================================
