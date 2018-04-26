@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  26 APR 2018 11:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  26 APR 2018 13:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -334,60 +334,57 @@ Underfull \hbox (badness 10000) in paragraph at lines 165--191
  []
 
 [2]
-Overfull \hbox (19.78687pt too wide) in paragraph at lines 196--206
+Overfull \hbox (19.78687pt too wide) in paragraph at lines 196--205
 \T1/cmr/m/n/10 Un ac-cess to-ken è un el-e-mento con-seg-nato, dal sis-tema di 
 preno-tazione, all'utilizzatore
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 196--206
+Underfull \hbox (badness 10000) in paragraph at lines 196--205
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--224
+Underfull \hbox (badness 10000) in paragraph at lines 214--222
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--224
+Underfull \hbox (badness 10000) in paragraph at lines 214--222
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 225--230
 
  []
 
 
-Underfull \vbox (badness 1997) has occurred while \output is active []
-
- [3]
-Underfull \hbox (badness 10000) in paragraph at lines 227--234
+Underfull \hbox (badness 10000) in paragraph at lines 232--233
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 236--237
+Underfull \hbox (badness 10000) in paragraph at lines 240--248
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 244--252
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 263--268
+Underfull \hbox (badness 10000) in paragraph at lines 259--264
 
  []
 
 [5] [6]
 
-LaTeX Warning: Citation `natMol09' on page 7 undefined on input line 298.
+LaTeX Warning: Citation `natMol09' on page 7 undefined on input line 294.
 
 No file DocumentoParziale.bbl.
 [7] (./DocumentoParziale.aux) ) 
 Here is how much of TeX's memory you used:
- 2714 strings out of 494910
- 35743 string characters out of 6179836
- 106519 words of memory out of 5000000
- 5977 multiletter control sequences out of 15000+600000
+ 2716 strings out of 494910
+ 35755 string characters out of 6179836
+ 106561 words of memory out of 5000000
+ 5979 multiletter control sequences out of 15000+600000
  9653 words of font info for 23 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  37i,6n,23p,636b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -397,9 +394,9 @@ n/ec/ectt1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx10
 /home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova
 /.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/giova/.texmf-var
 /fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk>
-Output written on DocumentoParziale.pdf (7 pages, 75034 bytes).
+Output written on DocumentoParziale.pdf (7 pages, 75587 bytes).
 PDF statistics:
- 266 PDF objects out of 1000 (max. 8388607)
+ 269 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
