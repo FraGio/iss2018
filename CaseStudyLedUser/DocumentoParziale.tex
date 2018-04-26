@@ -193,11 +193,10 @@ ways: \\
 %===========================================================================
 \section{Requirement analysis}
 \labelsec{ReqAnalysis}
-Le entità coinvolte in questo scenario sono:
-un robot fisico, cioè un componente descrivibile come un sotto-sistema controllabile remotamente, in grado di muoversi nello spazio fisico. 
+La principale entità coinvolta in questo sistema è il robot fisico, cioè un componente descrivibile come un sotto-sistema controllabile remotamente, in grado di muoversi nello spazio fisico. 
 1. Un led è un componente elettronico in grado di emettere luce; il led dovrà essere collocato in maniera visibile sul robot fisico e collegato ad esso; \\
 2. Il robot non dovrà essere accessibile pubblicamente come lo era in precedenza; \\
-3. Il robot sarà controllabile da un solo utente alla volta, e, per poter controllare il robot, sarà necessario che l'utente utilizzi un sistema di prenotazione; questo sistema, in fase di robot libero, garantirà l'acceso immediato al controllo dello stesso, altrimenti porrà l'utilizzatore in uno stato di attesa che gli venga notificato il cambiamento di stato del robot; \\
+3. Il robot sarà controllabile da un solo utente alla volta, e, per poter controllare il robot, sarà necessario che l'utente utilizzi un sistema di prenotazione; questo sistema, in fase di robot libero, garantirà l'acceso immediato al controllo dello stesso, altrimenti porrà l'utilizzatore, nel caso di opportuno flag nella request, in uno stato di attesa che gli venga notificato il cambiamento di stato del robot; \\
 Un access token è un elemento consegnato, dal sistema di prenotazione, all'utilizzatore quando gli viene concesso l'accesso al robot; \\
 4. L'utente che comanderà il robot potrà essere sia una persona che un sistema software; L'utente in questione ha un tempo limite (deadline) per prendere il controllo dell'interfaccia di comando, utilizzando il token acquisito; Nel caso la deadline scada il robot torna disponibile e il token viene invalidato, cioè non più utilizzabile ai fini di controllo del robot; \\
 5. Una volta preso il controllo l'utente potrà utilizzare il robot per un tempo massimo da stabilire; \\
@@ -218,9 +217,19 @@ Nel caso non formale si descrivono le entità in gioco, mediante linguaggio natur
 2. Robot: dispositivo fisico in grado di ricevere comandi e di muoversi di conseguenza; E' dotato di ruote che gli permettono il movimento nello spazio fisico, di motori che azionano le ruote stesse, di un sonar posto nella parte anteriore e di un led visibile. E' composto, a basso livello, da un edge, cioè un elemento che rende "smart" e connesso a internet il robot stesso.
 E' dotato anche di un middleware, architettura computazionale che rende possibile l'interazione tra il basso livello e il cloud. La parte cloud non è presente fisicamente sul robot ma su server esterni ad esso; 
 Per comandare il robot è necessario inviare ad esso comandi opportunamente strutturati;\\
-3. Command interface: sistema interposto tra utilizzatore e robot in grado di ricevere comandi e inoltrarli alla parte esecutiva del robot, in maniera che esso riesca a comprenderli ed attuarli. Può essere esposta in maniera differente a seconda del tipo di utente (macchina o umano), in modo che sia utilizzabile da tutti;\\
-4. Booking system: è un sistema software che comunica via rete, in grado di gestire richieste di utilizzo del robot da parte degli utenti. In fase di ricezione della richiesta deve controllare lo stato del robot, e, nel caso esso sia disponibile, concedere un token di accesso al richiedente, mentre nel caso il robot sia occupato deve tenere conto dell'identità dell'utilizzatore che si è prenotato e notificarlo quando il robot si rende disponibile;\\
-5. Led: è un componente elettronico in grado di emettere luce in seguito a determinati impulsi. E' collegabile ad un middleware e pilotabile dallo stesso.;\\
+3. Booking system: è un sistema software che comunica via rete, in grado di gestire richieste di utilizzo del robot da parte degli utenti. In fase di ricezione della richiesta deve controllare lo stato del robot, e, nel caso esso sia disponibile, concedere un token di accesso al richiedente, mentre nel caso il robot sia occupato deve tenere conto dell'identità dell'utilizzatore che si è prenotato e notificarlo quando il robot si rende disponibile;\\
+4. Led: è un componente elettronico in grado di emettere luce in seguito a determinati impulsi. E' collegabile ad un middleware e pilotabile dallo stesso.;\\
+
+Utilizziamo il linguaggio formale di modellazione QActor per modellare le entità che comunicano tramite rete, mentre le entità più semplici vengono modellate come POJO.
+
+Modello formale del robot fisico: realRobotExecutor.qa (-httpserver flag rimosso perchè si vuole passare dal sistema di prenotazione per richiedere i diritti di accesso all'interfaccia di comando del robot)\\
+Modello formale del robot virtuale: virtualRobotExecutor.qa (-httpserver flag rimosso perchè si vuole passare dal sistema di prenotazione per richiedere i diritti di accesso all'interfaccia di comando del robot)\\
+Modello formale dell'utente-macchina: mindOfRobot.qa \\
+Modello formale dell'utente-umano: humanUser.qa\\
+Modello formale booking system: bookingSystem.qa\\
+
+
+Il led viene modellato come POJO, tramite interfaccia da implementare.\\
 
 
 \subsection{Test plan}
@@ -250,7 +259,6 @@ Il linguaggio per descrivere il modello (QActor) risulta, in questo caso, un po'
 Ci occupiamo di scegliere l'opportuno processo produttivo, in cui ci sono due scuole in contrasto: l'agile (di cui scrum è un esempio) e model based. \\
 Agile development consiste in lavorare in gruppi auto organizzati, multifunzionali e orientati allo stretto contatto con il cliente finale, al fine di ottenere prodotti utilizzabili in tempo rapido, di migliorare costantemente i prodotti stessi e di rimanere flessibili a ipotetici cambiamenti resisi necessari nel tempo.\\
 Model based development impone che,prima di trattare il codice, sia necessario occuparsi della fase di modellazione. Solo in un secondo momento si passerà alla fase di sviluppo vero e proprio, tenendo opportunamente aggiornata la parte di modello.\\
-In base al nostro problema e alla struttura del sistema, il modello di sviluppo più consono sembra essere l'agile, in particolare Scrum. Questo perchè Scrum risulta essere un framework leggero e facile da utilizzare, in grado di lasciare libertà di risoluzione degli ostacoli, che emergono dal costante dialogo con i clienti, ai membri del team. Le attività sono organizzate a seconda della loro priorità e inserite all'interno di sprint, cioè periodi di tempo entro il quale le attività inserite al loro interno devono essere completate. L'andamento viene costantemente monitorato grazie a frequenti riunioni nelle quali viene discusso lo stato dei lavori.\\
 In questa fase entra in gioco anche il testing, che è fondamentale per assicurare solidità e riddure al minimo i rischi di bug critici in fase di produzione. I test possono essere fatti non solo alla fine della costruzione del sistema, ma anche, e soprattutto, durante. Un'ulteriore aspetto da considerare è che i test possono anche essere resi automatizzati.\\
 %===========================================================================
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  24 APR 2018 14:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  26 APR 2018 11:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -345,7 +345,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 196--206
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--223
+Underfull \hbox (badness 10000) in paragraph at lines 215--224
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 215--224
 
  []
 
@@ -353,13 +358,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 215--223
 Underfull \vbox (badness 1997) has occurred while \output is active []
 
  [3]
+Underfull \hbox (badness 10000) in paragraph at lines 227--234
+
+ []
+
 [4]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 236--237
 
- [5]
-[6]
+ []
 
-LaTeX Warning: Citation `natMol09' on page 7 undefined on input line 285.
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--252
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--268
+
+ []
+
+[5] [6]
+
+LaTeX Warning: Citation `natMol09' on page 7 undefined on input line 298.
 
 No file DocumentoParziale.bbl.
 [7] (./DocumentoParziale.aux) ) 
@@ -370,16 +390,16 @@ Here is how much of TeX's memory you used:
  5977 multiletter control sequences out of 15000+600000
  9653 words of font info for 23 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 37i,6n,23p,689b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,6n,23p,636b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/giova/.texmf-var/fonts/pk/ljfour/jknappe
 n/ec/ectt1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx10
 00.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> <
 /home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova
 /.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/giova/.texmf-var
 /fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk>
-Output written on DocumentoParziale.pdf (7 pages, 74285 bytes).
+Output written on DocumentoParziale.pdf (7 pages, 75034 bytes).
 PDF statistics:
- 265 PDF objects out of 1000 (max. 8388607)
+ 266 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)

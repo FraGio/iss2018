@@ -1,0 +1,51 @@
+Pull dalle repositories, aggiornata libreria Xtext.
+Parleremo di bottom up vs top down e testing.
+Divide et impera, voglio che ogni volta che il robot si muove si accenda anche il led collegato.
+Requisito: creare un nuovo progetto, chiamato "it.unibo.realrobot". Dentro questo progetto bisogna scrivere il codice che verrà eseguito. Prendere spunto dal progetto "it.unibo.divide".
+Mblock è un IDE scaricabile, si può sfruttare un sistema a blocchi ed è l'esempio di un modello non scritto dal prof.
+Su Arduino c'è un interprete di comandi, non c'è il codice di esecuzione del robot perchè questo è più ad alto livello.
+Nel progetto "divide" c'è una parte col codice di Arduino.
+
+Non mi sogno di mettere del codice sul Raspberry che non sia mai stato provato e fatto girare prima. Meglio prima lavorare nel virtuale, utilizzando oggetti mock che sono "simulazioni" di oggetti reali.
+Il punto di partenza è il progetto "it.unibo.divide", che si chiama così perchè la filosofia è fare pezzi interconnessi tra loro.
+Analizziamo virtualRobotExecutor.qa: c'è un attesa di messaggi. Chi manda i messaggi? Chiunque conosca il rover (nell'infrastruttura QActor) può mandargli un messaggio, ma anche chi non conosce il rover ma emette un evento fatto in un certo modo (perchè c'è un elemento che fa il mapping tra evento e messaggio). L'unico prerequisito è che rover ed altra entità facciano parte dello stesso sistema.
+Un modo per interagire come entità è dotarci di una command user interface, la quale genera o un evento o invia un messaggio. In questo modo è questo componente che si occupa dell'interazione con la macchina. Come si fa a dotare il sistema di command user interface? La prima cosa che ci viene in mente è MVC, la console non deve avere logica applicativa.
+La parte "-httpserver" dice che è mia intenzione AGGIUNGERE all'attore "rover" un httpserver che non ha niente a che vedere con l'attore, ma permette all'utente di avere a disposizione un'interfaccia per inviare comandi "usercmd".
+Ragionare sul modello, in termini di struttura, interazione e comportamento, sull'aggiunta del led al robot virtuale.
+Che ragionamento facciamo in termini strutturali? Siamo di fronte ad un microservizio.
+La nuova funzionalità la ottengo aggiungendo nuovi componenti o nuove funzionalità a componenti esistenti.
+Devo aggiungere entità o aggiungere comportamento a quelle già esistenti? Dipende dall'entità della modifica, cioè da quanto dovrei modificare il comportamento dell'entità già esistente. Se lavoro con "divide et impera" dovrei creare una nuova entità, però prima devo analizzare bene il problema.
+Se metto le mani nel codice che strada prendo? Nel caso del microservizio si chiama così perchè offre poche funzionalità, non è "grasso".
+Si potrebbe dire però che come accende già il motore un'entità potrebbe accendere il led.
+Divide et impera mi dice anche che devo suddividere le responsabilità.
+La filosofia è che quello che facciamo possa essere cambiato da un momento all'altro, magari avevo un'idea B che non ho implementato perchè ho implementato A.
+Il sw lavora per cicli, è qui che entra in gioco il refactoring. C'è necessità costante di adattare il codice a nuovi requisiti.
+La nostra visione è non essere impreparato a cambiamenti e metterci il meno possibile ad adattare il mio prodotto alle nuove richieste. Devo passare da A a B nel minor tempo possibile.
+Se il codice fosse scritto in Assembler avrei grossi problemi.
+Da A a B cambia la macro-organizzazione del sistema (ad esempio se aggiungo un'entità nel sistema).
+Quando ho catturato nel modello le caratteristiche essenziali del mio sistema posso auto-generare il codice. In questo modo tutto l'onere del cambiamento (tipo da eventi a messaggi) riguarda l'infrastruttura.
+Il linguaggio naturale si presta ad interpretazioni diverse, quindi ho bisogno di usare un linguaggio formale (e possibilmente eseguibile).
+Se ho tre alternative, A-B-C, voglio esplorarle tutte e tre per vedere quanto tempo ci metto per percorrerle e passare dall'una all'altra. Quindi nel caso dell'aggiunta a codice o aggiunta di entità vogliamo esplorare entrambe le strade.
+Invece che mettere mano nel codice dell'executor potrei creare un QActor attento agli stessi eventi che portano l'executor ad andare avanti o indetro. In questo modo ho più modularità rispetto a prima, se il led non si accende so qual è l'entità che non fa il suo dovere. Questa nuova entità potrebbe lavorare ad eventi o messaggi, e anche qui vogliamo esplorare entrambe le strade. Potrebbe anche essere fatta tramite eventhandler.
+
+Proviamo a fare l'aggiunta direttamente nel virtualRobotExecutor.qa.
+
+Esempio casetta per il prof: lui vuole una casetta mobile, ma con le domande non viene fuori. Questo per dire che il committente certe cose le ha solo nella sua testa. E' molto importante chiarire tutto, perchè in questo caso cambia molto la struttura.
+
+Indicare perchè si fa qualcosa, cioè devo avere le spalle coperte dall'analisi.
+Se nell'analisi del problema viene fuori che devo passare da un modello a tre componenti (anzichè due) cambierò anche l'architettura del sistema.
+
+L'UML non è capace formalmente di descrivere il nostro sistema fatto a microservizi.
+Nel modello dell'analista devo già dire che il modello ha 3 entità al posto che 2. Inoltre, se lavoro con modello eseguibile stile QActor, ho già codice eseguibile.
+Nell'analisi dei requisiti mi devo basare su quello che ho, appunto, nei requisiti. Se mi viene detto che uso una lampadina Philips RESTful allora dovrò usare questo livello di dettaglio nel mio modello, altrimenti dovrò essere più generico dicendo che semplicemente ho bisogno di un messaggio.
+Il progettista potrebbe valutare che il messaggio, che l'analista ha ritenuto necessario per utilizzare la lampadina, debba essere implementato con il protocollo Zigby, piuttosto che con RESTful. Farà una scelta di questo tipo, poi passerà la palla alla fase implementativa.
+Quest'ultima dovrà fare poco, ad esempio implementare suite di test.
+
+Quindi i modelli devono catturare le info che ciascun "ruolo" vuole passare agli altri.
+
+Una volta "acceso" il led per il robot virtuale, cosa faccio per accendere il led fisico? Con un javaRun al posto del println, sarà il javaRun a chiamare uno script .sh che comanda il led fisico. A questo punto tutto il tecnicismo per accendere/spegnere il led dentro un elemento definito.
+
+QActor non sempre è fondamentale in fase di modellazione, da usare solo se l'entità da modellare comunica via rete. Altrimenti, vedi led, basta modellarlo come un POJO, non so a scomodare il QActor.
+
+Voglio far partire in maniera automatica radar e virtual, capire che il sonar ha generato il polar e controllare che l'informazione sia arrivata al radar in maniera corretta. Tutto questo deve essere automatizzato, viene fatto con JUnit.
+I test vengono fatti anche in fase di sviluppo, non solo alla fine.
