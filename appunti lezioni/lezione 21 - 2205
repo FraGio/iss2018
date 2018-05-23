@@ -1,0 +1,44 @@
+Pull dalle repositories.
+L'esempio di accensione del led è puramente indicativo, potremmo azionare motori ecc.
+La nostra situazione è la seguente: voglio accendere un led, per cui ci vuole un modello della risorsa (resource model). Il modello della risorsa lo fa l'analista del problema. Cos'è il resource model? E' l'insieme di tutte le caratteristiche necessarie. Se è un modello deve rispecchiare gli aspetti essenziali della risorsa al fine di far risaltare ciò che è rilevante per il problema o il dominio applicativo nel quale si colloca il problema stesso.
+Ad es. un led, posso descriverlo a parole ma è fuffoso, devo formalizzare tramite modello la risorsa.
+Posso inquadrare il led in una tassonomia, cioè in una struttura gerarchica dove il livello più alto è "risorsa".
+Sto parlando della risorsa in termini logici, non mi interessa dove verrà utilizzata (arduino, raspberry, ecc.).
+C'è qualcosa che ci dice che è necessario fare un modello della risorsa?
+L'analisi è la fase che pianifica attività, e prospetta costi e rischi.
+I sistemi distribuiti rendono il sistema più articolato.
+L'analista deve fare riferimento al boss, può dirgli che a fronte di un costo maggiore del 10% il sistema (e/o con più tempo a disposizione) è molto più flessible ad eventuali cambiamenti nei requisiti del problema nel tempo.
+Il resource model è un disaccoppiatore tra modello e tecnologie, posso riorganizzare le info nel mio dominio applicativo.
+A volte può essere necessario standardizzare il modello delle risorse, in questo modo si garantisce l'interoperabilità.
+
+Se mi fermo a questa fase ho un sistema completamente inutilizzabile, non vedo input o output. Potrebbe essere utilizzabile solo se il controller è un agente sw.
+Si chiama frontend server perchè è un componente che elabora richieste, si relazione in lettura e scrittura col modello e non col controller. Perchè? Perchè ogni cambiamento di stato fa si che il modello sia observable e il controller (o gli N controller) siano observer. In questo modo ho disaccoppiato logica applicativa dal modello.
+Il frontend server è usato da un umano, tramite una pagina html messa a disposizione, ma anche da macchine (programma, es. "curl").
+Voglio comunicare col web server tramite paradigma RESTFul, cioè operazioni GET, POST, PUT, DELETE.
+
+Il controller emette un evento, che può andare perduto, in maniera standard (cioè una stringa con una certa struttura).
+Se ho un componente che è in grado di percepire questo evento allora potrei accendere un led (fisico o mock) ad esempio.
+
+La parte 5 della figura rappresenta sensore ed attuatore che osservano il cambiamento del modello e reagiscono di conseguenza (o che cambiano direttamente il modello).
+Tutto quello che è fisico va nel punto 5, ma se è in grado di comunicare col web server tramite REST anche nel punto 3.
+
+Devo applicare il workflow, cioè l'ordine degli step da seguire per passare dal dire al fare.
+
+Abbiamo qualcosa da cui partire? Sì.
+Apriamo "resourceModel.pl" in "naive.qa": è il modello delle risorse formalizzato, perchè il Prolog può essere interpretato da una macchina.
+
+Facciamo il controller come prototipo nel minor tempo possibile. C'è qualcosa di già fatto, cioè il file "blsMvc.qa". Il "qatemperature" è un attore che simula il sensore di temperatura.
+Potremmo far girare il tutto, ma prima dobbiamo far girare l'mqtt server o lanciandolo o usando docker.
+In "mvccontroller" c'è la sezione Rules nella quale è indicato il valore di soglia di temperatura (25).
+
+Lanciare il "MainBlsMvcCtx.java" e verificare che il led faccia on/off alcune volte.
+Lanciamo il webserver node, poi andiamo sull'url "/pi/actuators" e verifichiamo di vedere dei dati json.
+Poi usiamo curl per fare request http REST.
+I sensori di temperatura devono generare l'evento "sensorEvent", che viene poi mappato dall'eventHandler (in blsMvc) in evento standard "inputCtrlEvent", che è quello su cui lavora il controller. In più gli inietta una categoria. Quindi per ogni evento di temperatura viene generato un inputCtrlEvent.
+Nelle Rules lavoro a livello logico, sto concatenando modifiche al modello con altre modifiche al modello.
+ctrlEvent è percepito da tutti i led messi a disposizione per fare le prove.
+Abbiamo due modelli, uno in Prolog e uno in Json sul server. Quindi i led possono essere manipolati da noi o via rete.
+Il frontend servirà per dare le info all'utente.
+Il linguaggio esterno, in stile RESTFul, lo uso per comunicare all'esterno del sistema. E' scopo primario del frontend server catturare quello che io chiedo con il linguaggio esterno e fare in modo che si traducano in richieste interne. Questo lo fa tramite Express.
+Guardiamo il frontendServer.js: la createServer creerà il webserver. La initPlugins corrisponde alla parte 5 in figura. La http.createServer viene inizializzata passando il codice applicativo al server. L'equivalente moderno è il socketWebServer.
+Guardiamo applCode.js: gli app.set servono per impostare le pagine html. Poi c'è un logger per tracciare le chiamate. Qualsiasi richiesta arriva passa per delle fasi (circa riga 27). Cosa vuol dire "app.use("/index")"? Vuol dire che si mette in esecuzione "index". In "index"  viene sostituito il titolo reale a una variabile presente nel file .jade.

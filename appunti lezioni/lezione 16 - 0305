@@ -1,0 +1,44 @@
+Pull dalle repositories.
+Apriamo file nodeLab2018.pdf. Faremo uno zoom in due direzioni, sia verso il basso che verso l'alto.
+
+*** scaricare MBlock per fare prove ***
+
+Lo stack M.E.A.N (mongo, ???, angular, node) è uno stack fondamentale.
+Amazon web sevices (AWS): l'idea è di abbattere i costi e dare in mano tecnologie fortamente locked in mano a gente che saprà solo usare il servizio.
+Creiamo due progetti : "it.unibo.frontend" e "it.unibo.naive.qa".
+
+File nodeLab2018: l'applicazione ha sensori e attuatori, l'idea è usare sensori per azionare gli attuatori. Un caso è il button-led system.
+Bisogna dare label a requisiti, in modo che abbiano tracciablità.
+L'obiettivo di oggi è capire un certo punto di vista sull'architettura. Oggi un sw designer non può muoversi se non ha come riferimento un'architettura, cioè deve aver discusso di quali pezzi è fatto il sistema e come essi interagiscono tra loro e si comportano.
+In più dobbiamo formalizzare frasi prese dal linguaggio naturale (ad es. le frasi del prof).
+
+Guardiamo la figura 1.1: l'informazione primaria che ricaviamo, dal punto di vista strutturale, è che ci sono tre componenti in gioco. E' stato aggiunto il Controller, ma questa figura nasce da un progettista o un'analista? 
+Riusciamo a fare un'architettura col sensore che va direttamente all'attuatore, cosa pensiamo come analisti? Che non sappiamo dove mettere la business logic, non possiamo metterla nè nel sensore nè nell'attuatore. Se cambiamo l'applicazione dovremmo cambiare o il codice dell'attuatore o quello del sensore, è impensabile.
+Il customer ci dà attuatore e sensore senza logica di business, per cui mi viene in mente che la mia logica di business risieda in una terza entità.
+Quindi se metto il controller dico che dal punto di vista logico l'architettura comprende anche il controller.
+L'architettura non è formalizzata, per cui vogliamo formalizzarla. Mi chiedo cosa vuol dire formalizzare, poi come faccio per farlo.
+Formalizzare significa esprimire la architettura in un linguaggio comprensibile a una macchina.
+Se vogliamo esprimere qualcosa abbiamo il problema su quale linguaggio usiamo per esprimerla. Il linguaggio deve essere formale, quindi comprensibile ad una macchina.
+L'UML a priori non è sbagliato, ma non è eseguibile, in più è adatto all'OO, cioè nel concentrato. Siccome siamo nel distribuito con l'UML dovremmo crearci le infrastrutture di supporto (proxy/stub per procedure call remote).
+Creiamo quindi un file bls0.qa con la formalizzazione della figura 1.1.
+Le entità sono attori, però prima dobbiamo definire i contesti. All'inizio suppongo lavorino tutti in uno stesso contesto per andare velocemente in produzione.
+Ragioniamo su eventi e messaggi: in questa fase potremmo essere tutti d'accordo che i componenti possano interagire in un certo modo, es. a eventi. Tuttavia so che in futuro questa cosa potrebbe cambiare, il mio obiettivo è abbattere i costi di trasformazione da un prototipo a un altro.
+Al momento lavoriamo esclusivamente ad eventi. Creiamo un sensorEvent e un ctrlcmd, entrambi scambiano un generico "DATA".
+Abbiamo formalizzato in bls0.qa il primo modello, però poi possano saltare fuori altri aspetti. Ad esempio potrei avere sensori di diverso tipo che fanno arrivare dati diversi.
+Il QA sensor definito nel file qa è concettualmente un modello o un tipo di sensore? Sto dicendo che il sensore è un entità che emette messaggi di tipo sensorEvent.
+ROb: Se c'è in gioco un sensore di temperatura stiamo comunque partendo non da zero ma già da una base funzionante. Quindi creiamo un file bls1.qa, cercando di lavorarci sopra con modifiche minimali in modo che passiamo da sensore generico a specifico.
+Adesso "DATA" dell'evento sensorEvent è un dato specifico, ossia la temperatura in °C.
+E' il controller che ha la business logic e deve dire che se riceve un evento con dato > di un numero prefissato.
+Se il valore della temperatura è maggiore di 30 allora emetto un evento (ctrlcmd con payload "turnON"), altrimenti altro evento (ctrlcmd con payload "turnOFF").
+"Rules" sono regole scritte in prolog e che vanno in cima all'attore.
+Non abbiamo if/then/else, ma abbiamo le guardie.
+Tra le rules possiamo inserire (in un secondo momento, per ora non implementato): 
+Rules {
+    evalTemperature(hot):- curTemperatureValue(V), !, V>30.
+    evalTemperature(cold):- curTemperatureValue(V), V<=30.
+}
+Il goal sarà :-evalTemperature(X).
+
+Il controller quando riceve dal sensore farà questa valutazione e dirà "sono in grado di aggiornare la mia base di conoscenza con il valore corretto della temperatura?".
+
+*** vedere se, attraverso una guardia, riusciamo a chiamare "addRule" in modo che aggiunga alla base di conoscenza "curTemperatureValue". Invece che addRule potremmo usare "replaceRule", per evitare di aggiungerla più volte. Poi ci sarà una guardia che valuterà il valore di curTemperatureValue(X), con X che verrà o "hot" o "cold"***
