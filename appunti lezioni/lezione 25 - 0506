@@ -1,0 +1,53 @@
+Oggi focus sul modello di autorizzazione, più cenni su metodologia Scrum.
+Industrial IOT: rivoluzione in atto.
+File Nodelab2018, paragrafo 5.2: il robot deve essere accessibile in maniera standard, es. comandi RESTful.
+Un robot è un interprete di comandi ma anche un emettitore di informazioni.
+Il robot potrebbe mettere a disposizione API remote, ad es. il robot virtuale.
+Queste frasi sono tipiche delle analisi dei requisiti, sono un po' fuffose ma se le sostituisco con modelli (anche UML in caso di POJO) ho formalizzato.
+Ricordiamo che la formalizzazione è fondamentale per rimuovere le ambigiuità delle informazioni rispetto al linguaggio naturale.
+La volta scorsa abbiamo fatto alcuni modelli.
+Il webGuiExecutor.qa che abbiamo visto la scorsa volta è un modello da tenere sott'occhio, vediamo quali sono gli aspetti essenziali trasmessi da esso.
+Paragrafo 5.2.3: ci sono tre componenti. All'esterno ho la stessa situazione, mentre all'interno ho:
+    un provider della hmi
+    un software agent (che non vede direttamente i robot finali, se no sarebbe technology locked)
+    un command executor (rimpiazza il robot webGuiExecutor)
+    
+Nel webGuiExecutor ero technology locked, mando messaggi via Java, quindi nel caso debba cambiare modo di comunicare devo cambiare quella parte.
+
+Paragrafo 5.2.4: è il nostro futuro nel mondo del lavoro.
+
+Paragrafo 6: abbiamo la RESTful interface che deve essere il modo per inviare comandi al robot.
+Paragrafo 6.1: è un modello espresso con sintassi javascript/json. E' un modello con solo gli aspetti strutturali, niente interazione o comportamento.
+Paragrafo 6.2.5: è il client bidirezionale, invia dei dati e può anche riceverli (vedi client.on('data'...)). La on('data') cattura l'evento emesso dall'infrastruttura node.
+
+Frontendserver fa girare l'http server avendo come logica applicativa tutto quello che è scritto in applCodeRobot.
+Apriamo robotFrontendServer.js in progetto "frontend". Nella riga 5 sto importando il modello. In quella successiva richiedo server http. La createServer viene eseguita e: inizializza i plugins (mi aiutano a trasmettere/ricevere info). Poi dice all'httpServer di attivarsi, passandogli la logica applicativa. C'è anche una setInterval, cioè ogni secondo viene lanciata la funzione "showResourceState()", la quale invia sulla socket delle info sullo stato del robot. In questo modo ho implementato un modello observable/observer.
+Mettiamo a "false" le variabili riga 42 su applCodeRobot.js, poi lanciamo robotFrontendServer ma non va.
+Aggiungiamo "if(passport)" a righe 69 ed 87 del file applCodeRobot, poi lanciamo robotFrontendServer. Nel frattempo avevamo acceso clientRobotVirtual e il robot soffritti (main.js).
+Eliminiamo riga 20 in "it.unibo.frontend/nodeCode/frontend/appServer/viewRobot/access.ejs".
+
+Guardiamo applCodeRobot: c'è un render usando app.set('views'), mentre come engine (traduzione da pag. a html) usiamo ejs.
+"externalActuator" a false vuol dire che non si appoggia a funzionalità esterne. Tutte le funzioni di AUTH devono avere la guardia if(passport)".
+Lanciando il robotFrontendServer e aprendo localhost:3000 dovrebbe comparire la schermata per mandare comandi al robot. Per farlo andare è stato necessario reinstallare il modulo npm ejs.
+
+Guardando l'access.ejs vediamo che ci sono form con delle POST, quindi è la pagina html che mi permette di fare richieste POST che poi vengono intercettate dal server e girate al robot. "actuate" è la funzione che fa la send al robot (toRobot), dove il toRobot è l'oggetto per comunicare col robot.
+In questa fase il server è technology dependent, se il robot non è più quello di soffritti ma quello fisico devo cambiare questa parte. 
+Con gli externalActuator a "true" questa cosa come cambia? Viene invocata la "delegate", che invia le info tramite mqtt usando il formato che può essere interpretato dai QActor. In questo modo posso comandare tutti i tipi di robot diversi, basta che ogni robot faccia una subscribe al server mqtt. In questo modo non sono più technology dependent.
+
+Torniamo al capitolo 6.1: il modello ha solo struttura, se volessi aggiungere le azioni ???
+Se voglio fare autenticazione devo tenere info lato server, il problema è che il client usa http che di default si dimentica delle interazioni. Per cui installiamo express session con npm, in più anche il package "passport".
+Per questo task tiriamo in ballo i database, nello specifico useremo db no-sql come mongodb.
+
+Installazione paragrafo 7.3 tramite docker.
+*** approfondire docker ***
+
+Dopo aver abilitato docker e mongo possiamo rimettere a "true" il parametro withAuth in applCodeRobot.
+I creatori di mongo hanno nascosto le API, perchè chi usa un databse deve salvare dei dati, quindi l'attenzione non deve porsi su come interagisco con mongo ma solo su come sono fatti i dati. Quindi ci si deve concentrare solo sulla definizione del MODELLO DEI DATI. Da queste considerazioni deriva Mongoose.
+
+Listing 1.55 in nodeCode: stiamo definendo il modello degli utenti (users.js). Ci sono anche dei metodi.
+
+Rilanciamo robotFrontendServer, ora compare la pagina di richiesta di login.
+
+Con l'utente standard (user: a , passw: b) non entro, ma se vado nella pagina "/signup" e mi registro (es. user: fra, passw: gio) riesco ad entrare nella pagina di comandi.
+
+Nell app.post("signup"): "User" è il modello Mongoose, la findOne() cercherà di fare match tra utente inserito e utente su db. Ci sono vari casi, se non c'è errore nelle credenziali e l'utente non c'è già su db c'è la creazione di un nuovo utente tramite "newUser.save(next);", dove "next" è una funzione da eseguire dopo la save.

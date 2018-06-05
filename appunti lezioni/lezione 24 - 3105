@@ -1,0 +1,52 @@
+Nell'interfaccia web c'è un pulsante "appl", oltre a quelli per muovere il robot (nuova versione). Premendo il pulsante il robot virtuale si sposta per un po', poi si ferma in corrispondenza del sonar.
+
+Vogliamo rifare tutto da zero, per cui prendiamo un foglio bianco.
+Quando si inizia si prende il ruolo dell'analista.
+Partiamo da una scatola vuota, che è il contenitore del sw che dobbiamo realizzare.
+Oltre alla scatola c'è anche un elemento "robot", ed è presente perchè è nominato nei REQUISITI. In realtà, parlando col committente, scopriamo che possiamo avere N robot. L'idea è che il sistema ne piloti uno solo, ma che questo possa essere radicalmente diverso da un altro. Es. "robot1" potrebbe essere quello virtuale, il 2 quello fisico, il 3 un robot fisico diverso dal precedente...
+Quando il committente dice "robot" devo chiedere cosa intende per robot, perchè può essere fisico, virtuale, multipli robot, ecc.
+
+Poi ci sono le entità che possono comandare il robot tramite il nostro sistema sw, come "human operator" (umano) o "Software agent operator" (macchina).
+
+Il flusso di informazioni fluisce solo da utente a robot o anche viceversa? No, ci sono info che vanno verso gli utenti (umani o macchine).
+
+Il Software agent potrebbe essere spostato e visto all'interno della "scatola", in più con info che gli arrivano in input anche dallo human operator.
+
+Dopo aver completato la architettura in figura dobbiamo FORMALIZZARLA.
+
+Se arriviamo con un'astronave vediamo che l'architettura attuale è composta da 3 componenti.
+
+Ora dobbiamo formalizzare tramite un linguaggio, di conseguenza dobbiamo scegliere quello giusto.
+In base ai componenti che sono nel nostro sistema la scelta migliore è modellare i componenti come actor, nello specifico actor secondo il linguaggio QActor. Dicendo così ho definito una specifica standard degli attori.
+Perchè scelgo gli attori Qactor e non gli oggetti Java? Perchè devo lavorare nel distribuito, quindi scambio di messaggi, non tramite procedure call. Potrei usare oggetti java solo se lavorassi nel concentrato, per chiarire questa cosa devo chiedere al committente.
+
+Creiamo un progetto "it.unibo.finaltask" con un file di modello di analisi.
+Una volta definito contesto e attori, e risolte le librerie, facciamo girare e vediamo che stampino gli init gli attori.
+Dopodichè ci focalizziamo sulle interazioni tra le entità. Lavoriamo a eventi o messaggi?
+Messaggi possono essere dispatch, request (mi lega all'interlocutore con un'aspettativa di risposta) e invitation (mi arriva un ack).
+
+Decidiamo di lavorare a messaggi come dispatch, ma siamo sicuri che i requisiti potrebbero cambiare e magari sarà necessario lavorare con request-response.
+
+Un attore deve fare il dispatch e l'altro la transition.
+
+Una volta completato il modello (*** non funziona del tutto, fixare --- forse facendo andare con porta 8999 funziona ***) abbiamo una formalizzazione dell'architettura in figura.
+Adesso vogliamo far muovere il robot virtuale fatto in javascript.
+
+Creiamo un nuovo file .qa dove c'è un "analysisrobot" tra gli altri Qactor. Dobbiamo fare in modo che questo robot si muova. Siamo in analisi, evitiamo la parola soluzione.
+
+Il robot di soffritti non è modellato, ma sappiamo che per comunicare con esso dobbiamo inviare dati json con una certa struttura.
+Dove mettiamo le mani quindi? Cominciamo dal Dispatcher e mettiamo un commento "// X=w || X=a || X=s || X=d || X=h", in modo che diamo una sintassi.
+Facciamo in modo che il nuovo modello del robot, cioè "analysisrobot", va a vedere se il payload dell'evento è intercettato ed identificato. Per ora stampiamo solo l'info.
+
+Ora sostituiamo il "println" dell'azione con un javaRun o JavaOp, utilizzando il file "mbotConnTcp.java" presente nel progetto di soffritti.
+C'è da aggiungere un parametro QActor a tutti i metodi della classe java.
+
+Se poi lanciamo robot virutale js, più il codice fatto adesso dovrebbe muoversi il robot.
+
+Guardiamo WebGuiExcetutor.qa nel progetto "mbot.virtual": viene trasformato qualunque evento proveniente dall'interfaccia a un messaggio destinato ad una entità interna (player). Guardiamo l'actor robotpfrs: aspetta due eventi, dovuti a sonar fissi o a ostacoli, ma li aspetta continuando ad andare avanti in modo continuato. C'è una gestione degli eventi, tramite movimenti appropriati a seconda dell'evento.
+"sonarguidetector" è l'actor che fa print degli eventi sonar.
+Tutto questo è una modifica del modello del robot fatto da noi (con, ad es., una GUI in più).
+Rispetto a questo modello c'è qualcosa che corrisponde a "Software agent operator"? Sì, è "player", mentre il robot è "robotpfrs" che va in esecuzione quando viene lanciato un comando apposito. La parte di "human" non c'è, perchè è coperta dal componente interfaccia.
+
+Aggiungiamo un attore al progetto e lo facciamo girare ???
+Sostituiamo da un frontend server fatto da me, in modo che solo un utente autorizzato possa mandare comandi. Questo lo troviamo in "frontend", si chiama "nodeRobotFrontendServer". File "applCodeRobot.js" in frontend/nodeCode, false o true in mezzo al file per certe cose.

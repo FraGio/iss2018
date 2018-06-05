@@ -1,0 +1,48 @@
+Prima di cominciare la progettazione sarebbe bene incontrare il prof e confrontarsi su ciò che è stato fatto nella fase di analisi.
+Questo vuol dire che a fine analisi, o almeno a fine progettazione, deve esserci qualcosa di prodotto.
+Il gruppo concorda su chi fa cosa, quindi ci deve essere un'organizzazione interna al team dividendo i lavori.
+Scrum sarebbe il metodo preferito di come organizzarsi per il lavoro di gruppo.
+Non si butta via niente, tutto quello fatto in precedenza, e nelle fasi precedenti, può essere utile e può essere riutilizzato.
+Il commitment alle teconologie deve arrivare al momento giusto.
+I Qactor non sono un fine ma un mezzo.
+
+Obiettivo di oggi: costruire una app che accende un attuatore date le info ricevute da un sensore.
+Tra sensori ed attuatori c'è il resource model. C'è anche un adapter, che è qualcosa che sta in mezzo tra sensore e modello.
+C'è un controller, cioè un cambiamento del modello innesca operazioni sul controller.
+Il controller a sua volta può modificare il modello.
+Ci sono adapter anche tra resource model ed attuatori.
+C'è una gui web, in modo da rendere utilizzabile il sistema dagli utenti.
+C'è anche un adapter per il database, oltre al db stesso. Questo può essere usato per logging o memorizzazione di dati utili.
+
+Architettura esagonale: qualsiasi cosa succeda nel sistema è perchè c'è stata una modifica sul modello, per cui la business logic lavora solo a livello logico.
+L'intermediario è puramente logico, aspetto fondamentale per estendibilità, modularità, manutenibilità...
+Cosa è cambiato da MVC? Che le interazioni tra model e controller non sono più procedure call.
+
+Per fare tutto ciò devo formalizzare questa architettura.
+Guardiamo blsMVc.qa: il modello non è scorporato dal controller, quindi le "frecce" tra controller e resource model ???
+La base di conoscenza Prolog vuol dire che non siamo allo stesso livello di un dato, il modello è espresso tramite knowledge base Prolog.
+Le Rules sarebbero potute finire nel file Prolog, ma sono lì per evidenziare certe cose.
+Nel modello blsMVC c'è l'idea che il sensore sia un emettitore di eventi.
+Le basi di conoscenza sono diverse (ad es. a seconda di controller o attuatori o sensori...).
+Architettura IOT usa chiamate RESTful anche per accedere ai dati (es. su DB), in modo da non essere legati a determinate teconologie. Usando queste API standardizzate (request/response http RESTful) si è molto più flessibili.
+Per disaccoppiare controller e modello posso fare Qactor diversi, qui sono già un progettista. Per fare questa operazione ci metto poco perchè sto usando QActor, ma se sono technology dependent rischio di metterci tanto.
+
+Il sensore emette eventi che vengono percepiti dal controller, poi può cambiare il modello. A sua volta il modello (regola in Rules) emette un evento ???
+Non c'è ledRaspberry ma c'è ledArduino, perchè? Perchè sono in fase prototipale, posso attaccare arduino sul pc e provare.
+
+Guardiamo "ledOnRasp.qa": viene eseguito su raspberry, questo si può intuire dall'indirizzo IP che utilizza. Dopo i blink iniziali di prova si mette in attesa di ctrlEvent (che è emesso dal controller). C'è una parte technology dependent, cioè la parte descritta dagli actor, e una technology dependent, cioè le javaOp che eseguono script bash.
+C'è l'opzione -pubsub, anche qui siamo technology dependent in base a come vengono veicolate le info. Con questa opzione capiamo che lavora con riferimento ad un mqtt server.
+
+Accendiamo un mqtt server (tramite docker per rendere più semplificata l'installazione.
+Si lancia il jar che permette di fare da tramite col led su raspberry e che si collega con mqtt.
+Poi lanciamo il modello, cioè MainBlsMVCCtx e vediamo che si accende sia il led mock che il led su raspberry.
+
+*** da fare: automatizzare il testing del fatto che il led si accende o spenga ***
+
+Il frontend server è un qualcosa che aggiungo al sistema che sta funzionando.
+Tutti i file che iniziano con "appl" contengono logica applicativa, quindi qualcuno li deve mettere in esecuzione.
+La initplugin() (in frontendServer.js) ha una parte decommentata (dhtPlugin).
+Cosa fa la funzione simulate() in DHT22SensorPlugin.js?  Simula dei dati ogni tot. secondi.
+Ho una variabile "model", che rappresenta il modello Json lato frontend.
+"emitInfo" pubblica su server mqtt i dati del modello, fa la stessa cosa che faceva il Qactor che emetteva l'evento per sensore di temperatura. In questo modo mi sono creato un plugin, all'interno del frontend server, che simula dati e li spara su mqtt server. Chiunque sarà in grado di percepire quell'evento potrà reagire.
+Tramite comando curl posso, tramite frontend server, cambiare lo stato di una certa risorsa (ad es. far accendere o spegnere il led).
