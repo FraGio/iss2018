@@ -51,3 +51,10 @@ Rilanciamo robotFrontendServer, ora compare la pagina di richiesta di login.
 Con l'utente standard (user: a , passw: b) non entro, ma se vado nella pagina "/signup" e mi registro (es. user: fra, passw: gio) riesco ad entrare nella pagina di comandi.
 
 Nell app.post("signup"): "User" è il modello Mongoose, la findOne() cercherà di fare match tra utente inserito e utente su db. Ci sono vari casi, se non c'è errore nelle credenziali e l'utente non c'è già su db c'è la creazione di un nuovo utente tramite "newUser.save(next);", dove "next" è una funzione da eseguire dopo la save.
+
+C'è un pulsante "appl" che deve fare in modo che il robot (versione aspirapolvere) "pulisca" tutta l'area a sua disposizione.
+
+Paragrafo 8 di nodeCode: ci sono i requisiti della prova finale.
+!!! All'esame il prof chiederà di dimostrare che abbiamo coperto i requisiti dati, quindi dobbiamo sapere dire i pezzi di codice che coprono i vari requisiti !!!
+
+*** per giovedì: guardare la "SCRUMGuide", scaricarla e STAMPARLA ***
