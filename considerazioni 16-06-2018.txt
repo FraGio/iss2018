@@ -1,20 +1,20 @@
 1) valutare abstraction gap tra linguaggio di modellazione a nostra disposizione e le cose esprimibili con quel linguaggio. Il tutto in relazione ai requisiti del problema.
 
-2)analisi requisiti:
+2)analisi requisiti (* = chiedere al prof.):
     - *R-end: da chiarire cosa si intende per "lavoro finito" del robot
     - *R-FloorClean: chiarire cosa si intende per "pulire" il pavimento
     - Definire sonar con una definizione specifica
-    - Specificare posizione (coordinate) dei sonar e capire se i sonar sono da considerare solo nell'ambiente virtuale e se influenza l'ambiente fisico
-    - Specificare posizione iniziale del robot nell'ambiente fisico
-    - Specificare direzione iniziale del robot
-    - Approfondire movimento del robot nella stanza (serpentina, altro...)
+    - *Specificare posizione (coordinate) dei sonar e capire se i sonar sono da considerare solo nell'ambiente virtuale e se influenza l'ambiente fisico
+    - *Specificare posizione iniziale del robot nell'ambiente fisico
+    - *Specificare direzione iniziale del robot
+    - *Approfondire movimento del robot nella stanza (serpentina, altro...)
     - R-Start: Definire "authenticated user"
     - R-Start: Definire "human GUI interface" (console)
-    - R-Start: Definire "conventional PC" (solo windows, linux...)
-    - "R-TempOk": consideriamo valore a nostra scelta per la temperatura o c'è un valore speicifico?
-    - "R-TimeOk": consideriamo intervallo temporale a nostra scelta per o c'è un valore speicifico?
+    - *R-Start: Definire "conventional PC" (solo windows, linux...)
+    - *"R-TempOk": consideriamo valore a nostra scelta per la temperatura o c'è un valore speicifico?
+    - *"R-TimeOk": consideriamo intervallo temporale a nostra scelta per o c'è un valore speicifico?
     - stato "working": è definito come stato tra "start" e "stop"
     - "R-BlinkLed" e "R-BlinkHue": Dare definizione di led e "Led Hue Lamp"
     - Dare definizione di "real robot" e di "virtual robot"
     - "R-AvoidFix" e "R-AvoidMobile": dare definizione di ostacoli fissi e mobili
-    - "R-Obstacle": chiarire come il robot riconosce gli ostacoli (virtuali e fisici). Capire anche cosa si intende "ostacolo impossibile da evitare"
+    - *"R-Obstacle": chiarire come il robot riconosce gli ostacoli (virtuali e fisici). Capire anche cosa si intende "ostacolo impossibile da evitare"
