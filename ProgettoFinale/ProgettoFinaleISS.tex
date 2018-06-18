@@ -131,9 +131,9 @@
 %===========================================================================
 \section{Introduction}
 \labelsec{intro}
-Questo modulo rappresenta una fotografia, in un questo istante, del processo di sviluppo del software. Avere una documentazione completa circa tutte le fasi (Analisi, Progettazione, Implementazione, Testing) è importante per far si che si possa avere la giusta documentazione e, soprattutto, il giusto flusso di sviluppo, che parte dai requisiti, fino ad arrivare ad un prodotto finale. \\
-Ai problemi ci si può approcciare in modo olistico (top-down), o riduzionistico (bottom-up). 
-Cosa intendiamo?\\
+Questo modulo rappresenta una fotografia, in un questo istante, del processo di sviluppo del software. Avere una documentazione completa circa tutte le fasi (Analisi, Progettazione, Implementazione, Testing) è importante per far mantenere una traccia delle considerazioni emerse nelle fasi già citate e, soprattutto, il giusto flusso di sviluppo, che parte dai requisiti, fino ad arrivare ad un prodotto finale che è in linea con le attese del committente. \\
+Possiamo approcciare i problemi che emergono in modo olistico (top-down), o riduzionistico (bottom-up). 
+Cosa s'intende per top-down o bottom-up?\\
 TOP-DOWN, cioè procedendo dall'alto verso il basso, quindi partendo da specifiche di alto livello, analizzando i sottosistemi ed arrivando ad una soluzione; questo approccio è in linea con una visione OLISTICA, ovvero che non si concentra sulle singole parti, ma ha una visione "più d'insieme" o di alto livello. \\
 BOTTOM-UP, cioè procedendo dal basso verso l'alto, quindi partendo più da componenti, per poi passare alla loro sintesi. Questo approccio è in linea con una visione RIDUZIONISTA, opposta alla precedente, la quale mira a porre l'attenzione sulle singole parti di un certo sistema, piuttosto che sull'insieme intero.\\
 %===========================================================================
@@ -149,8 +149,8 @@ La questione che adesso ci si pone è l'affrontare un problema partendo da ipotes
 La visione adottata in questo caso è:
 "Dalle tecnologie alla analisi e al progetto logico e ritorno alle tecnologie." 
 Cosa significa? \\
-Dopo aver capito che comunque si deve partire dalle tecnologie (e quindi non si può partire da zero, senza alcuna ipotesi tecnologica), si fanno delle ipotesi su cosa fare. Poi ci si occupa di analisi dei requisiti. Successivamente si ritorna alle tecnologie per poter dire se si ha un "abstraction-gap". Quando si può dire se si è in presenza di una cosa del genere? Se nella business logic per ogni byte se ne devono scrivere 100 per l'infrastruttura, significa che c'è un abstraction gap enorme. Quindi la tecnologia che sto utilizzando è insufficiente, o meglio, inappropriata per il mio problema. \\
-Si parla di "tecnology-lock" se l'applicazione è strettamente contaminata dalla tecnologia, ovviamente potrebbe rappresentare un problema. Questo accade quando la scelta della tecnologia viene fatta prima rispetto le scelte di analisi/progetto; si contamina/rende strettamente dipendente il sistema finale dalla tecnologia. \\
+Dopo aver capito che comunque si deve partire dalle tecnologie (e quindi non si può partire da zero, senza alcuna contaminazione tecnologica), si fanno delle ipotesi su cosa fare. Poi ci si occupa di analisi dei requisiti. Successivamente si ritorna alle tecnologie per poter dire se si ha un "abstraction-gap". Se per ogni byte di codice di business se ne devono scrivere 100 per l'infrastruttura, significa che c'è un abstraction gap enorme. Quindi la tecnologia che sto utilizzando è insufficiente, o meglio, inappropriata per il mio problema, e, di conseguenza, il tempo richiesto per lo sviluppo e il mantenimento dell'infrastruttura è eccessivo. \\
+Si parla di "tecnology-lock" se l'applicazione è strettamente contaminata dalla tecnologia, ovviamente questa caratteristica potrebbe rappresentare un problema. Questo accade quando la scelta della tecnologia viene fatta prima rispetto le scelte di analisi/progetto; si contamina/rende strettamente dipendente il sistema finale dalla tecnologia. \\
 Altra cosa importante da tenere a mente è: "non c'è codice senza progetto, non c'è progetto senza analisi e non c'è analisi senza requisiti". 
 %===========================================================================
 
@@ -163,14 +163,59 @@ L'obbiettivo principale è produrre e sviluppare software con criteri di qualità,
 %===========================================================================
 \section{Requirements}
 \labelsec{Requirements}
-In questa sezione vengono riportati i requisiti, che vengono forniti dal direttamente dal cliente. 
+In a home of a given city (e.g. Bologna), a ddr robot is used to clean the foor of a room ( R-FloorClean ).\\
+The floor in the room is a flat floor of solid material and is equipped with two sonars , named sonar1 and
+sonar2 as shown in the picture ( sonar1 is that at the top). The initial position ( start-point ) of the robot is
+detected by sonar1 , while the final position ( end-point ) is detected by sonar2 . \\
+The robot works under the following conditions:\\
+\begin{enumerate}
+\item R-Start : an authorized user has sent a START command by using a human GUI interface ( console ) running
+on a conventional PC or on a smart device ( Android ).
+\item R-TempOk : the value temperature of the city is not higher than a prexed value (e.g. 25 degrees Celsius).
+\item R-TimeOk : the current clock time is within a given interval (e.g. between 7 a.m and 10 a.m )
+\end{enumerate}
+While the robot is working: \\
+\begin{itemize}
+\item it must blink a Led put on it, if the robot is a real robot ( R-BlinkLed ).
+\item it must blink a Led Hue Lamp available in the house, if the robot is a virtual robot ( R-BlinkHue ).
+\item it must avoid fixed obstacles (e.g. furniture) present in the room ( R-AvoidFix ) and/or mobile obstacles like balls, cats, etc. ( R-AvoidMobile ).
+\end{itemize}
+
+Moreover, the robot must stop its activity when one of the following conditions apply:\\
+\begin{enumerate}
+\item R-Stop : an authorized user has sent a STOP command by using the console.
+\item R-TempKo : the value temperature of the city becomes higher than the prefixed value.
+\item R-TimeKo : the current clock time is beyond the given interval.
+\item R-Obstacle : the robot has found an obstacle that it is unable to avoid.
+\item R-End : the robot has finished its work.
+\end{enumerate}
+
+During its work, the robot can optionally: \\
+\begin{itemize}
+\item R-Map : build a map of the room floor with the position of the fixed obstacles. Once built, this map can be
+used to define a plan for an (optimal) path form the start-point to the end-point .
+\end{itemize}
+
+Other requirements:\\
+\begin{enumerate}
+\item The work can be done by a team composed of NT people, with 1<=NT<=4 .
+\item If NT>1 , the team must explicitly indicate the work done by each component.
+\item If NT==4 , the requirement R-Map is mandatory.
+\end{enumerate}
 %===========================================================================
 
  
 %===========================================================================
 \section{Requirement analysis}
 \labelsec{ReqAnalysis}
-Durante la fase di analisi dei requisiti, svolta dall'analista dei requisiti, si analizzano dettagliatamente questi ultimi, forniti dal cliente, al fine di esplicitarli in maniera non formale, ovvero in linguaggio naturale. Il tutto viene fatto al fine di avere un quadro chiaro dei requisiti ricevuti. 
+Durante la fase di analisi dei requisiti, svolta dall'analista dei requisiti, si analizzano dettagliatamente questi ultimi, forniti dal cliente, al fine di esplicitarli in maniera non formale, ovvero in linguaggio naturale. Il tutto viene fatto al fine di avere un quadro chiaro dei requisiti ricevuti.
+
+In base ai requisiti forniti dal committente sappiamo che il nostro sistema lavorerà con l'obiettivo di controllare due tipi di robot diversi, uno fisico ed uno virtuale.\\
+Ci sarà un utente autorizzato, dotato quindi di credenziali valide, che accederà al nostro sistema e, tramite un'interfaccia grafica, avvierà o arresterà il robot.\\
+Sono richeste le accensioni di due tipi di led/lampade a seconda dei casi (robot reale vs robot virtuale).\\
+Nell'ambiente nel quale il robot lavora saranno presenti anche ostacoli di diversa natura, ossia ostacoli fissi e mobili, i quali dovranno essere opportunamente evitati.\\
+Ci sono vincoli su temperatura e su intervallo temporale, in base ai quali si determina se è possibile iniziare o meno l'attività del robot.\\
+Infine l'operato del robot può essere interrotto in qualsiasi momento se si verificano particolari condizioni, come il comando di stop eseguito dall'utente, il valore di temperatura che eccede una certa soglia, il superamento dell'intervallo temporale consentito di lavoro o un ostacolo insuperabile. Il robot può anche terminare in maniera "naturale" quando completa la propria attività.\\
 
 %===========================================================================
 \subsection{Use cases}
@@ -182,6 +227,28 @@ Durante la fase di analisi dei requisiti, svolta dall'analista dei requisiti, si
 \subsection{(Domain)model}
 La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
 Nel caso non formale si descrivono le entità in gioco, mediante linguaggio naturale, in termini di struttura, interazione e comportamento.
+
+Entità in gioco nel sistema:\\
+\begin{itemize}
+\item Sonar: strumento in grado di percepire movimenti nel proprio raggio di azione, fondato sull'emissione di ultrasuoni e sulla captazione dei relativi echi
+\item Authenticated User: utente umano il quale ha effettuato un accesso sul sistema utilizzando le credenziali a sua disposizione
+\item Human GUI Interface: interfaccia grafica che permette all'utente autenticato di interagire con il robot in maniera funzionale
+\item Conventional PC: computer dotato di un qualsiasi sistema operativo ???
+\item Led: dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce
+\item Led Hue Lamp: lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone)
+\item Real Robot: dispositivo fisico in grado di ricevere comandi e di muoversi di con-
+seguenza; E' dotato di ruote che gli permettono il movimento nello spazio fisico,
+di motori che azionano le ruote stesse, di un sonar posto nella parte anteriore
+e di un led visibile. \\
+E' composto, a basso livello, da un edge, cioè un elemento
+che rende "smart" e connesso a internet il robot stesso. E' dotato anche di un
+middleware, architettura computazionale che rende possibile l'interazione tra il
+basso livello e il cloud. La parte cloud non è presente fisicamente sul robot ma
+su server esterni ad esso. \\
+\item Virtual Robot: dispositivo che emula un robot fisico ma che si muove in un ambiente virtuale
+\item Ostacolo fisso: persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio
+\item Ostacolo mobile: persona o entità che occupa l'area di azione del robot e che si muove liberamente
+\end{itemize}
 
 \subsection{Test plan}
 
