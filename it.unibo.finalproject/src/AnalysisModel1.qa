@@ -12,9 +12,9 @@ QActor humanoperator context ctxAnalysisModel {
 	 
 	Plan sendMessage[
 		delay 1000;
-		forward appl -m cmd : cmd (1);
+		forward appl -m cmd : cmd (10);
 		delay 3000;
-		forward appl -m cmd : cmd (2)
+		forward appl -m cmd : cmd (20)
 	]    
   	transition stopAfter 3600000   	//1h 
   	finally repeatPlan  

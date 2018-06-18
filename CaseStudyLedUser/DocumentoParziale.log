@@ -1,11 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  26 APR 2018 13:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.3.13)  25 MAY 2018 15:29
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**DocumentoParziale.tex
-(./DocumentoParziale.tex
-LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 5 language(s) loaded.
+**./DocumentoParziale.tex
+(DocumentoParziale.tex
+LaTeX2e <2017-04-15>
+Babel <3.18> and hyphenation patterns for 75 language(s) loaded.
 (../libs/llncs.cls
 
 LaTeX Warning: You have requested document class `../libs/llncs',
@@ -13,9 +11,12 @@ LaTeX Warning: You have requested document class `../libs/llncs',
 
 Document Class: llncs 2004/08/17 v2.14 
  LaTeX document class for Lecture Notes in Computer Science
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\article.cl
+s"
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\size10.clo
+"
 File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -30,8 +31,9 @@ File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty
-Package: multicol 2015/08/19 v1.8n multicolumn formatting (FMi)
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\tools\multicol.
+sty"
+Package: multicol 2017/04/11 v1.8q multicolumn formatting (FMi)
 \c@tracingmulticols=\count87
 \mult@box=\box26
 \multicol@leftmargin=\dimen103
@@ -130,81 +132,100 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 370.
 \c@remark=\count115
 \headlineindent=\dimen124
 )
-(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\inputenc.s
+ty"
 Package: inputenc 2015/03/17 v1.2c Input encoding file
 \inpenc@prehook=\toks18
 \inpenc@posthook=\toks19
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/latin1.def
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\latin1.def
+"
 File: latin1.def 2015/03/17 v1.2c Input encoding file
 ))
-(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2016/02/24 3.9q The Babel package
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\babel\babel.s
+ty"
+Package: babel 2018/02/14 3.18 The Babel package
 
-(/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
-Language: english 2012/08/20 v3.3p English support from the babel system
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\babel\switch.
+def"
+File: switch.def 2018/02/14 3.18 Babel switching mechanism
+)
+*************************************
+* Local config file bblopts.cfg used
+*
 
-(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
-File: babel.def 2016/02/24 3.9q Babel common definitions
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\arabi\bblopts.c
+fg"
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\babel-english\e
+nglish.ldf"
+Language: english 2017/06/06 v3.3r English support from the babel system
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\babel\babel.d
+ef"
+File: babel.def 2018/02/14 3.18 Babel common definitions
 \babel@savecnt=\count116
 \U@D=\dimen125
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\babel\txtbabe
+l.def")
+\bbl@dirlevel=\count117
 )
 \l@canadian = a dialect from \language\l@american 
 \l@australian = a dialect from \language\l@british 
 \l@newzealand = a dialect from \language\l@british 
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
-Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fontenc.st
+y"
+Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.def
-File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
+File: t1enc.def 2017/04/05 v2.0i Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
-))
-(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+)) ("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\url\url.sty"
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/tools/xspace.sty
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\tools\xspace.st
+y"
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
-)
-(../libs/manifest.sty
+) (../libs/manifest.sty
 File: manifest.sty 2010/03/09 Package for adding categories, terms and keywords
  to llncs style
-\catcount=\count117
+\catcount=\count118
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\graphi
+cx.sty"
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\keyval
+.sty"
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\graphi
+cs.sty"
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\trig.s
+ty"
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
-File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-cfg\gr
+aphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 95.
+Package graphics Info: Driver file: pdftex.def on input line 99.
 
-(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
-)
-\Gread@gobject=\count118
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-def\pd
+ftex.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen126
 \Gin@req@width=\dimen127
-)
-(./DocumentoParziale.aux)
+) (DocumentoParziale.aux)
 \openout1 = `DocumentoParziale.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 106.
@@ -220,7 +241,8 @@ LaTeX Font Info:    ... okay on input line 106.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 106.
 LaTeX Font Info:    ... okay on input line 106.
 
-(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\context\base\supp-pdf
+.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count119
 \scratchdimen=\dimen128
@@ -233,64 +255,69 @@ LaTeX Font Info:    ... okay on input line 106.
 \MPnumerator=\count123
 \makeMPintoPDFobject=\count124
 \everyMPtoPDFconversion=\toks22
-) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\epstop
+df-base.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\infw
+arerr.sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\grfext
+.sty"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\kvde
+finekeys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\ltxc
+mds.sty"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)))
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\kvopti
+ons.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\kvse
+tkeys.sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\etex
+cmds.sty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\iflu
+atex.sty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-
-
-! Package ifpdf Error: Name clash, \ifpdf is already defined.
-
-See the ifpdf package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.173     }
-           %
-Incompatible versions of \ifpdf can cause problems,
-therefore package loading is aborted.
-
-)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
-
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
-))
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
 (etexcmds)             that some package has redefined \expanded.
 (etexcmds)             In the latter case, load this package earlier.
 )))
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\pdft
+excmds.sty"
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\ifpd
+f.sty"
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
 Package grfext Info: Graphics extension search list:
 (grfext)             [.pdf,.jpg,.tif,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
-
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 121.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -298,7 +325,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    Try loading font information for T1+cmtt on input line 121.
 
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+("C:\Users\Giuseppe\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 Underfull \hbox (badness 10000) in paragraph at lines 134--139
@@ -313,7 +340,7 @@ a. Questo ac-cade quando
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+{C:/Users/Giuseppe/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
 Underfull \hbox (badness 10000) in paragraph at lines 165--191
 
  []
@@ -378,26 +405,30 @@ Underfull \hbox (badness 10000) in paragraph at lines 259--264
 
 LaTeX Warning: Citation `natMol09' on page 7 undefined on input line 294.
 
-No file DocumentoParziale.bbl.
-[7] (./DocumentoParziale.aux) ) 
+(DocumentoParziale.bbl
+
+LaTeX Warning: Empty `thebibliography' environment on input line 3.
+
+) [7] (DocumentoParziale.aux) ) 
 Here is how much of TeX's memory you used:
- 2716 strings out of 494910
- 35755 string characters out of 6179836
- 106561 words of memory out of 5000000
- 5979 multiletter control sequences out of 15000+600000
- 9653 words of font info for 23 fonts, out of 8000000 for 9000
- 36 hyphenation exceptions out of 8191
- 37i,6n,23p,636b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/giova/.texmf-var/fonts/pk/ljfour/jknappe
-n/ec/ectt1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx10
-00.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> <
-/home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova
-/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/giova/.texmf-var
-/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk>
-Output written on DocumentoParziale.pdf (7 pages, 75587 bytes).
+ 2771 strings out of 493305
+ 38847 string characters out of 3128497
+ 111994 words of memory out of 3000000
+ 6283 multiletter control sequences out of 15000+200000
+ 9653 words of font info for 23 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 41i,6n,25p,638b,219s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\Giuseppe\AppData\Local\MiKTeX\2.9\fon
+ts\pk\ljfour\jknappen\ec\dpi600\ectt1000.pk> <C:\Users\Giuseppe\AppData\Local\M
+iKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1000.pk> <C:\Users\Giuseppe\Ap
+pData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk> <C:\User
+s\Giuseppe\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0900
+.pk> <C:\Users\Giuseppe\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dp
+i600\ecrm1000.pk> <C:\Users\Giuseppe\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\j
+knappen\ec\dpi600\ecbx1440.pk>
+Output written on DocumentoParziale.pdf (7 pages, 87551 bytes).
 PDF statistics:
- 269 PDF objects out of 1000 (max. 8388607)
- 42 compressed objects within 1 object stream
+ 267 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
