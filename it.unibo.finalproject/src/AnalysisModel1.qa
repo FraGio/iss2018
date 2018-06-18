@@ -12,9 +12,9 @@ QActor humanoperator context ctxAnalysisModel {
 	 
 	Plan sendMessage[
 		delay 1000;
-		forward appl -m cmd : cmd (10);
+		forward appl -m cmd : cmd (1);
 		delay 3000;
-		forward appl -m cmd : cmd (20)
+		forward appl -m cmd : cmd (2)
 	]    
   	transition stopAfter 3600000   	//1h 
   	finally repeatPlan  
@@ -35,8 +35,24 @@ QActor appl context ctxAnalysisModel {
    	]     
 }
 
-QActor robot context ctxAnalysisModel {      
-	Plan init normal [  println("robot START")   ]  
+QActor realrobot context ctxAnalysisModel {  
+	    
+	Plan init normal [  println("realrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  printCmd
+  	finally repeatPlan 
+  	
+  	Plan printCmd resumeLastPlan [  
+  		onEvent robotCmd : robotCmd(X) -> println(X)    
+   	]
+} 
+
+
+QActor virtualrobot context ctxAnalysisModel {      
+	Plan init normal [  println("virtualrobot START")   ]  
 	switchTo waitForEvents 
 	 
 	Plan waitForEvents[ ]    

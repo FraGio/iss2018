@@ -7,8 +7,10 @@ qactor( humanoperator , ctxanalysismodel, "it.unibo.humanoperator.MsgHandle_Huma
 qactor( humanoperator_ctrl , ctxanalysismodel, "it.unibo.humanoperator.Humanoperator"   ). %%control-driven 
 qactor( appl , ctxanalysismodel, "it.unibo.appl.MsgHandle_Appl"   ). %%store msgs 
 qactor( appl_ctrl , ctxanalysismodel, "it.unibo.appl.Appl"   ). %%control-driven 
-qactor( robot , ctxanalysismodel, "it.unibo.robot.MsgHandle_Robot"   ). %%store msgs 
-qactor( robot_ctrl , ctxanalysismodel, "it.unibo.robot.Robot"   ). %%control-driven 
+qactor( realrobot , ctxanalysismodel, "it.unibo.realrobot.MsgHandle_Realrobot"   ). %%store msgs 
+qactor( realrobot_ctrl , ctxanalysismodel, "it.unibo.realrobot.Realrobot"   ). %%control-driven 
+qactor( virtualrobot , ctxanalysismodel, "it.unibo.virtualrobot.MsgHandle_Virtualrobot"   ). %%store msgs 
+qactor( virtualrobot_ctrl , ctxanalysismodel, "it.unibo.virtualrobot.Virtualrobot"   ). %%control-driven 
 %%% -------------------------------------------
 %%% -------------------------------------------
 
