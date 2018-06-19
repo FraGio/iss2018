@@ -1,6 +1,6 @@
 
 *.bin
 
-it\.unibo\.finalproject/\.classpath
+it\.unibo\.finalproject/
 
 *.lock
