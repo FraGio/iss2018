@@ -1,0 +1,75 @@
+System reqAnalysisModel2
+
+Event robotCmd     : robotCmd ( X )
+
+// X può essere START o STOP
+Dispatch cmd : cmd ( X )
+
+Context ctxAnalysisModel2 ip [ host="localhost"   port=8010 ] 
+
+QActor humanoperator2 context ctxAnalysisModel2 {     
+	 Plan init normal [  println("humanOperator START")   ]  
+	 switchTo sendMessage 
+	 
+	Plan sendMessage[
+		delay 1000;
+		forward appl2 -m cmd : cmd ("START");
+		delay 5000;
+		forward appl2 -m cmd : cmd ("STOP")
+	]    
+  	transition stopAfter 3600000   	//1h 
+  	finally repeatPlan  
+}
+
+QActor appl2 context ctxAnalysisModel2 {  
+	   
+	Plan init normal [  println("appl START")   ]  
+	switchTo waitForMessages
+	 
+	Plan waitForMessages[]    
+  	transition stopAfter 3600000   	//1h 
+  		whenMsg cmd   -> handleMsg  	  
+ 	finally repeatPlan
+ 	
+ 	Plan handleMsg resumeLastPlan[ 
+ 		  
+    	onMsg cmd : cmd( X )    ->  emit robotCmd : robotCmd ( X )	    
+   	]     
+}
+
+QActor realrobot2 context ctxAnalysisModel2 {  
+	    
+	Plan init normal [  println("realrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	 //corrisponde allo stato di inattività
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  handleEvent
+  	finally repeatPlan 
+  	
+  	//si occupa di gestire l'evento opportunamente
+  	Plan handleEvent resumeLastPlan [  
+  		onEvent robotCmd : robotCmd("START") -> println("robot fisico avviato") ;
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot fisico arrestato")    
+   	]
+   	
+} 
+
+
+QActor virtualrobot2 context ctxAnalysisModel2 {      
+	Plan init normal [  println("virtualrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	 //corrisponde allo stato di inattività
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  handleEvent
+  	finally repeatPlan 
+  	
+  	//si occupa di gestire l'evento opportunamente
+  	Plan handleEvent resumeLastPlan [  
+  		onEvent robotCmd : robotCmd("START") -> println("robot virtuale avviato") ;
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot virtuale arrestato")    
+   	]
+} 

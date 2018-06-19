@@ -1,0 +1,4 @@
+plan(1,init, sentence(true,move(print("led mock START")),'','' ))
+plan(1,handleCmd, sentence(true,eventswitch(ctrlEvent, Â»ctrlEvent( leds,led1,on), move(print("LED fisico: on")) ),'','' ))
+plan(2,handleCmd, sentence(true,eventswitch(ctrlEvent, Â»ctrlEvent( leds,led1,off), move(print("LED fisico: off")) ),'','' ))
+plan(3,handleCmd, sentence(true,move(resumeplan),'','' ))

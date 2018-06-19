@@ -1,0 +1,161 @@
+System reqAnalysisModel
+
+Event robotCmd     : robotCmd ( X )
+
+//evento con X che rappresenta i valori in °C
+Event temperatureData     : temperatureData ( X )
+
+//CMD depends on CATEG/NAME
+Event ctrlEvent   : ctrlEvent( CATEG, NAME, CMD )
+
+// X può essere START o STOP
+Dispatch cmd : cmd ( X )
+
+Context ctxAnalysisModel3 ip [ host="localhost"   port=8010 ] 
+
+QActor humanoperator3 context ctxAnalysisModel3 {   
+	  
+	 Plan init normal [  println("humanOperator START")   ]  
+	 switchTo sendMessage 
+	 
+	Plan sendMessage[
+		
+		delay 1000;
+		forward applicationlogiccmd -m cmd : cmd ("START");
+		delay 10000;
+		forward applicationlogiccmd -m cmd : cmd ("STOP")
+	]    
+  	transition stopAfter 3600000   	//1h 
+  	finally repeatPlan  
+}
+
+
+//logica che gestisce i comandi utente provenienti da GUI
+QActor applicationlogiccmd context ctxAnalysisModel3 {  
+	   
+	Plan init normal [  
+		println("applicationlogic1 START")
+	]  
+	switchTo waitForMessages
+	 
+	Plan waitForMessages[
+	]    
+  	transition stopAfter 3600000   	//1h 
+  		whenMsg cmd   -> handleMsg  
+ 	finally repeatPlan
+ 	
+ 	Plan handleMsg resumeLastPlan[   
+    	onMsg cmd : cmd( X )    ->  emit robotCmd : robotCmd ( X )	    
+   	]     
+}
+
+//logica che gestisce i dati in ingresso (da sensore temperatura)
+QActor applicationlogictemp context ctxAnalysisModel3 {  
+	Rules{
+		limitTemperatureValue( 28 ).
+		changedModelAction( temperature, tempAmbiente, V  ):-
+				limitTemperatureValue( MAX ), 
+	 		    eval( ge, V , MAX ), !,   
+	 		    changeModelItem( leds, ledFisico, on).		     
+	 	changedModelAction( temperature, t1, V  ):-	 
+	 			changeModelItem( leds, ledFisico, off).
+	 			
+	 	//The change of a Led model must activate an actuator (working as an event listener)
+	 	changedModelAction( leds, ledFisico, V  ):-
+	 			emitevent( ctrlEvent, ctrlEvent( leds, ledFisico, V) ).
+	}
+	   
+	Plan init normal [
+		demo consult("./resourceModel.pl");  //contains the models and related rules  
+		println("applicationlogic2 START")
+	]  
+	switchTo waitForEvents
+	 
+	Plan waitForEvents[
+	]    
+  	transition stopAfter 3600000   	//1h 
+  		whenEvent temperatureData   -> handleEvent
+ 	finally repeatPlan
+ 	
+ 	Plan handleEvent resumeLastPlan[   
+    	onEvent temperatureData : temperatureData( V )    -> 
+    		demo changeModelItem( temperature, tempAmbiente, V )
+   	]     
+}
+
+/*
+ * ACTUATOR
+ * manage a Led working with a SPECIFIC Led implementation
+ */
+QActor ledmock context ctxAnalysisModel3{
+	Plan init normal [         
+   		println( "led mock START"  )
+   	]
+   	switchTo waitForCommand     
+  
+    Plan waitForCommand[  ]  
+    transition stopAfter 100000 
+     	whenEvent ctrlEvent -> handleCmd
+    finally repeatPlan	
+   	 
+	Plan handleCmd resumeLastPlan[
+  		//printCurrentEvent;
+		onEvent ctrlEvent : ctrlEvent(leds, ledFisico, on)  -> println("LED fisico: on");
+		onEvent ctrlEvent : ctrlEvent(leds, ledFisico, off) -> println("LED fisico: off")
+	]
+}
+
+//emette dati di temperatura
+QActor temperatureemitter context ctxAnalysisModel3 {  
+	   
+	Plan init normal [  println("temperature emitter START")   ]  
+	switchTo sendTemperatureData
+	 
+	Plan sendTemperatureData[
+		delay 1000;
+		emit temperatureData : temperatureData(35);
+		delay 2000;
+		emit temperatureData : temperatureData(25);
+		delay 2000;
+		emit temperatureData : temperatureData(40);
+		delay 2000;
+		emit temperatureData : temperatureData(22)
+	]
+}
+
+QActor realrobot3 context ctxAnalysisModel3 {  
+	    
+	Plan init normal [  println("realrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	 //corrisponde allo stato di inattività
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  handleEvent
+  	finally repeatPlan 
+  	
+  	//si occupa di gestire l'evento opportunamente
+  	Plan handleEvent resumeLastPlan [  
+  		onEvent robotCmd : robotCmd("START") -> println("robot fisico avviato") ;
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot fisico arrestato")    
+   	]
+   	
+} 
+
+
+QActor virtualrobot3 context ctxAnalysisModel3 {      
+	Plan init normal [  println("virtualrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	 //corrisponde allo stato di inattività
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  handleEvent
+  	finally repeatPlan 
+  	
+  	//si occupa di gestire l'evento opportunamente
+  	Plan handleEvent resumeLastPlan [  
+  		onEvent robotCmd : robotCmd("START") -> println("robot virtuale avviato") ;
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot virtuale arrestato")    
+   	]
+} 

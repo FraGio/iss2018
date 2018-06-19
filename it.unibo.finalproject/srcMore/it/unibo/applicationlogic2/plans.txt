@@ -1,0 +1,3 @@
+plan(1,init, sentence(true,move(print("applicationlogic2 START")),'','' ))
+plan(1,handleEvent, sentence(true,eventswitch(temperatureData, Â»temperatureData( V), not here StateMoveNormal ),'','' ))
+plan(2,handleEvent, sentence(true,move(resumeplan),'','' ))

@@ -2,3 +2,4 @@ Chiedere al prof:
 - l'utente può dare solo comandi start e stop al robot tramite GUI?
 - si può riutilizzare la web GUI del prof?
 - "R-Obstacle": cosa si intende per "evitare" un ostacolo?
+- Requisito temperatura: il robot è dotato di sensore o riceve in input i dati sulla temperatura? La temperatura considerata è quella dell'ambiente circostante?
