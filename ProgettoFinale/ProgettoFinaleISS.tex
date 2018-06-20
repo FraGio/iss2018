@@ -213,7 +213,7 @@ In base ai requisiti dati emergono alcune considerazioni o dubbi da chiarire.\\
 \begin{itemize}
 \item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il reqeuisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
 Per pulire il pavimento della stanza il robot deve coprire tutta l'area del pavimento.\\
-Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. I sonar sono sonar di tipo Me Ultrasonic Sensor V3.0.\\
+Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere.\\
 \item R-Start: questo requisito implica che nel sistema è presente una seconda entità, rappresentata dal PC/smartphone, che si affianca all'entità robot. Deduciamo anche che il robot possa assumere uno stato di "working" dove esso sta lavorando.\\
 La GUI deve essere messa a disposizione dal PC/smartphone, e sarà utilizzata dall'utente autorizzato per inviare comandi di START.\\
 L'utente autorizzato è un utente il quale ha effettuato un accesso sul sistema utilizzando le credenziali a sua disposizione.\\ Questo comporta la presenza di un sistema di autenticazione utenti che dovrà essere presente in una delle due entità in gioco o su sistemi esterni.\\
@@ -222,9 +222,8 @@ Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere i
 Il requisito non specifica come il robot ottiene il valore di temperatura, in quanto il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi la temperatura deve essere fornita o reperita da un'entità/servizio esterno/a.\\
 \item R-TimeOk: il robot può lavorare soltanto all'interno di un intervallo temporale (nell'arco delle 24 ore di una giornata) prefissato. L'intervallo non è specificato nei requisiti ed è quindi a nostra discrezione.\\
 Non è specificato come il robot tiene traccia dell'andamento temporale, ma il committente ha dichiarato che il robot può avere un proprio clock interno.\\
-\item R-BlinkLed: apprendiamo che possa essere presente un robot reale (TODO: DEFINIRE FORMALMENTE ROBOT REALE COME MBOT???), e, se è così, che il robot reale sia dotato di un led ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. Il led deve lampeggiare qualora il robot si trovi in stato di "working".
-\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp di marca Philips, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). La Led Hue Lamp in questione deve lampeggiare fintanto che il robot virtuale è in stato di working. Apprendiamo che possa essere presente un robot virtuale, e, se è così, che durante la sua attività, debba lampeggiare la Led Hue Lamp presente nella stanza.\\
-Il robot virtuale è definito come il robot rappresentato nell'applicazione sviluppata tramite javascript da Soffritti.\\ 
+\item R-BlinkLed: apprendiamo che possa essere presente un robot reale, e, se è così, che il robot reale sia dotato di un led, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. Il led deve lampeggiare qualora il robot si trovi in stato di "working".
+\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp. La Led Hue Lamp in questione deve lampeggiare fintanto che il robot virtuale è in stato di working. Apprendiamo che possa essere presente un robot virtuale, e, se è così, che durante la sua attività, debba lampeggiare la Led Hue Lamp presente nella stanza.\\ 
 Non è specificato chi comandi la lampada.\\
 \item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, dove l'ostacolo fisso è definito come persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio (ad esempio mobilio). Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.\\
 \item R-AvoidMobile: ci dice che nella stanza possono essere presenti ostacoli mobili, dove l'ostacolo mobile è definito come persona o entità che occupa l'area di azione del robot e che si muove liberamente. Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare, o sospendere, la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.\\
@@ -247,6 +246,15 @@ In base ai due requisiti appena analizzati deduciamo che il robot debba poter pe
 La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
 A noi interessa modellare in maniera formale.
 
+Formalizziamo le entità espresse nei requisiti:
+\begin{itemize}
+\item Robot fisico: robot di tipo Mbot, dotato di ruote per il movimento
+\item Robot virtuale:
+\item Led: led di marca ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce.
+\item Led Hue Lamp: lampada Philips Led Hue Lamp, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone).
+\item Sonar: i sonar sono sonar di tipo Me Ultrasonic Sensor V3.0.
+\item 
+\end{itemize}
 
 
 \subsection{Test plan}
