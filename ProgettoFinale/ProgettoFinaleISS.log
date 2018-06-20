@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  20 JUN 2018 17:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  20 JUN 2018 20:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -372,24 +372,34 @@ Underfull \hbox (badness 10000) in paragraph at lines 223--225
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 226--229
+Underfull \hbox (badness 10000) in paragraph at lines 225--226
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--228
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 228--229
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--232
+Underfull \hbox (badness 10000) in paragraph at lines 229--231
 
  []
 
 
-Overfull \hbox (17.29163pt too wide) in paragraph at lines 232--233
+Overfull \hbox (17.29163pt too wide) in paragraph at lines 231--232
 \T1/cmr/m/n/10 in-viare an-che co-mandi di STOP, i quali dovranno avere come ef
 -fetto l'interruzione
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 231--232
+
  []
 
 
@@ -408,31 +418,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 234--235
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 235--236
-
- []
-
-
-Underfull \vbox (badness 5726) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5]
-Underfull \hbox (badness 10000) in paragraph at lines 268--273
+Underfull \hbox (badness 10000) in paragraph at lines 276--281
 
  []
 
 [6] [7]
 
-LaTeX Warning: Citation `natMol09' on page 8 undefined on input line 307.
+LaTeX Warning: Citation `natMol09' on page 8 undefined on input line 315.
 
 (./ProgettoFinaleISS.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [8] (./ProgettoFinaleISS.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+) [8] (./ProgettoFinaleISS.aux) ) 
 Here is how much of TeX's memory you used:
  2718 strings out of 494910
  35799 string characters out of 6179836
@@ -441,15 +442,15 @@ Here is how much of TeX's memory you used:
  9653 words of font info for 23 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  37i,6n,23p,686b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> </home/g
-iova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/giova/.texmf
--var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/giova/.texmf-var/fonts/
-pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/j
-knappen/ec/ecrm1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/
-ecbx1440.600pk>
-Output written on ProgettoFinaleISS.pdf (8 pages, 80726 bytes).
+ </home/giova/.texmf-var/fonts/pk/ljfour/jknap
+pen/ec/ectt1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx
+1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk>
+ </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/gio
+va/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/giova/.texmf-v
+ar/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk>
+Output written on ProgettoFinaleISS.pdf (8 pages, 80560 bytes).
 PDF statistics:
- 280 PDF objects out of 1000 (max. 8388607)
+ 279 PDF objects out of 1000 (max. 8388607)
  44 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)

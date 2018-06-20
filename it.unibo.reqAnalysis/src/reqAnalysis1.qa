@@ -50,6 +50,8 @@ QActor robot context ctxRobot {
 	//copre requisito R-TempOk e R-TempKo
 	Rules{
 		
+		//NB: la temperatura deve essere fornita al robot 
+		//o reperita da esso tramite un'entità/servizio esterno/a.
 		limitTemperatureValue( 25 ).
 		changedModelAction( temperature, tempAmbiente, V  ):-
 				limitTemperatureValue( MAX ), 
