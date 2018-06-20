@@ -1,3 +1,5 @@
 
 *.bin
 *.lock
+
+it\.unibo\.reqAnalysis/\.classpath
