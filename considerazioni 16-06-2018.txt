@@ -1,4 +1,4 @@
-1) valutare abstraction gap tra linguaggio di modellazione a nostra disposizione e le cose esprimibili con quel linguaggio. Il tutto in relazione ai requisiti del problema.
+﻿1) valutare abstraction gap tra linguaggio di modellazione a nostra disposizione e le cose esprimibili con quel linguaggio. Il tutto in relazione ai requisiti del problema.
 
 2)analisi requisiti (* = chiedere al prof.):
     - *R-end: da chiarire cosa si intende per "lavoro finito" del robot
@@ -18,3 +18,9 @@
     - Dare definizione di "real robot" e di "virtual robot"
     - "R-AvoidFix" e "R-AvoidMobile": dare definizione di ostacoli fissi e mobili
     - *"R-Obstacle": chiarire come il robot riconosce gli ostacoli (virtuali e fisici). Capire anche cosa si intende "ostacolo impossibile da evitare"
+
+Chiedere al prof:
+- l'utente può dare solo comandi start e stop al robot tramite GUI?
+- si può riutilizzare la web GUI del prof?
+- "R-Obstacle": cosa si intende per "evitare" un ostacolo?
+- Requisito temperatura: il robot è dotato di sensore o riceve in input i dati sulla temperatura? La temperatura considerata è quella dell'ambiente circostante?

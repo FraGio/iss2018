@@ -142,6 +142,8 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 %-------------------------------------------------
 %  User static rules about applicationlogiccmd
 %------------------------------------------------- 
+limitTemperatureValue( 28).
+changedModelAction( temperature,tempAmbiente,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite"),emitevent( robotCmd,robotCmd( "START")).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

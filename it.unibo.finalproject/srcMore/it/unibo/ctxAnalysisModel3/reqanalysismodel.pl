@@ -9,8 +9,6 @@ qactor( applicationlogiccmd , ctxanalysismodel3, "it.unibo.applicationlogiccmd.M
 qactor( applicationlogiccmd_ctrl , ctxanalysismodel3, "it.unibo.applicationlogiccmd.Applicationlogiccmd"   ). %%control-driven 
 qactor( applicationlogictemp , ctxanalysismodel3, "it.unibo.applicationlogictemp.MsgHandle_Applicationlogictemp"   ). %%store msgs 
 qactor( applicationlogictemp_ctrl , ctxanalysismodel3, "it.unibo.applicationlogictemp.Applicationlogictemp"   ). %%control-driven 
-qactor( ledmock , ctxanalysismodel3, "it.unibo.ledmock.MsgHandle_Ledmock"   ). %%store msgs 
-qactor( ledmock_ctrl , ctxanalysismodel3, "it.unibo.ledmock.Ledmock"   ). %%control-driven 
 qactor( temperatureemitter , ctxanalysismodel3, "it.unibo.temperatureemitter.MsgHandle_Temperatureemitter"   ). %%store msgs 
 qactor( temperatureemitter_ctrl , ctxanalysismodel3, "it.unibo.temperatureemitter.Temperatureemitter"   ). %%control-driven 
 qactor( realrobot3 , ctxanalysismodel3, "it.unibo.realrobot3.MsgHandle_Realrobot3"   ). %%store msgs 

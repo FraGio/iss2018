@@ -93,7 +93,7 @@ public abstract class AbstractTemperatureemitter extends QActor {
 	    	aar = delayReactive(1000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "sendTemperatureData";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "temperatureData(X)","temperatureData(35)", guardVars ).toString();
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "temperatureData(X)","temperatureData(20)", guardVars ).toString();
 	    	emit( "temperatureData", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(2000,"" , "");
@@ -105,7 +105,7 @@ public abstract class AbstractTemperatureemitter extends QActor {
 	    	aar = delayReactive(2000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "sendTemperatureData";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "temperatureData(X)","temperatureData(40)", guardVars ).toString();
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "temperatureData(X)","temperatureData(20)", guardVars ).toString();
 	    	emit( "temperatureData", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(2000,"" , "");
