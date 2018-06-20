@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor applicationlogiccmd
+% WorldTheory.pl for actor humanoperator5
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qatuapplicationlogiccmd).	%%old version (deprecated)
-actorobj(qatuapplicationlogiccmd).	%% see registerActorInProlog18 in QActor
+myname(qatuhumanoperator5).	%%old version (deprecated)
+actorobj(qatuhumanoperator5).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -81,7 +81,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor applicationlogiccmd
+%  TuProlo FEATURES of the QActor humanoperator5
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -89,7 +89,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of applicationlogiccmd" ). 
+%% :- stdout <- println(  "hello from world theory of humanoperator5" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -140,10 +140,8 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about applicationlogiccmd
+%  User static rules about humanoperator5
 %------------------------------------------------- 
-limitTemperatureValue( 28).
-changedModelAction( temperature,tempAmbiente,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite"),emitevent( robotCmd,robotCmd( "START")).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

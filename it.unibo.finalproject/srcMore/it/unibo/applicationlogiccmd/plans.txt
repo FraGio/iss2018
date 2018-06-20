@@ -1,3 +1,4 @@
-plan(1,init, sentence(true,move(print("applicationlogic1 START")),'','' ))
-plan(1,handleMsg, sentence(true,msgswitch(cmd, cmd( X) , raise( robotCmd , robotCmd( X) )')),'','' ))
+plan(1,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
+plan(2,init, sentence(true,move(print("applicationlogic1 START")),'','' ))
+plan(1,handleMsg, sentence(true,msgswitch(cmd, cmd( X) , move(solve,changeModelItem( robotStatus,status,X),0,"")),'','' ))
 plan(2,handleMsg, sentence(true,move(resumeplan),'','' ))

@@ -1,0 +1,214 @@
+System reqAnalysisModel
+
+Event robotCmd     : robotCmd ( X )
+
+//evento con X che rappresenta i valori in °C
+Event temperatureData     : temperatureData ( X )
+//evento con T che rappresenta un'ora (0->23)
+Event timeData   : timeData( T )
+
+
+//CMD depends on CATEG/NAME
+Event ctrlEvent   : ctrlEvent( CATEG, NAME, CMD )
+
+// X puo' essere START o STOP
+Dispatch cmd : cmd ( X )
+
+Context ctxAnalysisModel5 ip [ host="localhost"   port=8010 ] 
+
+QActor humanoperator5 context ctxAnalysisModel5 {   
+	  
+	 Plan init normal [  println("humanOperator START")   ]  
+	 switchTo sendMessage 
+	 
+	Plan sendMessage[
+		
+		delay 1000;
+		forward applicationlogiccmd -m cmd : cmd ("START")
+		
+	]    
+  	transition stopAfter 3600000   	//1h 
+  	finally repeatPlan  
+}
+
+//logica che gestisce i comandi utente provenienti da GUI
+QActor applicationlogiccmd context ctxAnalysisModel5 {  
+	Rules{
+		limitTemperatureValue( 28 ).
+		
+		changedModelAction( temperature, tempAmbiente, V  ):-
+				limitTemperatureValue( MAX ), 
+	 		    eval( ge, V , MAX ), !,   
+	 		    output('temperatura sopra limite'),
+	 			emitevent( robotCmd,  robotCmd ('START') ).
+	 			
+	}
+	
+	Plan init normal [  
+		demo consult("./resourceModel.pl");  //contains the models and related rules  
+		println("applicationlogic1 START")
+	]  
+	switchTo waitForMessages
+	 
+	Plan waitForMessages[
+	]    
+  	transition stopAfter 3600000   	//1h 
+  		whenMsg cmd   -> handleMsg  
+ 	finally repeatPlan
+ 	
+ 	Plan handleMsg resumeLastPlan[   
+    	onMsg cmd : cmd( X )    ->  
+    		demo changeModelItem( robotStatus, status, X )   
+   	]     
+}
+
+//logica che gestisce i dati in ingresso (da sensore temperatura)
+QActor applicationlogictemp context ctxAnalysisModel5 {  
+	Rules{
+		limitTemperatureValue( 28 ).
+		
+		changedModelAction( temperature, tempAmbiente, V  ):-
+				limitTemperatureValue( MAX ), 
+	 		    eval( ge, V , MAX ), !,   
+	 		    output('temperatura sopra limite'),
+	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			
+	}
+	   
+	Plan init normal [
+		demo consult("./resourceModel.pl");  //contains the models and related rules  
+		println("applicationlogicTemp START")
+	]  
+	switchTo waitForEvents
+	 
+	Plan waitForEvents[
+	]    
+  	transition stopAfter 3600000   	//1h 
+  		whenEvent temperatureData   -> handleEvent
+ 	finally repeatPlan
+ 	
+ 	Plan handleEvent resumeLastPlan[   
+    	onEvent temperatureData : temperatureData( V )    -> 
+    		demo changeModelItem( temperature, tempAmbiente, V )
+    		
+   	]     
+}
+
+//logica che gestisce i dati in ingresso (da temporizzatore)
+QActor applicationlogictime context ctxAnalysisModel5 {  
+	Rules{
+		limitTimeValueMin( 7 ).
+		limitTimeValueMax( 10 ).
+		
+	 	changedModelAction(timee,timeData, T ):-
+	 	 		//output(T),
+				limitTimeValueMin( MIN ),
+				limitTimeValueMax( MAX ),
+	 		    eval( le, T , MIN ), !,  
+	 		    output('tempo fuori range'),
+	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			
+	 	changedModelAction(timee,timeData, T ):-
+	 			//output(T),
+				limitTimeValueMin( MIN ),
+				limitTimeValueMax( MAX ),
+	 		    eval( ge, T , MAX ), !,   
+	 		    output('tempo fuori range'),
+	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			
+	}
+	   
+	Plan init normal [
+		demo consult("./resourceModel.pl");  //contains the models and related rules  
+		println("applicationlogicTime START")
+	]  
+	switchTo waitForEvents
+	 
+	Plan waitForEvents[
+	]    
+  	transition stopAfter 3600000   	//1h 
+  		whenEvent timeData   -> handleEvent
+ 	finally repeatPlan
+ 	
+ 	Plan handleEvent resumeLastPlan[   
+    	onEvent timeData : timeData( T )    -> 
+    		demo changeModelItem( timee, timeData, T )
+    	
+    		
+   	]     
+}
+
+
+//emette dati di temperatura
+QActor temperatureemitter context ctxAnalysisModel5 {  
+	   
+	Plan init normal [  println("temperature emitter START")   ]  
+	switchTo sendTemperatureData
+	 
+	Plan sendTemperatureData[
+		delay 1000;
+		emit temperatureData : temperatureData(20);
+		delay 2000;
+		emit temperatureData : temperatureData(25);
+		delay 2000;
+		emit temperatureData : temperatureData(20);
+		delay 2000;
+		emit temperatureData : temperatureData(22)
+	]
+}
+
+//emette dati temporali
+QActor timemitter context ctxAnalysisModel5 {  
+	   
+	Plan init normal [  println("time emitter START")   ]  
+	switchTo sendTimeData
+	 
+	Plan sendTimeData[
+		delay 2000;
+		emit timeData : timeData(8);
+		delay 2000;
+		emit timeData : timeData(9);
+		delay 2000;
+		emit timeData : timeData(10);
+		delay 2000;
+		emit timeData : timeData(11);
+		delay 2000
+	]
+}
+
+QActor realrobot5 context ctxAnalysisModel5 {  
+	    
+	Plan init normal [  println("realrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	 //corrisponde allo stato di inattività
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  handleEvent
+  	finally repeatPlan 
+  	
+  	//si occupa di gestire l'evento opportunamente
+  	Plan handleEvent resumeLastPlan [  
+  		onEvent robotCmd : robotCmd("START") -> println("robot fisico avviato") ;
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot fisico arrestato")  
+   	]
+   	
+} 
+
+
+QActor virtualrobot5 context ctxAnalysisModel5 {      
+	Plan init normal [  println("virtualrobot START")   ]  
+	switchTo waitForEvents 
+	 
+	 //corrisponde allo stato di inattività
+	Plan waitForEvents[ ]    
+  	transition stopAfter 3600000   	//1h     
+ 		whenEvent robotCmd       ->  handleEvent
+  	finally repeatPlan 
+  	
+  	//si occupa di gestire l'evento opportunamente
+  	Plan handleEvent resumeLastPlan [  
+  		onEvent robotCmd : robotCmd("START") -> println("robot virtuale avviato") ;
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot virtuale arrestato")    
+   	]
+} 
