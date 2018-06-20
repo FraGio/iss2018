@@ -208,25 +208,30 @@ Other requirements:\\
 %===========================================================================
 \section{Requirement analysis}
 \labelsec{ReqAnalysis}
-Durante la fase di analisi dei requisiti, svolta dall'analista dei requisiti, si analizzano dettagliatamente questi ultimi, forniti dal cliente, al fine di esplicitarli in maniera non formale, ovvero in linguaggio naturale. Il tutto viene fatto al fine di avere un quadro chiaro dei requisiti ricevuti.
 
-In base ai requisiti forniti dal committente sappiamo che il nostro sistema lavorerà con l'obiettivo di controllare due tipi di robot diversi, uno fisico ed uno virtuale.\\
-Ci sarà un utente autorizzato, dotato quindi di credenziali valide, che accederà al nostro sistema e, tramite un'interfaccia grafica, avvierà o arresterà il robot.\\
-Sono richeste le accensioni di due tipi di led/lampade a seconda dei casi (robot reale vs robot virtuale).\\
-Nell'ambiente nel quale il robot lavora saranno presenti anche ostacoli di diversa natura, ossia ostacoli fissi e mobili, i quali dovranno essere opportunamente evitati.\\
-Ci sono vincoli su temperatura e su intervallo temporale, in base ai quali si determina se è possibile iniziare o meno l'attività del robot.\\
-Infine l'operato del robot può essere interrotto in qualsiasi momento se si verificano particolari condizioni, come il comando di stop eseguito dall'utente, il valore di temperatura che eccede una certa soglia, il superamento dell'intervallo temporale consentito di lavoro o un ostacolo insuperabile. Il robot può anche terminare in maniera "naturale" quando completa la propria attività.\\
-
-%===========================================================================
-\subsection{Use cases}
-\labelssec{UseCases}
-
-\subsection{Scenarios}
-\labelssec{Scenarios}
-
-\subsection{(Domain)model}
-La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
-Nel caso non formale si descrivono le entità in gioco, mediante linguaggio naturale, in termini di struttura, interazione e comportamento.
+In base ai requisiti dati emergono alcune considerazioni o dubbi da chiarire.\\
+\begin{itemize}
+\item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il reqeuisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
+Per pulire il pavimento della stanza il robot deve coprire tutta l'area del pavimento.\\
+Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. I sonar sono sonar di tipo Me Ultrasonic Sensor V3.0.
+\item R-Start: questo requisito implica che nel sistema è presente una seconda entità, rappresentata dal PC/smartphone, che si affianca all'entità robot. Deduciamo anche che il robot possa assumere uno stato di "working" dove esso sta lavorando.\\
+La GUI deve essere messa a disposizione dal PC/smartphone, e sarà utilizzata dall'utente autorizzato per inviare comandi di START. Questo comporta la presenza di un sistema di autenticazione utenti che dovrà essere presente in una delle due entità in gioco o su sistemi esterni.\\
+Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere il robot e cambiarne lo stato.
+\item R-TempOk: ci dà un vincolo sulla temperature massima della città tollerata dal robot, sotto la quale può lavorare. Il valore di soglia, basandoci anche sull'interrogazione del committente, è a nostra discrezione.\\
+Il requisito non specifica come il robot ottiene il valore di temperatura, in quanto il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi la temperatura deve essere fornita o reperita da un'entità/servizio esterno/a.
+\item R-TimeOk: il robot può lavorare soltanto all'interno di un intervallo temporale (nell'arco delle 24 ore di una giornata) prefissato. L'intervallo non è specificato nei requisiti ed è quindi a nostra discrezione.\\
+Non è specificato come il robot tiene traccia dell'andamento temporale, ma il committente ha dichiarato che il robot può avere un proprio clock interno.
+\item R-BlinkLed: apprendiamo che possa essere presente un robot reale (TODO: DEFINIRE FORMALMENTE ROBOT REALE COME MBOT???), e, se è così, che il robot reale sia dotato di un led ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. Il led deve lampeggiare qualora il robot si trovi in stato di "working".
+\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp di marca Philips, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). La Led Hue Lamp in questione deve lampeggiare fintanto che il robot virtuale è in stato di working. Apprendiamo che possa essere presente un robot virtuale, e, se è così, che durante la sua attività, debba lampeggiare la Led Hue Lamp presente nella stanza. Non è specificato chi comandi la lampada.
+\item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, dove l'ostacolo fisso è definito come persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio (ad esempio mobilio). Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.
+\item R-AvoidMobile: ci dice che nella stanza possono essere presenti ostacoli mobili, dove l'ostacolo mobile è definito come persona o entità che occupa l'area di azione del robot e che si muove liberamente. Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare, o sospendere, la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.\\
+In base ai due requisiti appena analizzati deduciamo che il robot debba poter percepire ostacoli esterni, non è espresso come.
+\item R-Stop: apprendiamo che tramite la GUI fornita, l'utente autorizzato possa inviare anche comandi di STOP, i quali dovranno avere come effetto l'interruzione dell'attività del robot.
+\item R-TempKo: da questo requisito deduciamo che sia necessario fornire al robot informazioni sulle variazioni di temperatura, in modo che, superata una certa soglia, l'attività del robot si interrompa. Valgono le considerazioni fatte per l'R-TempOk sul modo in cui reperisce i dati di temperatura.
+\item R-TimeKo: apprendiamo che, se il valore temporale supera il valore massimo dell'intervallo di lavoro consentito, il robot deve cessare la sua attività. Valgono le considerazioni fatte per R-TimeOk sui valori dell'intervallo.
+\item R-Obstacle: ci dice che è possibile che sia presente un ostacolo inevitabile, cioè un entità posizionata nell'area di lavoro che si frappone tra il robot e il sonar finale e impedisce, tramite qualsiasi movimento possibile al robot, di raggiungere il sonar finale. Di conseguenza, in questa condizione, il robot deve arrestarsi.
+\item R-End: Come si capisce che il robot ha raggiunto il sonar? In base R-FloorClean sappiamo che è il sonar finale a rilevare la presenza del robot, quindi, una volta che il robot ha raggiunto il sonar finale deve arrestarsi
+\end{itemize}
 
 Entità in gioco nel sistema:\\
 \begin{itemize}
@@ -249,6 +254,19 @@ su server esterni ad esso. \\
 \item Ostacolo fisso: persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio
 \item Ostacolo mobile: persona o entità che occupa l'area di azione del robot e che si muove liberamente
 \end{itemize}
+
+%===========================================================================
+\subsection{Use cases}
+\labelssec{UseCases}
+
+\subsection{Scenarios}
+\labelssec{Scenarios}
+
+\subsection{(Domain)model}
+La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
+A noi interessa modellare in maniera formale.
+
+
 
 \subsection{Test plan}
 
