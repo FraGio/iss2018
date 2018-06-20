@@ -5,6 +5,7 @@ resourceModel.pl
 */
 model( type(actuator, leds),      name(ledFisico), value(off) ).
 model( type(sensor, temperature), name(tempAmbiente),   value(25)  ).
+model( type(timer, timee), name(timeData),   value(8)  ).
 
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-
 		model( type(TYPE, CATEG), name(NAME), value(VALUE) ).

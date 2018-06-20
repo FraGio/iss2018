@@ -1,5 +1,3 @@
 plan(1,init, sentence(true,move(print("humanOperator START")),'','' ))
 plan(1,sendMessage, sentence(true,delay( 1000) ,'','' ))
 plan(2,sendMessage, sentence(true,forward(applicationlogiccmd, cmd,cmd( "START")),'','' ))
-plan(3,sendMessage, sentence(true,delay( 10000) ,'','' ))
-plan(4,sendMessage, sentence(true,forward(applicationlogiccmd, cmd,cmd( "STOP")),'','' ))
