@@ -21,9 +21,9 @@ QActor humanoperator3 context ctxAnalysisModel3 {
 	Plan sendMessage[
 		
 		delay 1000;
-		forward applicationlogiccmd -m cmd : cmd ("START")
-//		delay 10000;
-//		forward applicationlogiccmd -m cmd : cmd ("STOP")
+		forward applicationlogiccmd -m cmd : cmd ("START");
+		delay 10000;
+		forward applicationlogiccmd -m cmd : cmd ("STOP")
 	]    
   	transition stopAfter 3600000   	//1h 
   	finally repeatPlan  
@@ -56,19 +56,13 @@ QActor applicationlogictemp context ctxAnalysisModel3 {
 		changedModelAction( temperature, tempAmbiente, V  ):-
 				limitTemperatureValue( MAX ), 
 	 		    eval( ge, V , MAX ), !,   
-	 		    output('temperatura sopra limite'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
-	 		    
-//	 		    changeModelItem( leds, ledFisico, on).		
-	 		         
-//	 	changedModelAction( temperature, t1, V  ):-	 
-//	 			changeModelItem( leds, ledFisico, off).
+	 		    changeModelItem( leds, ledFisico, on).		     
+	 	changedModelAction( temperature, t1, V  ):-	 
+	 			changeModelItem( leds, ledFisico, off).
 	 			
-	 	//l'evento verrà recepito dal robot in esecuzione 
-//	 	changedModelAction( leds, ledFisico, V  ):-
-//	 			output('temperatura sopra limite'),
-//	 			emitevent( robotCmd,  robotCmd ('STOP') ).
-	 			
+	 	//The change of a Led model must activate an actuator (working as an event listener)
+	 	changedModelAction( leds, ledFisico, V  ):-
+	 			emitevent( ctrlEvent, ctrlEvent( leds, ledFisico, V) ).
 	}
 	   
 	Plan init normal [
@@ -89,27 +83,27 @@ QActor applicationlogictemp context ctxAnalysisModel3 {
    	]     
 }
 
-///*
-// * ACTUATOR
-// * manage a Led working with a SPECIFIC Led implementation
-// */
-//QActor ledmock context ctxAnalysisModel3{
-//	Plan init normal [         
-//   		println( "led mock START"  )
-//   	]
-//   	switchTo waitForCommand     
-//  
-//    Plan waitForCommand[  ]  
-//    transition stopAfter 100000 
-//     	whenEvent ctrlEvent -> handleCmd
-//    finally repeatPlan	
-//   	 
-//	Plan handleCmd resumeLastPlan[
-//  		//printCurrentEvent;
-//		onEvent ctrlEvent : ctrlEvent(leds, ledFisico, on)  -> println("LED fisico: on");
-//		onEvent ctrlEvent : ctrlEvent(leds, ledFisico, off) -> println("LED fisico: off")
-//	]
-//}
+/*
+ * ACTUATOR
+ * manage a Led working with a SPECIFIC Led implementation
+ */
+QActor ledmock context ctxAnalysisModel3{
+	Plan init normal [         
+   		println( "led mock START"  )
+   	]
+   	switchTo waitForCommand     
+  
+    Plan waitForCommand[  ]  
+    transition stopAfter 100000 
+     	whenEvent ctrlEvent -> handleCmd
+    finally repeatPlan	
+   	 
+	Plan handleCmd resumeLastPlan[
+  		//printCurrentEvent;
+		onEvent ctrlEvent : ctrlEvent(leds, ledFisico, on)  -> println("LED fisico: on");
+		onEvent ctrlEvent : ctrlEvent(leds, ledFisico, off) -> println("LED fisico: off")
+	]
+}
 
 //emette dati di temperatura
 QActor temperatureemitter context ctxAnalysisModel3 {  
@@ -119,7 +113,7 @@ QActor temperatureemitter context ctxAnalysisModel3 {
 	 
 	Plan sendTemperatureData[
 		delay 1000;
-		emit temperatureData : temperatureData(20);
+		emit temperatureData : temperatureData(35);
 		delay 2000;
 		emit temperatureData : temperatureData(25);
 		delay 2000;
@@ -143,7 +137,7 @@ QActor realrobot3 context ctxAnalysisModel3 {
   	//si occupa di gestire l'evento opportunamente
   	Plan handleEvent resumeLastPlan [  
   		onEvent robotCmd : robotCmd("START") -> println("robot fisico avviato") ;
-  		onEvent robotCmd : robotCmd("STOP") -> println("robot fisico arrestato")  
+  		onEvent robotCmd : robotCmd("STOP") -> println("robot fisico arrestato")    
    	]
    	
 } 

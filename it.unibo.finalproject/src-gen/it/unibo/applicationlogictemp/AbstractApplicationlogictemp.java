@@ -78,7 +78,7 @@ public abstract class AbstractApplicationlogictemp extends QActor {
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	    	temporaryStr = "\"applicationlogicTemp START\"";
+	    	temporaryStr = "\"applicationlogic2 START\"";
 	    	println( temporaryStr );  
 	    	//switchTo waitForEvents
 	        switchToPlanAsNextState(pr, myselfName, "applicationlogictemp_"+myselfName, 

@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
-plan(2,init, sentence(true,move(print("applicationlogicTemp START")),'','' ))
-plan(1,handleEvent, sentence(true,eventswitch(temperatureData, »temperatureData( V), move(solve,changeModelItem( temperature,tempAmbiente,V),0,"") ),'','' ))
+plan(2,init, sentence(true,move(print("applicationlogic2 START")),'','' ))
+plan(1,handleEvent, sentence(true,eventswitch(temperatureData, Â»temperatureData( V), move(solve,changeModelItem( temperature,tempAmbiente,V),0,"") ),'','' ))
 plan(2,handleEvent, sentence(true,move(resumeplan),'','' ))

@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
 plan(2,init, sentence(true,move(print("applicationlogicTime START")),'','' ))
-plan(1,handleEvent, sentence(true,eventswitch(timeData, »timeData( T), move(solve,changeModelItem( timee,timeData,T),0,"") ),'','' ))
+plan(1,handleEvent, sentence(true,eventswitch(timeData, Â»timeData( T), move(solve,changeModelItem( timee,timeData,T),0,"") ),'','' ))
 plan(2,handleEvent, sentence(true,move(resumeplan),'','' ))

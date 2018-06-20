@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(print("virtualrobot START")),'','' ))
-plan(1,handleEvent, sentence(true,eventswitch(robotCmd, »robotCmd( "START"), move(print("robot virtuale avviato")) ),'','' ))
-plan(2,handleEvent, sentence(true,eventswitch(robotCmd, »robotCmd( "STOP"), move(print("robot virtuale arrestato")) ),'','' ))
+plan(1,handleEvent, sentence(true,eventswitch(robotCmd, Â»robotCmd( "START"), move(print("robot virtuale avviato")) ),'','' ))
+plan(2,handleEvent, sentence(true,eventswitch(robotCmd, Â»robotCmd( "STOP"), move(print("robot virtuale arrestato")) ),'','' ))
 plan(3,handleEvent, sentence(true,move(resumeplan),'','' ))

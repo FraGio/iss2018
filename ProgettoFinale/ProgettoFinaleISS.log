@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  20 JUN 2018 17:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  20 JUN 2018 17:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -351,39 +351,84 @@ Underfull \hbox (badness 10000) in paragraph at lines 212--213
 
  []
 
-[3]
-Underfull \vbox (badness 1102) has occurred while \output is active []
 
- [4]
-Overfull \hbox (17.29163pt too wide) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 214--217
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 217--221
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--223
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 223--225
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--229
+
+ []
+
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 230--232
+
+ []
+
+
+Overfull \hbox (17.29163pt too wide) in paragraph at lines 232--233
 \T1/cmr/m/n/10 in-viare an-che co-mandi di STOP, i quali dovranno avere come ef
 -fetto l'interruzione
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 236--237
-
- []
-
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 244--253
+Underfull \hbox (badness 10000) in paragraph at lines 232--233
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 287--292
+Underfull \hbox (badness 10000) in paragraph at lines 233--234
 
  []
 
-[6] [7] [8]
 
-LaTeX Warning: Citation `natMol09' on page 9 undefined on input line 326.
+Underfull \hbox (badness 10000) in paragraph at lines 234--235
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 235--236
+
+ []
+
+
+Underfull \vbox (badness 5726) has occurred while \output is active []
+
+ [5]
+Underfull \hbox (badness 10000) in paragraph at lines 268--273
+
+ []
+
+[6] [7]
+
+LaTeX Warning: Citation `natMol09' on page 8 undefined on input line 307.
 
 (./ProgettoFinaleISS.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [9] (./ProgettoFinaleISS.aux)
+) [8] (./ProgettoFinaleISS.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
@@ -402,10 +447,10 @@ iova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/giova/.texmf
 pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/j
 knappen/ec/ecrm1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/
 ecbx1440.600pk>
-Output written on ProgettoFinaleISS.pdf (9 pages, 81943 bytes).
+Output written on ProgettoFinaleISS.pdf (8 pages, 80726 bytes).
 PDF statistics:
- 282 PDF objects out of 1000 (max. 8388607)
- 46 compressed objects within 1 object stream
+ 280 PDF objects out of 1000 (max. 8388607)
+ 44 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

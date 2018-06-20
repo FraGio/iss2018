@@ -213,46 +213,27 @@ In base ai requisiti dati emergono alcune considerazioni o dubbi da chiarire.\\
 \begin{itemize}
 \item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il reqeuisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
 Per pulire il pavimento della stanza il robot deve coprire tutta l'area del pavimento.\\
-Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. I sonar sono sonar di tipo Me Ultrasonic Sensor V3.0.
+Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. I sonar sono sonar di tipo Me Ultrasonic Sensor V3.0.\\
 \item R-Start: questo requisito implica che nel sistema è presente una seconda entità, rappresentata dal PC/smartphone, che si affianca all'entità robot. Deduciamo anche che il robot possa assumere uno stato di "working" dove esso sta lavorando.\\
-La GUI deve essere messa a disposizione dal PC/smartphone, e sarà utilizzata dall'utente autorizzato per inviare comandi di START. Questo comporta la presenza di un sistema di autenticazione utenti che dovrà essere presente in una delle due entità in gioco o su sistemi esterni.\\
-Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere il robot e cambiarne lo stato.
+La GUI deve essere messa a disposizione dal PC/smartphone, e sarà utilizzata dall'utente autorizzato per inviare comandi di START.\\
+L'utente autorizzato è un utente il quale ha effettuato un accesso sul sistema utilizzando le credenziali a sua disposizione.\\ Questo comporta la presenza di un sistema di autenticazione utenti che dovrà essere presente in una delle due entità in gioco o su sistemi esterni.\\
+Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere il robot e cambiarne lo stato.\\
 \item R-TempOk: ci dà un vincolo sulla temperature massima della città tollerata dal robot, sotto la quale può lavorare. Il valore di soglia, basandoci anche sull'interrogazione del committente, è a nostra discrezione.\\
-Il requisito non specifica come il robot ottiene il valore di temperatura, in quanto il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi la temperatura deve essere fornita o reperita da un'entità/servizio esterno/a.
+Il requisito non specifica come il robot ottiene il valore di temperatura, in quanto il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi la temperatura deve essere fornita o reperita da un'entità/servizio esterno/a.\\
 \item R-TimeOk: il robot può lavorare soltanto all'interno di un intervallo temporale (nell'arco delle 24 ore di una giornata) prefissato. L'intervallo non è specificato nei requisiti ed è quindi a nostra discrezione.\\
-Non è specificato come il robot tiene traccia dell'andamento temporale, ma il committente ha dichiarato che il robot può avere un proprio clock interno.
+Non è specificato come il robot tiene traccia dell'andamento temporale, ma il committente ha dichiarato che il robot può avere un proprio clock interno.\\
 \item R-BlinkLed: apprendiamo che possa essere presente un robot reale (TODO: DEFINIRE FORMALMENTE ROBOT REALE COME MBOT???), e, se è così, che il robot reale sia dotato di un led ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. Il led deve lampeggiare qualora il robot si trovi in stato di "working".
-\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp di marca Philips, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). La Led Hue Lamp in questione deve lampeggiare fintanto che il robot virtuale è in stato di working. Apprendiamo che possa essere presente un robot virtuale, e, se è così, che durante la sua attività, debba lampeggiare la Led Hue Lamp presente nella stanza. Non è specificato chi comandi la lampada.
-\item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, dove l'ostacolo fisso è definito come persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio (ad esempio mobilio). Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.
+\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp di marca Philips, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). La Led Hue Lamp in questione deve lampeggiare fintanto che il robot virtuale è in stato di working. Apprendiamo che possa essere presente un robot virtuale, e, se è così, che durante la sua attività, debba lampeggiare la Led Hue Lamp presente nella stanza.\\
+Il robot virtuale è definito come il robot rappresentato nell'applicazione sviluppata tramite javascript da Soffritti.\\ 
+Non è specificato chi comandi la lampada.\\
+\item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, dove l'ostacolo fisso è definito come persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio (ad esempio mobilio). Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.\\
 \item R-AvoidMobile: ci dice che nella stanza possono essere presenti ostacoli mobili, dove l'ostacolo mobile è definito come persona o entità che occupa l'area di azione del robot e che si muove liberamente. Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), dove per "evitare" intendiamo il modificare, o sospendere, la propria traiettoria in modo da non entrare in contatto con esso pur continuando la sua attività.\\
-In base ai due requisiti appena analizzati deduciamo che il robot debba poter percepire ostacoli esterni, non è espresso come.
-\item R-Stop: apprendiamo che tramite la GUI fornita, l'utente autorizzato possa inviare anche comandi di STOP, i quali dovranno avere come effetto l'interruzione dell'attività del robot.
-\item R-TempKo: da questo requisito deduciamo che sia necessario fornire al robot informazioni sulle variazioni di temperatura, in modo che, superata una certa soglia, l'attività del robot si interrompa. Valgono le considerazioni fatte per l'R-TempOk sul modo in cui reperisce i dati di temperatura.
-\item R-TimeKo: apprendiamo che, se il valore temporale supera il valore massimo dell'intervallo di lavoro consentito, il robot deve cessare la sua attività. Valgono le considerazioni fatte per R-TimeOk sui valori dell'intervallo.
-\item R-Obstacle: ci dice che è possibile che sia presente un ostacolo inevitabile, cioè un entità posizionata nell'area di lavoro che si frappone tra il robot e il sonar finale e impedisce, tramite qualsiasi movimento possibile al robot, di raggiungere il sonar finale. Di conseguenza, in questa condizione, il robot deve arrestarsi.
+In base ai due requisiti appena analizzati deduciamo che il robot debba poter percepire ostacoli esterni, non è espresso come.\\
+\item R-Stop: apprendiamo che tramite la GUI fornita, l'utente autorizzato possa inviare anche comandi di STOP, i quali dovranno avere come effetto l'interruzione dell'attività del robot.\\
+\item R-TempKo: da questo requisito deduciamo che sia necessario fornire al robot informazioni sulle variazioni di temperatura, in modo che, superata una certa soglia, l'attività del robot si interrompa. Valgono le considerazioni fatte per l'R-TempOk sul modo in cui reperisce i dati di temperatura.\\
+\item R-TimeKo: apprendiamo che, se il valore temporale supera il valore massimo dell'intervallo di lavoro consentito, il robot deve cessare la sua attività. Valgono le considerazioni fatte per R-TimeOk sui valori dell'intervallo.\\
+\item R-Obstacle: ci dice che è possibile che sia presente un ostacolo inevitabile, cioè un entità posizionata nell'area di lavoro che si frappone tra il robot e il sonar finale e impedisce, tramite qualsiasi movimento possibile al robot, di raggiungere il sonar finale. Di conseguenza, in questa condizione, il robot deve arrestarsi.\\
 \item R-End: Come si capisce che il robot ha raggiunto il sonar? In base R-FloorClean sappiamo che è il sonar finale a rilevare la presenza del robot, quindi, una volta che il robot ha raggiunto il sonar finale deve arrestarsi
-\end{itemize}
-
-Entità in gioco nel sistema:\\
-\begin{itemize}
-\item Sonar: strumento in grado di percepire movimenti nel proprio raggio di azione, fondato sull'emissione di ultrasuoni e sulla captazione dei relativi echi
-\item Authenticated User: utente umano il quale ha effettuato un accesso sul sistema utilizzando le credenziali a sua disposizione
-\item Human GUI Interface: interfaccia grafica che permette all'utente autenticato di interagire con il robot in maniera funzionale
-\item Conventional PC: computer dotato di un qualsiasi sistema operativo ???
-\item Led: dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce
-\item Led Hue Lamp: lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone)
-\item Real Robot: dispositivo fisico in grado di ricevere comandi e di muoversi di con-
-seguenza; E' dotato di ruote che gli permettono il movimento nello spazio fisico,
-di motori che azionano le ruote stesse, di un sonar posto nella parte anteriore
-e di un led visibile. \\
-E' composto, a basso livello, da un edge, cioè un elemento
-che rende "smart" e connesso a internet il robot stesso. E' dotato anche di un
-middleware, architettura computazionale che rende possibile l'interazione tra il
-basso livello e il cloud. La parte cloud non è presente fisicamente sul robot ma
-su server esterni ad esso. \\
-\item Virtual Robot: dispositivo che emula un robot fisico ma che si muove in un ambiente virtuale
-\item Ostacolo fisso: persona o entità che occupa l'area di azione del robot e che non effettua alcun movimento proprio
-\item Ostacolo mobile: persona o entità che occupa l'area di azione del robot e che si muove liberamente
 \end{itemize}
 
 %===========================================================================
