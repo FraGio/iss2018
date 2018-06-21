@@ -80,6 +80,7 @@ public abstract class AbstractRobot extends QActor {
 	    	solveGoal( parg ); //sept2017
 	    	temporaryStr = "\"robot START\"";
 	    	println( temporaryStr );  
+	     connectToMqttServer("tcp://localhost");
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "robot_"+myselfName, 
 	              "waitForCmd",false, false, null); 
@@ -137,7 +138,9 @@ public abstract class AbstractRobot extends QActor {
 	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
 	    			if( parg != null ) println( parg );
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"robot_"+myselfName,false,false);
+	    	//switchTo waitForCmd
+	        switchToPlanAsNextState(pr, myselfName, "robot_"+myselfName, 
+	              "waitForCmd",false, false, null); 
 	    }catch(Exception e_robotCmdHandler){  
 	    	 println( getName() + " plan=robotCmdHandler WARNING:" + e_robotCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

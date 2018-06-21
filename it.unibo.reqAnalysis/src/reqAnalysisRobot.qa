@@ -1,51 +1,15 @@
 System reqAnalysisModel
 
-//evento che rappresenta il comand (START o STOP) inviato da GUI a robot
-Event userCmd : userCmd ( X )
 
 //evento che rappresenta il comand (START o STOP) inviato da GUI a robot
 Event robotCmd : robotCmd ( X )
 
-//contesto PC
-Context ctxPC ip [ host="localhost"   port=8010 ]
+pubSubServer "tcp://localhost"
 
 //contesto Robot
-Context ctxRobot ip [ host="localhost"   port=8011 ]
+Context ctxRobot ip [ host="localhost"   port=8021 ]
 
-
-QActor pc context ctxPC {   
-	  
-	Plan init normal [  println("pc START")   ]  
-	switchTo authenticateUser 
-	 
-	//Autenticazione utente offerta dalla GUI -> R-Start e R-Stop
-	Plan authenticateUser[
-		println("Autenticazione OK")
-	]
-	switchTo waitForUserCommand
-  	
-  	//attesa di comandi START/STOP -> R-Start e R-Stop
-	Plan waitForUserCommand [
-		println("Attesa di comandi utente da GUI")
-	]    
-  	transition stopAfter 3600000   	//1h 
-  		whenEvent userCmd -> userCmdHandler
-  	finally repeatPlan  
-  	
-  	//gestione dei comandi ricevuti da GUI  -> R-Start e R-Stop
-	Plan userCmdHandler [
-		onEvent userCmd : userCmd ("START") -> {
-			println("Eseguito comando START");
-			emit robotCmd : robotCmd("START")
-		};
-		onEvent userCmd : userCmd ("STOP") -> {
-			println("Eseguito comando STOP");
-			emit robotCmd : robotCmd("STOP")
-		}
-	] 
-}
-
-QActor robot context ctxRobot {   
+QActor robot context ctxRobot -pubsub {   
 	
 	//copre requisito R-TempOk e R-TempKo
 	Rules{
@@ -81,4 +45,5 @@ QActor robot context ctxRobot {
 		onEvent robotCmd : robotCmd ("START") -> println("Robot attività avviata");
 		onEvent robotCmd : robotCmd ("STOP") -> println("Robot attività arrestata")
 	] 
+	switchTo waitForCmd
 }

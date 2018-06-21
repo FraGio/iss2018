@@ -75,6 +75,9 @@ public abstract class AbstractApplicationlogiccmd extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
 	    	temporaryStr = "\"applicationlogic1 START\"";
 	    	println( temporaryStr );  
 	    	//switchTo waitForMessages
@@ -112,11 +115,23 @@ public abstract class AbstractApplicationlogiccmd extends QActor {
 	    	if( currentMessage != null && currentMessage.msgId().equals("cmd") && 
 	    		pengine.unify(curT, Term.createTerm("cmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentMessage.msgContent() ) )){ 
-	    		String parg="robotCmd(X)";
-	    		/* RaiseEvent */
-	    		parg = updateVars(Term.createTerm("cmd(X)"),  Term.createTerm("cmd(X)"), 
-	    			    		  					Term.createTerm(currentMessage.msgContent()), parg);
-	    		if( parg != null ) emit( "robotCmd", parg );
+	    		String parg="changeModelItem(robotStatus,status,X)";
+	    		/* PHead */
+	    		parg =  updateVars( Term.createTerm("cmd(X)"), 
+	    		                    Term.createTerm("cmd(X)"), 
+	    			    		  	Term.createTerm(currentMessage.msgContent()), parg);
+	    			if( parg != null ) {
+	    			    aar = QActorUtils.solveGoal(this,myCtx,pengine,parg,"",outEnvView,86400000);
+	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    				if( aar.getInterrupted() ){
+	    					curPlanInExec   = "handleMsg";
+	    					if( aar.getTimeRemained() <= 0 ) addRule("tout(demo,"+getName()+")");
+	    					if( ! aar.getGoon() ) return ;
+	    				} 			
+	    				if( aar.getResult().equals("failure")){
+	    					if( ! aar.getGoon() ) return ;
+	    				}else if( ! aar.getGoon() ) return ;
+	    			}
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"applicationlogiccmd_"+myselfName,false,true);
 	    }catch(Exception e_handleMsg){  

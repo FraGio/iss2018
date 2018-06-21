@@ -1,0 +1,7 @@
+plan(1,init, sentence(true,move(print("utente START")),'','' ))
+plan(1,simulateClick, sentence(true,delay( 5000) ,'','' ))
+plan(2,simulateClick, sentence(true,move(print("Simulazione comando utente START da GUI")),'','' ))
+plan(3,simulateClick, sentence(true,raise( userCmd , userCmd( "START") )'),'','' ))
+plan(4,simulateClick, sentence(true,delay( 5000) ,'','' ))
+plan(5,simulateClick, sentence(true,move(print("Simulazione comando utente STOP da GUI")),'','' ))
+plan(6,simulateClick, sentence(true,raise( userCmd , userCmd( "STOP") )'),'','' ))
