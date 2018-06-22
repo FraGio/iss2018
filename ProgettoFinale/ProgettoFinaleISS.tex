@@ -268,7 +268,25 @@ La formalizzazione delle entità in gioco è la seguente: (vedi file).
 %===========================================================================
 \section{Problem analysis}
 \labelsec{ProblemAnalysis}
-Scopo dell'analisi del problema è la produzione di un modello formale. Un modello deve rispecchiare gli aspetti essenziali delle risorse al fine di far risaltare ciò che è rilevante per il problema o il dominio applicativo nel quale si colloca il problema stesso. L'analisi è anche la fase che pianifica attività, e prospetta costi e rischi. 
+Nell'analisi del problema si valutano i problemi emersi nella fase precedente e si prospettano pro e contro delle possibili alternative. L'analisi è anche la fase che pianifica attività, e prospetta costi e rischi.
+
+Elenco dei problemi emersi/punti aperti di interesse per il problema:
+\begin{enumerate}
+\item Autenticazione: da chiarire quale tipo di autenticazione usare, dove mantenere le credenziali e chi implementa il servizio di autenticazione (pc, servizio esterno, ...?)
+\item Temperatura: chiarire in che modo il robot si rende conto della temperatura attuale, o della soglia di temperatura superata (fornita dal pc al robot? reperita dal robot tramite un'entità/servizio esterno/a?)
+\item Orario: chiarire cosa si intende per "current clock time". Potrebbe essere il tempo interno al robot (il committente ha dichiarato che il robot possa avere un suo clock interno), o il tempo relativo al fuso orario della città in cui si trova il robot, oppure il tempo relativo alla locazione dell'utilizzatore del robot...
+\item Led: chi comanda il led (robot, altro...)?
+\item Led Hue Lamp: chi comanda la lampada? In che modo?
+\item Ostacoli: discutere cosa si intende per ostacolo fisso e mobile, capire come si indentificano gli ostacoli, capire anche cosa si intende per "evitare" un ostacolo e capire cosa si intende per ostacolo inevitabile.
+\end{enumerate}
+
+Analisi autenticazione:\\
+Per ragioni di costi e semplicita' conviene modellare il metodo di autenticazione come autenticazione tramite username e password. Questo perche' l'utilizzo di sistemi con smart-card o lettori biometrici (retina, impronte digitali) comporta costi aggiuntivi ed elevati, oltre ad aumentare i tempi di sviluppo, rispetto al metodo tramite username e password.\\
+Utilizzando username e password dobbiamo tenere traccia di questi dati. Mantenerli su Pc/smartphone vorrebbe dire più efficienza, poichè si lavora localmente, ma maggiori rischi in quanto il livello di protezione è basso.\\
+Un'alternativa sarebbe mantenere le credenziali sul robot, questo aumenta i tempi di risposta in fase di autenticazione  e il livello di sicurezza è simile al caso precedente. E' quindi una scelta poco conveniente.\\
+Altra possibilità sarebbe quella di appoggiarsi ad un servizio esterno (Google, Facebook, ...) per gestire l'autenticazione utente, questo diminuisce l'efficienza però dà maggiori garanzie dal punto di vista della sicurezza e permette di non dover gestire le credenziali. Scegliere servizi esterni consente anche di evitare l'implementazione di metodi di registrazione, necessaria nei casi descritti in precedenza. \\
+La scelta ricade, quindi, sull'autenticazione (username+password) tramite servizio esterno, in modo da ridurre costi e tempi necessari per l'implementazione di questo aspetto del sistema.
+\end{itemize}
 
 Formalizziamo le entità espresse nei requisiti:
 \begin{itemize}
@@ -286,9 +304,15 @@ Formalizziamo le entità espresse nei requisiti:
 
 %===========================================================================
 \subsection{Logic architecture}
+L'obiettivo è produrre modelli formali. Un modello deve rispecchiare gli aspetti essenziali delle risorse al fine di far risaltare ciò che è rilevante per il problema o il dominio applicativo nel quale si colloca il problema stesso.
+ 
 \subsection{Abstraction gap}
 
 \subsection{Risk analysis}
+Elenchiamo i rischi collegati alle valutazioni fatte in fase di analisi del problema:
+\begin{itemize}
+	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione.
+\end{itemize}
 
 %===========================================================================
 \section{Work plan}
