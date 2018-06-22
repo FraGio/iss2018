@@ -1,0 +1,6 @@
+Permette di acquisire dalla rete by api il tempo:
+https://timezonedb.com/references/list-time-zone
+https://stackoverflow.com/questions/13240530/free-rest-api-to-get-current-time-as-string-timezone-irrelevant
+
+Permette di acquisire dalla rete by api informazione metereologiche 
+https://www.openweathermap.org/api
