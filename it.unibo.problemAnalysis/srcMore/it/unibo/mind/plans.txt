@@ -1,0 +1,5 @@
+plan(1,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
+plan(1,waitForCmd, sentence(true,move(print("Robot in attesa di comandi!")),'','' ))
+plan(1,robotCmdHandler, sentence(true,move(print("Valutazione TEMPERATURA ed ORARIO")),'','' ))
+plan(2,robotCmdHandler, sentence(true,eventswitch(robotCmd, »robotCmd( "START"), not here StateMoveNormal ),'','' ))
+plan(3,robotCmdHandler, sentence(true,eventswitch(robotCmd, »robotCmd( "STOP"), not here StateMoveNormal ),'','' ))

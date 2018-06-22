@@ -7,11 +7,9 @@ Event robotCmd : robotCmd ( X )
 pubSubServer "tcp://localhost"
 
 //contesto Robot
-Context ctxRobot ip [ host="localhost"   port=8021 ]
+Context ctxRobot ip [ host="localhost"   port=8021 ] 
 
-QActor robot context ctxRobot -pubsub {   
-	
-	
+QActor mind context ctxRobot -pubsub {   
 	Rules{
 		//copre requisito R-TempOk e R-TempKo
 		//NB: da requisiti il robot NON ha sonar di temperatura,
@@ -49,14 +47,13 @@ QActor robot context ctxRobot -pubsub {
 	}
 	  
 	Plan init normal [  
-		demo consult("./resourceModel.pl");  //contains the models and related rules 
-		println("robot START")
+		demo consult("./resourceModel.pl")
 	]  
 	switchTo waitForCmd 
 	 
 	//Robot attende comandi
 	Plan waitForCmd[
-		println("Robot in attesa di comandi")
+		println("Robot in attesa di comandi!")
 	]
 	transition stopAfter 3600000   	//1h 
   		whenEvent robotCmd -> robotCmdHandler
@@ -64,6 +61,9 @@ QActor robot context ctxRobot -pubsub {
   	
   	//gestione dei comandi ricevuti da GUI
 	Plan robotCmdHandler [
+		
+		
+		
 		//coperto il requisito R-TimeOk, R-TimeKo, R-TempOk, R-TempKo
 		println("Valutazione TEMPERATURA ed ORARIO");
 		
@@ -103,6 +103,20 @@ QActor robot context ctxRobot -pubsub {
 	switchTo waitForCmd
 }
 
+QActor robot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Accensione del robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	//Robot attende comandi
+	Plan waitForCmd[
+		println("Robot in attesa di comandi!")
+	]
+	transition stopAfter 3600000   	//1h 
+  		//whenEvent robotCmd -> ...
+  	finally repeatPlan 
+}
 
 QActor sonar2 context ctxRobot -pubsub {   
 	  

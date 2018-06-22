@@ -1,4 +1,4 @@
-System reqAnalysisModel
+System problemAnalysisModel
 
 //evento che rappresenta il command (START/STOP) inviato da GUI
 Event userCmd : userCmd ( X )
@@ -9,8 +9,7 @@ Event robotCmd : robotCmd ( X )
 pubSubServer "tcp://localhost"
 
 //contesto PC
-Context ctxPC ip [ host="localhost"   port=8020 ]
-
+Context ctxPC ip [ host="localhost"   port=8020 ] 
 
 QActor pc context ctxPC -pubsub {   
 	  
@@ -19,6 +18,9 @@ QActor pc context ctxPC -pubsub {
 	 
 	//Autenticazione utente offerta dalla GUI -> R-Start e R-Stop
 	Plan authenticateUser[
+		
+		//in base all'analisi del problema, la fase di autenticazione sarà 
+		//affidata ad un servizio esterno (e.g. google, facebook ...)
 		println("Autenticazione OK")
 	]
 	switchTo waitForUserCommand
