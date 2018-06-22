@@ -171,7 +171,7 @@ The robot works under the following conditions:\\
 \begin{enumerate}
 \item R-Start : an authorized user has sent a START command by using a human GUI interface ( console ) running
 on a conventional PC or on a smart device ( Android ).
-\item R-TempOk : the value temperature of the city is not higher than a prexed value (e.g. 25 degrees Celsius).
+\item R-TempOk : the value temperature of the city is not higher than a prefixed value (e.g. 25 degrees Celsius).
 \item R-TimeOk : the current clock time is within a given interval (e.g. between 7 a.m and 10 a.m )
 \end{enumerate}
 While the robot is working: \\
@@ -243,23 +243,24 @@ Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere i
 %===========================================================================
 \subsection{Use cases}
 \labelssec{UseCases}
+I possibili casi d'uso sono 3: \\
+\begin{enumerate}
+\item Autenticazione: l'utente accede al sistema utilizzando un determinato metodo di autenticazione.
+\item Avvio: l'utente, tramite l'interfaccia grafica (GUI) messa a disposizione da PC o Smartphone avvia l'attività del robot.
+\item Arresto: l'utente, tramite l'interfaccia grafica (GUI) messa a disposizione da PC o Smartphone arresta l'attività del robot. 	
+\end{enumerate}
 
 \subsection{Scenarios}
 \labelssec{Scenarios}
+Un possibile scenario è dato dall'utente(e.g casalinga) che, tramite smartphone, è in grado di avviare/arrestare il robot collocato in una posizione all'interno della stanza, qualora le condizioni per l'avvio siano rispettate.
 
 \subsection{(Domain)model}
 La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
 Aspetto chiave dellla modellazione è catturare gli aspetti essenziali delle entità considerate in maniera non ambigua, in più vogliamo che che possa essere eseguito su una macchina. Il modello deve catturare struttura, interazione e comportamento.\\
 A noi interessa modellare in maniera formale.\\
 
-Formalizziamo le entità espresse nei requisiti:
-\begin{itemize}
-\item Robot fisico: robot di tipo Mbot, dotato di ruote per il movimento
-\item Robot virtuale: robot scritto in linguaggio Javascript da Soffritti
-\item Led: led di marca ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce.
-\item Led Hue Lamp: lampada Philips Led Hue Lamp, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone).
-\item Sonar: sonar di tipo Me Ultrasonic Sensor V3.0.
-\end{itemize}
+La formalizzazione delle entità in gioco è la seguente: (vedi file).
+
 
 
 \subsection{Test plan}
@@ -268,6 +269,20 @@ Formalizziamo le entità espresse nei requisiti:
 \section{Problem analysis}
 \labelsec{ProblemAnalysis}
 Scopo dell'analisi del problema è la produzione di un modello formale. Un modello deve rispecchiare gli aspetti essenziali delle risorse al fine di far risaltare ciò che è rilevante per il problema o il dominio applicativo nel quale si colloca il problema stesso. L'analisi è anche la fase che pianifica attività, e prospetta costi e rischi. 
+
+Formalizziamo le entità espresse nei requisiti:
+\begin{itemize}
+	\item Robot fisico: robot di tipo Mbot, dotato di ruote per il movimento \\
+	(informazioni complete: https://www.makeblock.com/steam-kits/mbot)
+	\item Robot virtuale: robot scritto in linguaggio Javascript da P.Soffritti \\
+	(informazioni complete: https://github.com/PierfrancescoSoffritti/ConfigurableThreejsApp)
+	\item Led: led di marca ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. \\
+	(informazioni complete: https://www.elegoo.com/product/elegoo-electronic-fun-kit-bundle/)
+	\item Led Hue Lamp: lampada Philips Led Hue Lamp, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). \\
+	(informazioni complete: https://www.philips.co.uk/c-m-li/hue)
+	\item Sonar: sonar di tipo Me Ultrasonic Sensor V3.0. \\
+	(informazioni complete: www.makeblock.cc/me-ultrasonic-sensor/ )
+\end{itemize}
 
 %===========================================================================
 \subsection{Logic architecture}
