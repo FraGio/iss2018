@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  22 JUN 2018 16:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  22 JUN 2018 17:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -420,30 +420,30 @@ n-ti-cazione (pc, servizio
  []
 
 
-Overfull \hbox (5.06824pt too wide) in paragraph at lines 283--289
+Overfull \hbox (5.06824pt too wide) in paragraph at lines 284--290
 \T1/cmr/m/n/10 La scelta ri-cade, quindi, sull'autenticazione (user-name+passwo
 rd) tramite servizio
  []
 
-
-Overfull \hbox (17.89844pt too wide) in paragraph at lines 290--296
-\T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
-a-tiva sul pc/smartphone,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 290--296
-
- []
-
 [7]
-Overfull \hbox (17.89844pt too wide) in paragraph at lines 298--307
+Overfull \hbox (17.89844pt too wide) in paragraph at lines 291--297
 \T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
 a-tiva sul pc/smartphone,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 298--307
+Underfull \hbox (badness 10000) in paragraph at lines 291--297
+
+ []
+
+
+Overfull \hbox (17.89844pt too wide) in paragraph at lines 299--308
+\T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
+a-tiva sul pc/smartphone,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 299--308
 
  []
 
@@ -458,38 +458,41 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.316 \item O
+l.317 \item O
              stacoli: discutere cosa si intende per ostacolo fisso e mobile,...
 
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (69.9732pt too wide) in paragraph at lines 329--331
+Underfull \vbox (badness 1102) has occurred while \output is active []
+
+ [9]
+Overfull \hbox (69.9732pt too wide) in paragraph at lines 334--336
 \T1/cmr/m/n/10 (informazioni com-plete: https://github.com/PierfrancescoSoffrit
 ti/ConfigurableThreejsApp) 
  []
 
 
-Overfull \hbox (0.76788pt too wide) in paragraph at lines 331--333
+Overfull \hbox (0.76788pt too wide) in paragraph at lines 336--338
 \T1/cmr/m/n/10 (informazioni com-plete: https://www.elegoo.com/product/elegoo-e
 lectronic-
  []
 
-[9]
-Underfull \hbox (badness 10000) in paragraph at lines 357--362
+
+Underfull \hbox (badness 10000) in paragraph at lines 362--367
 
  []
 
-[10] [11]
+[10] [11] [12]
 
-LaTeX Warning: Citation `natMol09' on page 12 undefined on input line 396.
+LaTeX Warning: Citation `natMol09' on page 13 undefined on input line 401.
 
 (./ProgettoFinaleISS.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [12] (./ProgettoFinaleISS.aux)
+) [13] (./ProgettoFinaleISS.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
@@ -508,10 +511,10 @@ iova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/giova/.texmf
 pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/j
 knappen/ec/ecrm1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/
 ecbx1440.600pk>
-Output written on ProgettoFinaleISS.pdf (12 pages, 90399 bytes).
+Output written on ProgettoFinaleISS.pdf (13 pages, 91190 bytes).
 PDF statistics:
- 293 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 297 PDF objects out of 1000 (max. 8388607)
+ 55 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

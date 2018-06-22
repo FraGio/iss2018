@@ -273,6 +273,7 @@ Nell'analisi del problema si valutano i problemi emersi nella fase precedente e 
 Elenco dei problemi emersi/punti aperti di interesse per il problema:
 \begin{enumerate}
 \item Autenticazione: da chiarire quale tipo di autenticazione usare, dove mantenere le credenziali e chi implementa il servizio di autenticazione (pc, servizio esterno, ...?)
+\item Interfaccia GUI: client e server sulla stessa macchina (pc/smartphone) o separati? Quale metodo di comunicazione tra pc e robot?
 \item Temperatura: chiarire in che modo il robot si rende conto della temperatura attuale, o della soglia di temperatura superata (fornita dal pc al robot? reperita dal robot tramite un'entità/servizio esterno/a?)
 \item Orario: chiarire cosa si intende per "current clock time". Potrebbe essere il tempo interno al robot (il committente ha dichiarato che il robot possa avere un suo clock interno), o il tempo relativo al fuso orario della città in cui si trova il robot, oppure il tempo relativo alla locazione dell'utilizzatore del robot...
 \item Led: chi comanda il led (robot, altro...)?
@@ -316,10 +317,14 @@ Scegliamo di affidare questa responsabilità al robot, questo perchè l'interazion
 \item Ostacoli: discutere cosa si intende per ostacolo fisso e mobile, capire come si indentificano gli ostacoli, capire anche cosa si intende per "evitare" un ostacolo e capire cosa si intende per ostacolo inevitabile.
 
 Analisi ostacoli:\\
-Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza da pulire.\\
+Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza.\\
 In entrambi i casi il robot può e deve evitarli. Cosa intendiamo per "evitare"? Fare in modo che il robot non entri in contatto con l'ostacolo ma riesca a proseguire verso il sonar finale. Per fare questo può aggirare l'ostacolo (nel caso questo sia fisso) oppure attendere per un periodo limitato di tempo prima di proseguire (nel caso esso sia mobile).\\
 Per risolvere il problema di riconoscimento degli ostacoli lungo il cammino, prevediamo che il robot sia dotato di un sensore di movimento, posto sul muso. Alternative potrebbero essere videocamera, sistemi gps, che sono però più costose rispetto all'utilizzo del sensore.\\
 Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce il raggiungimento, al robot, del sensore finale.
+
+Analisi GUI:\\
+Decidiamo di avere un meccanismo a scambio di messaggi tra pc e robot, in modo da disaccoppiare e rendere flessibile il sistema.\\
+In termini di applicazione GUI per pc ci sono due strade per realizzarla: mantenere tutto su pc, oppure avere solo la parte di visualizzazione e comando, con la parte applicativa spostata esternamente. In base alle nostre valutazioni decidiamo di intraprendere la seconda strada, ossia di avere la parte grafica della GUI su pc/smartphone e la parte più applicativa su un server esterno, questo perchè si ha più flessibilità per eventuali modifiche e facilità di implementazione di estensioni future della interfaccia.
 
 
 Formalizziamo le entità espresse nei requisiti:
