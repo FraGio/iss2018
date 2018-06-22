@@ -286,7 +286,41 @@ Utilizzando username e password dobbiamo tenere traccia di questi dati. Mantener
 Un'alternativa sarebbe mantenere le credenziali sul robot, questo aumenta i tempi di risposta in fase di autenticazione  e il livello di sicurezza è simile al caso precedente. E' quindi una scelta poco conveniente.\\
 Altra possibilità sarebbe quella di appoggiarsi ad un servizio esterno (Google, Facebook, ...) per gestire l'autenticazione utente, questo diminuisce l'efficienza però dà maggiori garanzie dal punto di vista della sicurezza e permette di non dover gestire le credenziali. Scegliere servizi esterni consente anche di evitare l'implementazione di metodi di registrazione, necessaria nei casi descritti in precedenza. \\
 La scelta ricade, quindi, sull'autenticazione (username+password) tramite servizio esterno, in modo da ridurre costi e tempi necessari per l'implementazione di questo aspetto del sistema.
-\end{itemize}
+
+Analisi temperatura:\\
+Si mettono in evidenza due strade principali per affrontare il problema di gestire il requisito sulla temperatura: la prima è quella di sfruttare un'interazione a polling, cioè dove il robot prende l'iniziativa e richiede periodicamente il valore di temperatura o al pc/smartphone o ad un servizio esterno (es. servizio web).\\
+Una seconda opzione può essere quella di far arrivare i valori di temperatura al robot in maniera periodica (o di soglia di temperatura superata), quindi il robot dovrà predisporsi per ricevere dati sulla temperatura. L'invio dei dati, in questo caso, sarebbe a carico del pc/smartphone.\\
+Quest'ultimo approccio sposterebbe parte della logica applicativa sul pc/smartphone, in più, in caso di perdita di comunicazione tra GUI e robot, sarebbe compromessa la verifica del valore di temperatura richiesta nei requisiti.\\
+Una strada alternativa, senza utilizzare la rete internet, sarebbe quella di utilizzare un termometro che rilevi in locale la temperatura e che possa comunicarla tramite protocolli a corto raggio (es. bluetooth). Questo comporta un costo aggiuntivo e presuppone che il robot abbia la capacità di comunicare con il protocollo utilizzato dal termometro.\\
+La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni di temperatura da un servizio esterno. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva.\\
+
+
+Analisi tempo:\\
+Sappiamo, dall'analisi dei requisiti, che esiste un "current clock time"; Esso può essere inteso come orologio interno al robot, oppure un orologio esterno come l'orologio del sistema pc/smartphone oppure quello di un servizio esterno.\\
+Utilizzando il clock interno al robot evitiamo di dover effettuare richieste tramite rete internet, e miglioriamo l'efficienza ma bisogna fare attenzione che il clock interno sia allineato con quello della città nel quale il robot opera.
+Nel caso reperissimo i dati dell'orario da un servizio esterno potremmo considerare o il fuso orario del robot o quello del pc/smartphone (sotto l'ipotesi che siano in due ambienti a fuso orario diverso). Nel caso fossero in due ambienti sotto due fusi orari diversi, si considera ragionevole considerare il fuso orario del robot come quello valido. 
+Si mettono in evidenza due strade principali per affrontare il problema di gestire il requisito sul tempo: la prima è quella di sfruttare un'interazione a polling, cioè dove il robot prende l'iniziativa e richiede periodicamente il tempo o al pc/smartphone o ad un servizio esterno (es. servizio web).\\
+Una seconda opzione può essere quella di far arrivare i valori al robot in maniera periodica (o di valori temporali fuori range), quindi il robot dovrà predisporsi per ricevere. L'invio dei dati, in questo caso, sarebbe a carico del pc/smartphone.\\
+Quest'ultimo approccio sposterebbe parte della logica applicativa sul pc/smartphone, in più, in caso di perdita di comunicazione tra GUI e robot, sarebbe compromessa la verifica del valore del tempo richiesta nei requisiti.\\
+La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni sul tempo da un servizio esterno, anche in relazione al fatto che facciamo già polling per reperire la temperatura, quindi si può pensare di rivolgersi ad un servizio metereologico che fornisca entrambe le informazioni. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva. \\
+Nel caso di perdita di comunicazione con il servizio che fornisce orario (e temperatura) si decide che il robot non potrà avviare la propria attività.\\
+
+Analisi led:\\
+Dall'analisi dei requisiti sappiamo che il led è posizionato sul robot, di conseguenza sarà questo a controllare il led affinchè faccia quanto richiesto dai requisiti (blink in caso di attività).
+
+
+Analisi Led Hue Lamp:\\
+Dall'analisi dei requisiti sappiamo che la Led Hue Lamp è presente nella casa dove il robot agisce. Il comando della lampada viene fatto tramite rete, di conseguenza potrebbe essere a carico sia del pc/smartphone che del robot.\\
+Scegliamo di affidare questa responsabilità al robot, questo perchè l'interazione tra esso e la lampada sarà locale, con ovvi vantaggi in termini di efficienza e tempi di risposta.
+
+\item Ostacoli: discutere cosa si intende per ostacolo fisso e mobile, capire come si indentificano gli ostacoli, capire anche cosa si intende per "evitare" un ostacolo e capire cosa si intende per ostacolo inevitabile.
+
+Analisi ostacoli:\\
+Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza da pulire.\\
+In entrambi i casi il robot può e deve evitarli. Cosa intendiamo per "evitare"? Fare in modo che il robot non entri in contatto con l'ostacolo ma riesca a proseguire verso il sonar finale. Per fare questo può aggirare l'ostacolo (nel caso questo sia fisso) oppure attendere per un periodo limitato di tempo prima di proseguire (nel caso esso sia mobile).\\
+Per risolvere il problema di riconoscimento degli ostacoli lungo il cammino, prevediamo che il robot sia dotato di un sensore di movimento, posto sul muso. Alternative potrebbero essere videocamera, sistemi gps, che sono però più costose rispetto all'utilizzo del sensore.\\
+Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce il raggiungimento, al robot, del sensore finale.
+
 
 Formalizziamo le entità espresse nei requisiti:
 \begin{itemize}
@@ -311,7 +345,10 @@ L'obiettivo è produrre modelli formali. Un modello deve rispecchiare gli aspetti
 \subsection{Risk analysis}
 Elenchiamo i rischi collegati alle valutazioni fatte in fase di analisi del problema:
 \begin{itemize}
-	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione.
+	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione tra pc/smarpthone e servizio esterno.
+	\item Temperatura: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio metereologico, oltre che la sola caduta del servizio considerato. 
+	\item Orario: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio "timestamp", oltre che la sola caduta del servizio considerato.
+	\item Led Hue Lamp: la perdita della connessione alla rete da parte del robot, potrebbe impedire l'accensione, o lo spegnimento, della lampada
 \end{itemize}
 
 %===========================================================================

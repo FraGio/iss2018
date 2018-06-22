@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  22 JUN 2018 12:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  22 JUN 2018 16:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -204,29 +204,7 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen126
 \Gin@req@width=\dimen127
 )
-(./ProgettoFinaleISS.aux
-! Undefined control sequence.
-l.2 \babel@aux
-              {english}{}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-! LaTeX Error: Missing \begin{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.2 \babel@aux{e
-                nglish}{}
-You're in trouble here.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-)
+(./ProgettoFinaleISS.aux)
 \openout1 = `ProgettoFinaleISS.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 106.
@@ -241,7 +219,8 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 106.
 LaTeX Font Info:    ... okay on input line 106.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 106.
 LaTeX Font Info:    ... okay on input line 106.
- (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+
+(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count119
 \scratchdimen=\dimen128
@@ -312,9 +291,6 @@ Package grfext Info: Graphics extension search list:
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-[1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 121.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -329,12 +305,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 134--140
 
  []
 
-[2]
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 Underfull \hbox (badness 10000) in paragraph at lines 166--171
 
  []
 
-[3]
+[2]
 Underfull \hbox (badness 10000) in paragraph at lines 177--178
 
  []
@@ -364,7 +342,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 214--217
 
  []
 
-[4]
+[3]
 Underfull \hbox (badness 10000) in paragraph at lines 217--222
 
  []
@@ -379,7 +357,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 225--227
 
  []
 
-[5]
+[4]
 Underfull \hbox (badness 10000) in paragraph at lines 227--228
 
  []
@@ -414,7 +392,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 238--239
 
  []
 
-[6]
+[5]
 Underfull \hbox (badness 10000) in paragraph at lines 239--240
 
  []
@@ -435,7 +413,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 258--261
 
  []
 
-[7]
+[6]
 Overfull \hbox (0.57349pt too wide) in paragraph at lines 275--276
 \T1/cmr/m/n/10 tenere le cre-den-ziali e chi im-ple-menta il servizio di au-t-e
 n-ti-cazione (pc, servizio
@@ -448,60 +426,79 @@ rd) tramite servizio
  []
 
 
-! LaTeX Error: \begin{document} ended by \end{itemize}.
+Overfull \hbox (17.89844pt too wide) in paragraph at lines 290--296
+\T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
+a-tiva sul pc/smartphone,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 290--296
+
+ []
+
+[7]
+Overfull \hbox (17.89844pt too wide) in paragraph at lines 298--307
+\T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
+a-tiva sul pc/smartphone,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 298--307
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [8]
+
+! LaTeX Error: Lonely \item--perhaps a missing list environment.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.289 \end{itemize}
-                   
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
+l.316 \item O
+             stacoli: discutere cosa si intende per ostacolo fisso e mobile,...
 
-! Extra \endgroup.
-<recently read> \endgroup 
-                          
-l.289 \end{itemize}
-                   
-Things are pretty mixed up, but I think the worst is over.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
 
-[8]
-Overfull \hbox (69.9732pt too wide) in paragraph at lines 295--297
+
+Overfull \hbox (69.9732pt too wide) in paragraph at lines 329--331
 \T1/cmr/m/n/10 (informazioni com-plete: https://github.com/PierfrancescoSoffrit
 ti/ConfigurableThreejsApp) 
  []
 
 
-Overfull \hbox (0.76788pt too wide) in paragraph at lines 297--299
+Overfull \hbox (0.76788pt too wide) in paragraph at lines 331--333
 \T1/cmr/m/n/10 (informazioni com-plete: https://www.elegoo.com/product/elegoo-e
 lectronic-
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 320--325
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 357--362
 
  []
 
-[9] [10]
+[10] [11]
 
-LaTeX Warning: Citation `natMol09' on page 11 undefined on input line 359.
+LaTeX Warning: Citation `natMol09' on page 12 undefined on input line 396.
 
 (./ProgettoFinaleISS.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [11] (./ProgettoFinaleISS.aux)
+) [12] (./ProgettoFinaleISS.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 2719 strings out of 494910
- 35804 string characters out of 6179836
+ 2718 strings out of 494910
+ 35799 string characters out of 6179836
  105568 words of memory out of 5000000
- 5980 multiletter control sequences out of 15000+600000
+ 5979 multiletter control sequences out of 15000+600000
  9653 words of font info for 23 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  37i,6n,23p,686b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -509,12 +506,12 @@ Here is how much of TeX's memory you used:
 iova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/giova/.texmf
 -var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/giova/.texmf-var/fonts/
 pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/j
-knappen/ec/ecbx1440.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/
-ecrm1000.600pk>
-Output written on ProgettoFinaleISS.pdf (11 pages, 85386 bytes).
+knappen/ec/ecrm1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/
+ecbx1440.600pk>
+Output written on ProgettoFinaleISS.pdf (12 pages, 90399 bytes).
 PDF statistics:
- 290 PDF objects out of 1000 (max. 8388607)
- 50 compressed objects within 1 object stream
+ 293 PDF objects out of 1000 (max. 8388607)
+ 52 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
