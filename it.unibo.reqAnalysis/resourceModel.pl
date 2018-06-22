@@ -6,6 +6,8 @@ resourceModel.pl
 model( type(actuator, leds),      name(led1), value(off) ).
 model( type(sensor, temperature), name(t1),   value(25)  ).
 
+%%isRealRobot.
+
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-
 		model( type(TYPE, CATEG), name(NAME), value(VALUE) ).
 changeModelItem( CATEG, NAME, VALUE ) :-

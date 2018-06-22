@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor robot
+% WorldTheory.pl for actor sonar2
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qaturobot).	%%old version (deprecated)
-actorobj(qaturobot).	%% see registerActorInProlog18 in QActor
+myname(qatusonar2).	%%old version (deprecated)
+actorobj(qatusonar2).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -81,7 +81,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor robot
+%  TuProlo FEATURES of the QActor sonar2
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -89,7 +89,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of robot" ). 
+%% :- stdout <- println(  "hello from world theory of sonar2" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -140,14 +140,8 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about robot
+%  User static rules about sonar2
 %------------------------------------------------- 
-limitTemperatureValue( 25).
-changedModelAction( temperature,tempAmbiente,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite"),emitevent( robotCmd,robotCmd( "STOP")).
-limitTimeValueMin( 7).
-limitTimeValueMax( 10).
-changedModelAction( timee,timeData,T):-limitTimeValueMin( MIN),limitTimeValueMax( MAX),eval( le,T,MIN), ! ,output( "tempo fuori range"),emitevent( robotCmd,robotCmd( "STOP")).
-changedModelAction( timee,timeData,T):-limitTimeValueMin( MIN),limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "tempo fuori range"),emitevent( robotCmd,robotCmd( "STOP")).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

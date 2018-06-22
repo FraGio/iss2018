@@ -112,18 +112,47 @@ public abstract class AbstractRobot extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("robotCmdHandler",-1);
 	    	String myselfName = "robotCmdHandler";  
+	    	temporaryStr = "\"Valutazione TEMPERATURA ed ORARIO\"";
+	    	println( temporaryStr );  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("robotCmd(\"START\")");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Robot attivit√† avviata\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotCmd(X)"), 
-	    			                    Term.createTerm("robotCmd(\"START\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "\"Robot attivia'† avviata\"";
+	    			println( temporaryStr );  
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
+	    			temporaryStr = "\"Robot fisico: blink led\"";
+	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    			println( temporaryStr );  
+	    			}
+	    			else{ temporaryStr = "\"Robot virtuale: blink Red-Hue-Lamp\"";
+	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    			println( temporaryStr );  
+	    			}//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(5000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = "\"Trovato ostacolo fisso, cerco di evitarlo\"";
+	    			println( temporaryStr );  
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(5000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = "\"Trovato ostacolo mobile, cerco di evitarlo\"";
+	    			println( temporaryStr );  
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(5000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = "\"Trovato ostacolo inevitabile, mi arresto\"";
+	    			println( temporaryStr );  
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(X)","robotCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -131,12 +160,19 @@ public abstract class AbstractRobot extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Robot attivit√† arrestata\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotCmd(X)"), 
-	    			                    Term.createTerm("robotCmd(\"STOP\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "\"Robot attivia'† arrestata\"";
+	    			println( temporaryStr );  
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
+	    			temporaryStr = "\"Robot fisico: STOP blink led\"";
+	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    			println( temporaryStr );  
+	    			}
+	    			else{ temporaryStr = "\"Robot virtuale: STOP blink Red-Hue-Lamp\"";
+	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    			println( temporaryStr );  
+	    			}};//actionseq
 	    	}
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "robot_"+myselfName, 
