@@ -1,0 +1,3 @@
+plan(1,init, sentence(true,move(print("temperatureprovider START")),'','' ))
+plan(1,handleRequestTimeAndTemperature, sentence(true,eventswitch(requestExternalProvider, »requestExternalProvider, not here StateMoveNormal ),'','' ))
+plan(2,handleRequestTimeAndTemperature, sentence(true,move(resumeplan),'','' ))

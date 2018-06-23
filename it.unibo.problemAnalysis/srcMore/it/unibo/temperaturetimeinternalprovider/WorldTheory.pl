@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor mind
+% WorldTheory.pl for actor temperaturetimeinternalprovider
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qatumind).	%%old version (deprecated)
-actorobj(qatumind).	%% see registerActorInProlog18 in QActor
+myname(qatutemperaturetimeinternalprovider).	%%old version (deprecated)
+actorobj(qatutemperaturetimeinternalprovider).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -81,7 +81,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor mind
+%  TuProlo FEATURES of the QActor temperaturetimeinternalprovider
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -89,7 +89,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of mind" ). 
+%% :- stdout <- println(  "hello from world theory of temperaturetimeinternalprovider" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -140,7 +140,7 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about mind
+%  User static rules about temperaturetimeinternalprovider
 %------------------------------------------------- 
 /*
 ------------------------------------------------------------------------

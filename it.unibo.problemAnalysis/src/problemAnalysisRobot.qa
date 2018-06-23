@@ -1,0 +1,125 @@
+System reqAnalysisModel
+
+//evento che rappresenta il comand (START o STOP) inviato da GUI a robot
+Event robotCmd : robotCmd ( X )
+Event requestNotifier : requestNotifier //le richiede entrambe
+Event requestExternalProvider : requestExternalProvider //le richiede entrambe
+Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
+
+Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
+
+pubSubServer "tcp://localhost:1883"
+//pubSubServer "tcp://broker.hivemq.com:1883"
+
+Context ctxRobot ip [ host="localhost"   port=8021 ] -httpserver
+
+QActor mind context ctxRobot -pubsub {   
+	Plan init normal [  
+		demo consult("./resourceModel.pl")
+	]  
+	switchTo waitForData
+	 
+	Plan waitForData[
+		delay 2000;
+		emit requestNotifier : requestNotifier;
+		println("Robot in attesa di dati aggiornati di temperatura e tempo!")
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent temperatureTimeRequest -> robotDataHandler
+  	finally repeatPlan 
+  	
+  	Plan robotDataHandler [
+  		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) -> {
+  			println("Ricevuti ed aggiornati dati di tempo e temperatura");
+  			demo changeModelItem(timer,timeValue,T);
+  			demo changeModelItem(temperature,temperatureValue,V);
+  			println(T);
+  			println(V)
+  		}
+	] 
+	switchTo waitForCmd
+	
+  	 
+	//Robot attende comandi
+	Plan waitForCmd[
+		println("Robot in attesa di comandi!")
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> robotCmdHandler
+  	finally repeatPlan 
+  	
+  	//gestione dei comandi ricevuti da GUI
+	Plan robotCmdHandler [
+		
+	] 
+	switchTo waitForCmd
+}
+
+QActor robot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Accensione del robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	//Robot attende comandi
+	Plan waitForCmd[
+		println("Robot in attesa di comandi!")
+	]
+	transition stopAfter 3600000   	//1h 
+  		//whenEvent robotCmd -> ...
+  	finally repeatPlan 
+}
+
+QActor sonar2 context ctxRobot -pubsub {   
+	  
+	Plan init normal [  println("sonar 2 START")   ]  
+	switchTo emitRobotCmd 
+  	
+  	//simulazione comandi START/STOP
+	Plan emitRobotCmd [	
+		delay 15000;
+		println("Sonar2: robot rilevato");	
+		
+		//coperto il requisiti R-End
+		emit robotCmd : robotCmd("STOP")
+	]
+}
+
+QActor sonar1 context ctxRobot -pubsub {   
+	  
+	Plan init normal [  println("sonar 1 START")   ]  
+}
+
+QActor internalnotifier context ctxRobot -pubsub {   
+	  
+	Plan init normal [  
+		demo consult("./resourceModel.pl");
+		println("internalnotifier START")   
+	]switchTo waitForRequest
+	 
+	Plan waitForRequest[]transition stopAfter 3600000   	//1h 
+  		whenEvent requestNotifier -> startPolling
+  	finally repeatPlan   
+  	
+  	Plan startPolling resumeLastPlan[
+		emit requestExternalProvider : requestExternalProvider
+	] switchTo waitForResponse
+	
+	Plan waitForResponse[]transition stopAfter 3600000   	//1h 
+  		whenEvent  temperatureTimeProviderResponse -> handleRequestTimeAndTemperature
+  	finally repeatPlan 
+  	
+  	Plan handleRequestTimeAndTemperature resumeLastPlan[
+		onEvent temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) -> println(V)
+//		-> { 
+//			
+//			demo changeModelItem(timer,timeValue,T);
+//			demo changeModelItem(temperature,temperatureValue,V);
+//			delay 5000 //attesa per il prossimo polling
+//		}
+		
+	] switchTo startPolling
+  	
+}
+
+

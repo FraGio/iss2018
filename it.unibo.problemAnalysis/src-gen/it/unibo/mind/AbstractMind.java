@@ -56,6 +56,8 @@ public abstract class AbstractMind extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
+	    	stateTab.put("waitForData",waitForData);
+	    	stateTab.put("robotDataHandler",robotDataHandler);
 	    	stateTab.put("waitForCmd",waitForCmd);
 	    	stateTab.put("robotCmdHandler",robotCmdHandler);
 	    }
@@ -78,15 +80,74 @@ public abstract class AbstractMind extends QActor {
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	     connectToMqttServer("tcp://localhost");
-	    	//switchTo waitForCmd
+	     connectToMqttServer("tcp://localhost:1883");
+	    	//switchTo waitForData
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
-	              "waitForCmd",false, false, null); 
+	              "waitForData",false, false, null); 
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
+	    
+	    StateFun waitForData = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForData",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "waitForData";  
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(2000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "waitForData";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
+	    	emit( "requestNotifier", temporaryStr );
+	    	temporaryStr = "\"Robot in attesa di dati aggiornati di temperatura e tempo!\"";
+	    	println( temporaryStr );  
+	    	//bbb
+	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
+	          new StateFun[]{stateTab.get("robotDataHandler") }, 
+	          new String[]{"true","E","temperatureTimeRequest" },
+	          3600000, "handleToutBuiltIn" );//msgTransition
+	    }catch(Exception e_waitForData){  
+	    	 println( getName() + " plan=waitForData WARNING:" + e_waitForData.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//waitForData
+	    
+	    StateFun robotDataHandler = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp("robotDataHandler",-1);
+	    	String myselfName = "robotDataHandler";  
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("temperatureTimeRequest(V,T)");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("temperatureTimeRequest") && 
+	    		pengine.unify(curT, Term.createTerm("temperatureTimeRequest(V,T)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "\"Ricevuti ed aggiornati dati di tempo e temperatura\"";
+	    			println( temporaryStr );  
+	    			parg = "changeModelItem(timer,timeValue,T)";
+	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    			solveGoal( parg ); //sept2017
+	    			parg = "changeModelItem(temperature,temperatureValue,V)";
+	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    			solveGoal( parg ); //sept2017
+	    			temporaryStr = "T";
+	    			println( temporaryStr );  
+	    			temporaryStr = "V";
+	    			println( temporaryStr );  
+	    			};//actionseq
+	    	}
+	    	//switchTo waitForCmd
+	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
+	              "waitForCmd",false, false, null); 
+	    }catch(Exception e_robotDataHandler){  
+	    	 println( getName() + " plan=robotDataHandler WARNING:" + e_robotDataHandler.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//robotDataHandler
 	    
 	    StateFun waitForCmd = () -> {	
 	    try{	
@@ -110,68 +171,6 @@ public abstract class AbstractMind extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("robotCmdHandler",-1);
 	    	String myselfName = "robotCmdHandler";  
-	    	temporaryStr = "\"Valutazione TEMPERATURA ed ORARIO\"";
-	    	println( temporaryStr );  
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"START\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			temporaryStr = "\"Robot attivia'  avviata\"";
-	    			println( temporaryStr );  
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
-	    			temporaryStr = "\"Robot fisico: blink led\"";
-	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    			println( temporaryStr );  
-	    			}
-	    			else{ temporaryStr = "\"Robot virtuale: blink Red-Hue-Lamp\"";
-	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    			println( temporaryStr );  
-	    			}//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(5000,"" , "");
-	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
-	    			if( ! aar.getGoon() ) return ;
-	    			temporaryStr = "\"Trovato ostacolo fisso, cerco di evitarlo\"";
-	    			println( temporaryStr );  
-	    			//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(5000,"" , "");
-	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
-	    			if( ! aar.getGoon() ) return ;
-	    			temporaryStr = "\"Trovato ostacolo mobile, cerco di evitarlo\"";
-	    			println( temporaryStr );  
-	    			//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(5000,"" , "");
-	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
-	    			if( ! aar.getGoon() ) return ;
-	    			temporaryStr = "\"Trovato ostacolo inevitabile, mi arresto\"";
-	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(X)","robotCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
-	    			};//actionseq
-	    	}
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"STOP\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			temporaryStr = "\"Robot attivia'  arrestata\"";
-	    			println( temporaryStr );  
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
-	    			temporaryStr = "\"Robot fisico: STOP blink led\"";
-	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    			println( temporaryStr );  
-	    			}
-	    			else{ temporaryStr = "\"Robot virtuale: STOP blink Red-Hue-Lamp\"";
-	    			temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    			println( temporaryStr );  
-	    			}};//actionseq
-	    	}
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
 	              "waitForCmd",false, false, null); 

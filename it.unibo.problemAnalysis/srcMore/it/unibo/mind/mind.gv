@@ -11,11 +11,17 @@ digraph finite_state_machine {
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
 	waitForCmd [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	waitForData [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	robotDataHandler [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	robotCmdHandler [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	
+	waitForData -> waitForData [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	waitForCmd -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	waitForData -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
 	robotCmdHandler -> waitForCmd [ label = "switch" ][ color = black ][ fontcolor = black ]
+	init -> waitForData [ label = "switch" ][ color = black ][ fontcolor = black ]
 	waitForCmd -> robotCmdHandler [ label = "robotCmd" ][ color = black ][ fontcolor = black ]
-	init -> waitForCmd [ label = "switch" ][ color = black ][ fontcolor = black ]
+	robotDataHandler -> waitForCmd [ label = "switch" ][ color = black ][ fontcolor = black ]
+	waitForData -> robotDataHandler [ label = "temperatureTimeRequest" ][ color = black ][ fontcolor = black ]
 	waitForCmd -> waitForCmd [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 }

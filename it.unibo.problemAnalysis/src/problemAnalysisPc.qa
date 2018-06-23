@@ -16,16 +16,13 @@ QActor pc context ctxPC -pubsub {
 	Plan init normal [  println("pc START")   ]  
 	switchTo authenticateUser 
 	 
-	//Autenticazione utente offerta dalla GUI -> R-Start e R-Stop
 	Plan authenticateUser[
-		
-		//in base all'analisi del problema, la fase di autenticazione sarà 
-		//affidata ad un servizio esterno (e.g. google, facebook ...)
-		println("Autenticazione OK")
+		println("Autenticazione tramite servizio esterno . . . ");
+		delay 1000;
+		println("Autenticazione riuscita")
 	]
 	switchTo waitForUserCommand
   	
-  	//attesa di comandi START/STOP -> R-Start e R-Stop
 	Plan waitForUserCommand [
 		println("Attesa di comandi utente da GUI")
 	]    
@@ -33,7 +30,6 @@ QActor pc context ctxPC -pubsub {
   		whenEvent userCmd -> userCmdHandler
   	finally repeatPlan  
   	
-  	//gestione dei comandi ricevuti da GUI  -> R-Start e R-Stop
 	Plan userCmdHandler [
 		onEvent userCmd : userCmd ("START") -> {
 			println("Eseguito comando START");
