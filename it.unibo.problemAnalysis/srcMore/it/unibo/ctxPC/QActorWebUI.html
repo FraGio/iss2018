@@ -7,24 +7,6 @@
 <body>
 <h3 id="h3">Robot Web UI</h3>
 
-<div> 
-<input size=85% type="textArea" id="input" value="[ true ], play('./audio/music_interlude20.wav'),20000,'alarm,obstacle', 'handleAlarm,handleObstacle'" />
-<input style="height: 30px; width: 90px;" type="button"
- id="ExternalForward" value="RUN" 
- onmousedown="document.getElementById('inputArea').value= document.getElementById('inputArea').value+'\n'+document.getElementById('input').value;
- send('i-'+document.getElementById('input').value); "
-<br/>
-<textarea id="inputArea" cols="100" rows="10" style="overflow:scroll;">
-</textarea>
-</div>
-
-<div id="bottom">
-<center>
-<button onclick="setSpeed('high');">speedHigh</button>
-<button onclick="setSpeed('medium');">speedMedium</button>
-<button onclick="setSpeed('low');">speedLow</button>
-</center>
-   
 </div>
  	<table id="robots">
 		<tr>

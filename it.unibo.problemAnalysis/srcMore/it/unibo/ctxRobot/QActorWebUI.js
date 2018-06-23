@@ -25,8 +25,9 @@ var curSpeed = "low";
 		document.getElementById("speed").value = curSpeed;
 	}
 	function send(message) {
-		document.getElementById("sending").value = ""+message;
-		sock.send(message);
+		var eventstr = "msg(robotCmd,event,js,none,robotCmd("+message +"),1)";
+  		//alert( eventstr );
+ 		mqttUtils.publish( eventstr );
 	};
 /*	
 	document.onkeydown = function(event) {
@@ -51,3 +52,26 @@ var curSpeed = "low";
 	};
 */
  	//alert("loaded");
+ 	
+const mqtt   = require ('mqtt');
+const topic  = "unibo/qasys";
+//var client = mqtt.connect('mqtt://iot.eclipse.org');
+var client   = mqtt.connect('tcp://localhost:1883');
+//var client   = mqtt.connect('tcp://192.168.43.229:1883');
+
+console.log("mqtt client= " + client );
+
+client.on('connect', function () {
+	  client.subscribe( topic );
+	  console.log('client has subscribed successfully ');
+});
+
+//The message usually arrives as buffer, so I had to convert it to string data type;
+client.on('message', function (topic, message){
+  console.log("mqtt RECEIVES:"+ message.toString()); //if toString is not given, the message comes as buffer
+});
+
+exports.publish = function( msg ){
+	//console.log('mqtt publish ' + client);
+	client.publish(topic, msg);
+}

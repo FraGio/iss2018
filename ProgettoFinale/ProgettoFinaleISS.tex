@@ -329,8 +329,6 @@ Analisi Led Hue Lamp:\\
 Dall'analisi dei requisiti sappiamo che la Led Hue Lamp è presente nella casa dove il robot agisce. Il comando della lampada viene fatto tramite rete, di conseguenza potrebbe essere a carico sia del pc/smartphone che del robot.\\
 Scegliamo di affidare questa responsabilità al robot, questo perchè l'interazione tra esso e la lampada sarà locale, con ovvi vantaggi in termini di efficienza e tempi di risposta.
 
-\item Ostacoli: discutere cosa si intende per ostacolo fisso e mobile, capire come si indentificano gli ostacoli, capire anche cosa si intende per "evitare" un ostacolo e capire cosa si intende per ostacolo inevitabile.
-
 Analisi ostacoli:\\
 Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza.\\
 In entrambi i casi il robot può e deve evitarli. Cosa intendiamo per "evitare"? Fare in modo che il robot non entri in contatto con l'ostacolo ma riesca a proseguire verso il sonar finale. Per fare questo può aggirare l'ostacolo (nel caso questo sia fisso) oppure attendere per un periodo limitato di tempo prima di proseguire (nel caso esso sia mobile).\\
@@ -352,7 +350,15 @@ Da analisi dei requisiti sappiamo che la GUI deve essere in esecuzione (running)
 Analisi movimento/planning ostacoli:\\
 Si ipotizza di lavorare con un robot capace di muoversi in quattro direzioni (destra, sinistra, avanti, indietro).\\
 L'attività del robot inizia con il comando START, che impartisce ad una logica di controllo l'ordine di avviarsi. Questa, a sua volta, pilota il robot fisico avvalendosi delle quattro direzioni (destra, sinistra, avanti, indietro) al fine di portarlo all'altezza del sonar finale, coprendo tutta la superficie a sua disposizione ed evitando ostacoli presenti sul suo cammino.\\
-Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\
+Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\ \\
+
+Analisi contesto e tipologia collegamento: \\
+Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio ad eventi, per ragioni di estendibilità, flessibilità e comodità, appoggiandosi ad un'infrastruttura mqtt (usa protocollo mqtt). Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
+
+Analisi del modello e degli strumenti: \\
+Messi in luce vari problemi derivati dall'analisi dei requisiti, a questo punto, ci occorre trovare un linguaggio suffientemente espressivo e potente, il quale ci possa permettere di formalizzare le scelte di questa fase (analisi, COSA, NON COME), in modo essenziale e conciso. Ricordiamo che fare un modello di un sistema o di un'entità significa mettere in evidenza tre aspetti cardine: STRUTTURA, INTERAZIONE e COMPORTAMENTO, permettendoci di mettere in primo piano (foreground) aspetti fondamentali, lasciando "sullo sfondo" (background) aspetti irrilevanti a questo livello. \\
+Ci chiediamo quanti e quali linguaggi siano presenti, quali costi e quali pro/contro abbiano, magari evidenziando anche quanto costerebbe in termini di tempo l'adottare un nuovo linguaggio. Un esempio potrebbe essere UML, strumento per delineare entità coinvolte in un sistema. Ma non va bene per due motivi; il primo è che non ci troviamo in un sistema concentrato (dove il sw è in esecuzione su un solo nodo), il secondo è il non riuscire a cogliere aspetti cardine, come struttura, interazione e comportamento, oltre al fatto di non essere eseguibile. Scegliamo di utilizzare un linguaggio di modellazione QActor, messo a disposizione dalla nostra software house, in quanto riesce a cogliere tutti gli aspetti per noi rilevanti (sopra citati). 
+Ci saranno sicuramente aspetti che tralasceremo a questo livello, perchè di più stretta competenza dei progettisti. \\
 
 %===========================================================================
 \subsection{Logic architecture}

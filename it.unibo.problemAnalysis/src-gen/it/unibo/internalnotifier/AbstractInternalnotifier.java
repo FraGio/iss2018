@@ -112,6 +112,10 @@ public abstract class AbstractInternalnotifier extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("startPolling",-1);
 	    	String myselfName = "startPolling";  
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(5000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "startPolling";
+	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestExternalProvider","requestExternalProvider", guardVars ).toString();
 	    	emit( "requestExternalProvider", temporaryStr );
 	    	//switchTo waitForResponse

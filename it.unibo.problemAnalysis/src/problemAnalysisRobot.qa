@@ -102,6 +102,7 @@ QActor internalnotifier context ctxRobot -pubsub {
   	finally repeatPlan   
   	
   	Plan startPolling resumeLastPlan[
+  		delay 5000; //tempo di pausa
 		emit requestExternalProvider : requestExternalProvider
 	] switchTo waitForResponse
 	
