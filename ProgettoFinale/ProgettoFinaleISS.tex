@@ -1,3 +1,4 @@
+% !TeX spellcheck = en_GB
 \documentclass{../libs/llncs}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% package sillabazione italiana e uso lettere accentate
@@ -259,6 +260,20 @@ La modellazione può essere eseguita in maniera formale o non formale. Nel primo 
 Aspetto chiave dellla modellazione è catturare gli aspetti essenziali delle entità considerate in maniera non ambigua, in più vogliamo che che possa essere eseguito su una macchina. Il modello deve catturare struttura, interazione e comportamento.\\
 A noi interessa modellare in maniera formale.\\
 
+Formalizziamo le entità espresse nei requisiti:
+\begin{itemize}
+	\item Robot fisico: robot di tipo Mbot, dotato di ruote per il movimento \\
+	(informazioni complete: https://www.makeblock.com/steam-kits/mbot)
+	\item Robot virtuale: robot scritto in linguaggio Javascript da P.Soffritti \\
+	(informazioni complete: https://github.com/PierfrancescoSoffritti/ConfigurableThreejsApp)
+	\item Led: led di marca ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. \\
+	(informazioni complete: https://www.elegoo.com/product/elegoo-electronic-fun-kit-bundle/)
+	\item Led Hue Lamp: lampada Philips Led Hue Lamp, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). \\
+	(informazioni complete: https://www.philips.co.uk/c-m-li/hue)
+	\item Sonar: sonar di tipo Me Ultrasonic Sensor V3.0. \\
+	(informazioni complete: www.makeblock.cc/me-ultrasonic-sensor/ )
+\end{itemize}
+
 La formalizzazione delle entità in gioco è la seguente: (vedi file).
 
 
@@ -324,22 +339,20 @@ Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce
 
 Analisi GUI:\\
 Decidiamo di avere un meccanismo a scambio di messaggi tra pc e robot, in modo da disaccoppiare e rendere flessibile il sistema.\\
-In termini di applicazione GUI per pc ci sono due strade per realizzarla: mantenere tutto su pc, oppure avere solo la parte di visualizzazione e comando, con la parte applicativa spostata esternamente. In base alle nostre valutazioni decidiamo di intraprendere la seconda strada, ossia di avere la parte grafica della GUI su pc/smartphone e la parte più applicativa su un server esterno, questo perchè si ha più flessibilità per eventuali modifiche e facilità di implementazione di estensioni future della interfaccia.
+In termini di applicazione GUI per pc prendiamo in considerazione l'utilizzo di un'interfaccia web, quindi basata su webserver e client che fa da browser, questo perchè si presta alla struttura della nostra architettura dove pc e robot comunicano via rete internet, in più ci permette di creare in maniera rapida un'interfaccia funzionale. \\
+Ci sono tre strade per realizzarla: 
+\begin{enumerate}
+	\item mantenere tutto su pc/smartphone, ossia parte web server e client/browser
+	\item avere solo la parte di visualizzazione e comando (browser) sul dispositivo pc/smartphone, e la parte web server su un server esterno a pc e robot
+	\item avere solo la parte di visualizzazione e comando (browser) sul dispositivo pc/smartphone, e la parte web server sul dispositivo robot
+\end{enumerate}
+In base alle valutazioni su semplicità di utilizzo, costi e flessibilità, decidiamo di intraprendere la terza strada, ossia di avere la parte grafica della GUI su pc/smartphone e la parte web server che risiede sul dispositivo robot. Questo garantisce anche più flessibilità per eventuali modifiche e facilità di implementazione di estensioni future dell'interfaccia.\\
+Da analisi dei requisiti sappiamo che la GUI deve essere in esecuzione (running) sul pc/smartphone, per "running" noi intendiamo la componente di controllo che consente l'invio di comandi START/STOP al robot, quindi la parte di "browser" web.\\
 
-
-Formalizziamo le entità espresse nei requisiti:
-\begin{itemize}
-	\item Robot fisico: robot di tipo Mbot, dotato di ruote per il movimento \\
-	(informazioni complete: https://www.makeblock.com/steam-kits/mbot)
-	\item Robot virtuale: robot scritto in linguaggio Javascript da P.Soffritti \\
-	(informazioni complete: https://github.com/PierfrancescoSoffritti/ConfigurableThreejsApp)
-	\item Led: led di marca ELEGOO, dove led è un dispositivo elettronico a semiconduttore che al passaggio di corrente elettrica emette luce. \\
-	(informazioni complete: https://www.elegoo.com/product/elegoo-electronic-fun-kit-bundle/)
-	\item Led Hue Lamp: lampada Philips Led Hue Lamp, che è una lampada a led collegabile a rete internet tramite WiFi e, di conseguenza, controllabile da remoto tramite dipositivi elettronici (smartphone). \\
-	(informazioni complete: https://www.philips.co.uk/c-m-li/hue)
-	\item Sonar: sonar di tipo Me Ultrasonic Sensor V3.0. \\
-	(informazioni complete: www.makeblock.cc/me-ultrasonic-sensor/ )
-\end{itemize}
+Analisi movimento/planning ostacoli:\\
+Si ipotizza di lavorare con un robot capace di muoversi in quattro direzioni (destra, sinistra, avanti, indietro).\\
+L'attività del robot inizia con il comando START, che impartisce ad una logica di controllo l'ordine di avviarsi. Questa, a sua volta, pilota il robot fisico avvalendosi delle quattro direzioni (destra, sinistra, avanti, indietro) al fine di portarlo all'altezza del sonar finale, coprendo tutta la superficie a sua disposizione ed evitando ostacoli presenti sul suo cammino.\\
+Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\
 
 %===========================================================================
 \subsection{Logic architecture}
