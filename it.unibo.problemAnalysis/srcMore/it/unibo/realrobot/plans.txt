@@ -1,0 +1,2 @@
+plan(1,init, sentence(true,move(print("Accensione del real robot completata!")),'','' ))
+plan(1,waitForCmd, sentence(true,move(print("Real robot in attesa di comandi!")),'','' ))

@@ -56,9 +56,9 @@ public abstract class AbstractMind extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
-	    	stateTab.put("waitForData",waitForData);
-	    	stateTab.put("robotDataHandler",robotDataHandler);
-	    	stateTab.put("waitForCmd",waitForCmd);
+	    	stateTab.put("initTempTime",initTempTime);
+	    	stateTab.put("doWork",doWork);
+	    	stateTab.put("updateValues",updateValues);
 	    	stateTab.put("robotCmdHandler",robotCmdHandler);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
@@ -80,100 +80,128 @@ public abstract class AbstractMind extends QActor {
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(2000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
+	    	emit( "requestNotifier", temporaryStr );
 	     connectToMqttServer("tcp://localhost:1883");
-	    	//switchTo waitForData
+	    	//switchTo initTempTime
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
-	              "waitForData",false, false, null); 
+	              "initTempTime",false, false, null); 
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
 	    
-	    StateFun waitForData = () -> {	
+	    StateFun initTempTime = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForData",0);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_initTempTime",0);
 	     pr.incNumIter(); 	
-	    	String myselfName = "waitForData";  
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(2000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "waitForData";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
-	    	emit( "requestNotifier", temporaryStr );
-	    	temporaryStr = "\"Robot in attesa di dati aggiornati di temperatura e tempo!\"";
+	    	String myselfName = "initTempTime";  
+	    	//bbb
+	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
+	          new StateFun[]{stateTab.get("updateValues") }, 
+	          new String[]{"true","E","temperatureTimeRequest" },
+	          3600000, "handleToutBuiltIn" );//msgTransition
+	    }catch(Exception e_initTempTime){  
+	    	 println( getName() + " plan=initTempTime WARNING:" + e_initTempTime.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//initTempTime
+	    
+	    StateFun doWork = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_doWork",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "doWork";  
+	    	temporaryStr = "\"Robot in attesa...\"";
 	    	println( temporaryStr );  
 	    	//bbb
 	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
-	          new StateFun[]{stateTab.get("robotDataHandler") }, 
-	          new String[]{"true","E","temperatureTimeRequest" },
+	          new StateFun[]{stateTab.get("robotCmdHandler"), stateTab.get("updateValues") }, 
+	          new String[]{"true","E","robotCmd", "true","E","temperatureTimeRequest" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
-	    }catch(Exception e_waitForData){  
-	    	 println( getName() + " plan=waitForData WARNING:" + e_waitForData.getMessage() );
+	    }catch(Exception e_doWork){  
+	    	 println( getName() + " plan=doWork WARNING:" + e_doWork.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//waitForData
+	    };//doWork
 	    
-	    StateFun robotDataHandler = () -> {	
+	    StateFun updateValues = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("robotDataHandler",-1);
-	    	String myselfName = "robotDataHandler";  
+	     PlanRepeat pr = PlanRepeat.setUp("updateValues",-1);
+	    	String myselfName = "updateValues";  
+	    	temporaryStr = "\"Aggiornamento valori ...\"";
+	    	println( temporaryStr );  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("temperatureTimeRequest(V,T)");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("temperatureTimeRequest") && 
 	    		pengine.unify(curT, Term.createTerm("temperatureTimeRequest(V,T)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			temporaryStr = "\"Ricevuti ed aggiornati dati di tempo e temperatura\"";
-	    			println( temporaryStr );  
-	    			parg = "changeModelItem(timer,timeValue,T)";
-	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
-	    			solveGoal( parg ); //sept2017
-	    			parg = "changeModelItem(temperature,temperatureValue,V)";
-	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
-	    			solveGoal( parg ); //sept2017
-	    			temporaryStr = "T";
-	    			println( temporaryStr );  
-	    			temporaryStr = "V";
-	    			println( temporaryStr );  
-	    			};//actionseq
+	    			String parg="changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)";
+	    			/* PHead */
+	    			parg =  updateVars( Term.createTerm("temperatureTimeRequest(V,T)"), 
+	    			                    Term.createTerm("temperatureTimeRequest(V,T)"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    				if( parg != null ) {
+	    				    aar = QActorUtils.solveGoal(this,myCtx,pengine,parg,"",outEnvView,86400000);
+	    					//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    					if( aar.getInterrupted() ){
+	    						curPlanInExec   = "updateValues";
+	    						if( aar.getTimeRemained() <= 0 ) addRule("tout(demo,"+getName()+")");
+	    						if( ! aar.getGoon() ) return ;
+	    					} 			
+	    					if( aar.getResult().equals("failure")){
+	    						if( ! aar.getGoon() ) return ;
+	    					}else if( ! aar.getGoon() ) return ;
+	    				}
 	    	}
-	    	//switchTo waitForCmd
+	    	//switchTo doWork
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
-	              "waitForCmd",false, false, null); 
-	    }catch(Exception e_robotDataHandler){  
-	    	 println( getName() + " plan=robotDataHandler WARNING:" + e_robotDataHandler.getMessage() );
+	              "doWork",false, false, null); 
+	    }catch(Exception e_updateValues){  
+	    	 println( getName() + " plan=updateValues WARNING:" + e_updateValues.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//robotDataHandler
-	    
-	    StateFun waitForCmd = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForCmd",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "waitForCmd";  
-	    	temporaryStr = "\"Robot in attesa di comandi!\"";
-	    	println( temporaryStr );  
-	    	//bbb
-	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
-	          new StateFun[]{stateTab.get("robotCmdHandler") }, 
-	          new String[]{"true","E","robotCmd" },
-	          3600000, "handleToutBuiltIn" );//msgTransition
-	    }catch(Exception e_waitForCmd){  
-	    	 println( getName() + " plan=waitForCmd WARNING:" + e_waitForCmd.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//waitForCmd
+	    };//updateValues
 	    
 	    StateFun robotCmdHandler = () -> {	
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("robotCmdHandler",-1);
 	    	String myselfName = "robotCmdHandler";  
-	    	//switchTo waitForCmd
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"START\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			String parg = "\"START!\"";
+	    			/* Print */
+	    			parg =  updateVars( Term.createTerm("robotCmd(X)"), 
+	    			                    Term.createTerm("robotCmd(\"START\")"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) println( parg );
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"STOP\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			String parg = "\"STOP!\"";
+	    			/* Print */
+	    			parg =  updateVars( Term.createTerm("robotCmd(X)"), 
+	    			                    Term.createTerm("robotCmd(\"STOP\")"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) println( parg );
+	    	}
+	    	//switchTo doWork
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
-	              "waitForCmd",false, false, null); 
+	              "doWork",false, false, null); 
 	    }catch(Exception e_robotCmdHandler){  
 	    	 println( getName() + " plan=robotCmdHandler WARNING:" + e_robotCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

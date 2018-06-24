@@ -23,8 +23,7 @@ QActor temperaturetimeprovider context ctxProvider -pubsub {
 		onEvent requestExternalProvider : requestExternalProvider 
 			-> {
 				println("Richiesti valori ...");
-				emit temperatureTimeProviderResponse : temperatureTimeProviderResponse(20,9)
-				
+				emit temperatureTimeProviderResponse : temperatureTimeProviderResponse(23,13)
 				}
 	]
 }

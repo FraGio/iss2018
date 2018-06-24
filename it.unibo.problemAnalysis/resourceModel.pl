@@ -4,48 +4,32 @@ resourceModel.pl
 ===============================================================
 */
 
-model( type(leds), name(ledFisico), value(off) ).
-model( type(leds), name(ledHueLamp), value(off) ).
-model( type(timer), name(timeValue), value(1) ).
-model( type(temperature), name(temperatureValue), value(25) ).
+/*
+le risorse si dividono in due tipi, sensori ed attuatori
+*/
 
+model( type(actuator,leds), name(ledFisico), value(off) ).
+model( type(actuator,leds), name(ledHueLamp), value(off) ).
+model( type(data,timer), name(timevalue), value(1) ).
+model( type(data,temperature), name(temperaturevalue), value(25) ).
 
-%%isRealRobot.
+getModelItem( TYPE, CATEG, NAME, VALUE ) :-
+		model( type(TYPE, CATEG), name(NAME), value(VALUE) ).
+		
+changeModelItems(CATEG1, NAME1, VALUE1,CATEG2, NAME2, VALUE2 ) :-
+		output( "updating values in resource model..." ),
+		changeModelItem( CATEG1, NAME1, VALUE1 ),
+		changeModelItem( CATEG2, NAME2, VALUE2 ).
 		
 changeModelItem( CATEG, NAME, VALUE ) :-
  		replaceRule( 
-			model( type(CATEG), name(NAME), value(_) ),  
-			model( type(CATEG), name(NAME), value(VALUE) ) 		
+			model( type(TYPE, CATEG), name(NAME), value(_) ),  
+			model( type(TYPE, CATEG), name(NAME), value(VALUE) ) 		
 		),!,
 		output( changedModelAction(CATEG, NAME, VALUE) ),
 		( changedModelAction(CATEG, NAME, VALUE) %%to be defined by the appl designer
 		  ; true ).		%%to avoid the failure if no changedModelAction is defined
 		
-		limitTemperatureValue( 25 ).
-		
-		changedModelAction( temperature, tempAmbiente, V  ):-
-				limitTemperatureValue( MAX ), 
-	 		    eval( ge, V , MAX ), !,   
-	 		    output('temperatura sopra limite'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
-	 		
-	 			
-	 	limitTimeValueMin( 7 ).
-		limitTimeValueMax( 10 ).
-		
-	 	changedModelAction(timee,timeData, T ):-
-				limitTimeValueMin( MIN ),
-				limitTimeValueMax( MAX ),
-	 		    eval( le, T , MIN ), !,  
-	 		    output('tempo fuori range'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
-	 			
-	 	changedModelAction(timee,timeData, T ):-
-				limitTimeValueMin( MIN ),
-				limitTimeValueMax( MAX ),
-	 		    eval( ge, T , MAX ), !,   
-	 		    output('tempo fuori range'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
 eval( ge, X, X ) :- !. 
 eval( ge, X, V ) :- eval( gt, X , V ) .
  

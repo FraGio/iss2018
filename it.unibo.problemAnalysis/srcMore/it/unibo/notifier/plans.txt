@@ -1,6 +1,5 @@
-plan(1,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
-plan(2,init, sentence(true,move(print("internalnotifier START")),'','' ))
-plan(1,startPolling, sentence(true,delay( 5000) ,'','' ))
+plan(1,init, sentence(true,move(print("Notifier START")),'','' ))
+plan(1,startPolling, sentence(true,delay( 3000) ,'','' ))
 plan(2,startPolling, sentence(true,raise( requestExternalProvider , requestExternalProvider )'),'','' ))
 plan(3,startPolling, sentence(true,move(resumeplan),'','' ))
 plan(1,handleRequestTimeAndTemperature, sentence(true,eventswitch(temperatureTimeProviderResponse, »temperatureTimeProviderResponse( V,T), raise( temperatureTimeRequest , temperatureTimeRequest( V,T) )') ),'','' ))

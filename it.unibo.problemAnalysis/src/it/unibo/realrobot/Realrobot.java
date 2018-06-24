@@ -2,12 +2,12 @@
 /*
 This code is generated only ONCE
 */
-package it.unibo.internalnotifier;
+package it.unibo.realrobot;
 import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.qactors.QActorContext;
 
-public class Internalnotifier extends AbstractInternalnotifier { 
-	public Internalnotifier(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
+public class Realrobot extends AbstractRealrobot { 
+	public Realrobot(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 		super(actorId, myCtx, outEnvView);
 	}
 /*
