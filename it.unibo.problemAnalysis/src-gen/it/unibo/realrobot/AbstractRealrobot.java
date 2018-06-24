@@ -57,6 +57,7 @@ public abstract class AbstractRealrobot extends QActor {
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForCmd",waitForCmd);
+	    	stateTab.put("executionRobotCmdHandler",executionRobotCmdHandler);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -91,18 +92,40 @@ public abstract class AbstractRealrobot extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForCmd",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "waitForCmd";  
-	    	temporaryStr = "\"Real robot in attesa di comandi!\"";
-	    	println( temporaryStr );  
 	    	//bbb
 	     msgTransition( pr,myselfName,"realrobot_"+myselfName,false,
-	          new StateFun[]{}, 
-	          new String[]{},
+	          new StateFun[]{stateTab.get("executionRobotCmdHandler") }, 
+	          new String[]{"true","E","robotCmd" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_waitForCmd){  
 	    	 println( getName() + " plan=waitForCmd WARNING:" + e_waitForCmd.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//waitForCmd
+	    
+	    StateFun executionRobotCmdHandler = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp("executionRobotCmdHandler",-1);
+	    	String myselfName = "executionRobotCmdHandler";  
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(X)");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			String parg = "X";
+	    			/* Print */
+	    			parg =  updateVars( Term.createTerm("robotCmd(Y)"), 
+	    			                    Term.createTerm("robotCmd(X)"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) println( parg );
+	    	}
+	    	repeatPlanNoTransition(pr,myselfName,"realrobot_"+myselfName,false,true);
+	    }catch(Exception e_executionRobotCmdHandler){  
+	    	 println( getName() + " plan=executionRobotCmdHandler WARNING:" + e_executionRobotCmdHandler.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//executionRobotCmdHandler
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

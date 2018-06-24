@@ -20,9 +20,8 @@ digraph finite_state_machine {
 	updateValues -> doWork [ label = "switch" ][ color = black ][ fontcolor = black ]
 	initTempTime -> updateValues [ label = "temperatureTimeRequest" ][ color = black ][ fontcolor = black ]
 	initTempTime -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
-	doWork -> robotCmdHandler [ label = "robotCmd" ][ color = black ][ fontcolor = black ]
+	doWork -> robotCmdHandler [ label = "userCmd" ][ color = red ][ fontcolor = red ][ dir = both ]
 	doWork -> updateValues [ label = "temperatureTimeRequest" ][ color = black ][ fontcolor = black ]
-	robotCmdHandler -> doWork [ label = "switch" ][ color = black ][ fontcolor = black ]
 	init -> initTempTime [ label = "switch" ][ color = black ][ fontcolor = black ]
 	doWork -> doWork [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 }

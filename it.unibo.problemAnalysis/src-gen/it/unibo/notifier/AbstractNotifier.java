@@ -117,7 +117,7 @@ public abstract class AbstractNotifier extends QActor {
 	    	emit( "requestExternalProvider", temporaryStr );
 	    	//switchTo waitForResponse
 	        switchToPlanAsNextState(pr, myselfName, "notifier_"+myselfName, 
-	              "waitForResponse",false, true, null); 
+	              "waitForResponse",false, false, null); 
 	    }catch(Exception e_startPolling){  
 	    	 println( getName() + " plan=startPolling WARNING:" + e_startPolling.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

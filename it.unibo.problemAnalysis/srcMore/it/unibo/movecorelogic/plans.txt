@@ -1,0 +1,3 @@
+plan(1,init, sentence(true,move(print("Inizializzazione del core della logica di movimento")),'','' ))
+plan(1,executionCoreCommand, sentence(true,eventswitch(coreCmd, »coreCmd( "STOP"), raise( robotCmd , robotCmd( "STOP") )') ),'','' ))
+plan(2,executionCoreCommand, sentence(true,eventswitch(coreCmd, »coreCmd( "START"), not here StateMoveNormal ),'','' ))

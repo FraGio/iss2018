@@ -1,10 +1,11 @@
 System reqAnalysisModel
 
-Event robotCmd : robotCmd ( X )
+Event userCmd : userCmd ( X ) //START - STOP
+Event robotCmd : robotCmd ( Y ) // h-d-r-l-stop
+Event coreCmd : coreCmd ( Z ) //START - STOP
 Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
-
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
 
 pubSubServer "tcp://localhost:1883"
@@ -49,28 +50,69 @@ QActor mind context ctxRobot -pubsub {
 	finally repeatPlan
 	 
 	Plan doWork[
-		println("Robot in attesa...")
+		//println("Robot in attesa...")
 	]
 	transition stopAfter 3600000   	//1h 
-		whenEvent robotCmd -> robotCmdHandler,
+		whenEvent userCmd -> robotCmdHandler,
 		whenEvent temperatureTimeRequest -> updateValues
 	finally repeatPlan
 	
 	
 	Plan updateValues [
-		println("Aggiornamento valori ...");
-		
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
-
 	]switchTo doWork
 	
-	Plan robotCmdHandler [
-		onEvent robotCmd : robotCmd('START') -> println("START!");
-		onEvent robotCmd : robotCmd('STOP') -> println("STOP!")
-	]switchTo doWork
-	
+	Plan robotCmdHandler resumeLastPlan[
+		onEvent userCmd : userCmd('START') -> {
+			println("Ricevuto da utente comando di avvio");
+			emit coreCmd : coreCmd('START');
+			
+			[!? realrobot ] 
+				demo changeModelItem(leds,ledfisico,on)
+			else
+				demo changeModelItem(leds,ledhuelamp,on)
+			};
+		
+		onEvent userCmd : userCmd('STOP') -> {
+			println("Ricevuto da utente comando di stop");
+			emit robotCmd : robotCmd ('STOP');
+			emit coreCmd : coreCmd('STOP');
+			
+			[!? realrobot ] 
+				demo changeModelItem(leds,ledfisico,off)
+			else
+				demo changeModelItem(leds,ledhuelamp,off)
+			
+			}
+	]
 }
+
+QActor movecorelogic context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Inizializzazione del core della logica di movimento")
+	]  
+	switchTo waitForStart 
+	 
+	Plan waitForStart[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent coreCmd -> executionCoreCommand
+  	finally repeatPlan 
+  	
+  	Plan executionCoreCommand [
+		onEvent coreCmd : coreCmd ('STOP') -> emit robotCmd : robotCmd ('STOP');
+		
+		onEvent coreCmd : coreCmd ('START') -> {
+			println("logica di movimento mette in movimento il robot")
+//			emit robotCmd : robotCmd ('h');
+//			emit robotCmd : robotCmd ('r');
+//			emit robotCmd : robotCmd ('l');
+//			emit robotCmd : robotCmd ('d')
+		}
+	]
+}
+
 
 QActor realrobot context ctxRobot -pubsub {   
 	Plan init normal [  
@@ -78,14 +120,32 @@ QActor realrobot context ctxRobot -pubsub {
 	]  
 	switchTo waitForCmd 
 	 
-	//Robot attende comandi
 	Plan waitForCmd[
-		println("Real robot in attesa di comandi!")
 	]
 	transition stopAfter 3600000   	//1h 
-  		//whenEvent robotCmd -> ...
+  		whenEvent robotCmd -> executionRobotCmdHandler
   	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd (X) -> println(X)
+	]
 }
+
+//QActor virtualrobot context ctxRobot -pubsub {   
+//	Plan init normal [  
+//		println("Accensione del virtual robot completata!")
+//	]  
+//	switchTo waitForCmd 
+//	 
+//	Plan waitForCmd[
+//	]transition stopAfter 3600000   	//1h 
+//  		whenEvent robotCmd -> executionRobotCmdHandler
+//  	finally repeatPlan 
+//  	
+//  	Plan executionRobotCmdHandler resumeLastPlan [
+//		onEvent robotCmd : robotCmd (X) -> println(X)
+//	]
+//}
 
 QActor sonar1 context ctxRobot -pubsub {   
 	  
@@ -96,10 +156,10 @@ QActor sonar1 context ctxRobot -pubsub {
   	//simulazione comandi START/STOP
 	Plan emitRobotCmd [	
 		delay 15000;
-		println("Sonar1: robot rilevato");	
+		println("Sonar1: robot rilevato")
 		
 		//coperto il requisiti R-End
-		emit robotCmd : robotCmd("STOP")
+		//emit robotCmd : robotCmd("STOP")
 	]
 }
 
@@ -112,10 +172,10 @@ QActor sonar2 context ctxRobot -pubsub {
   	//simulazione comandi START/STOP
 	Plan emitRobotCmd [	
 		delay 15000;
-		println("Sonar2: robot rilevato");	
+		println("Sonar2: robot rilevato")
 		
 		//coperto il requisiti R-End
-		emit robotCmd : robotCmd("STOP")
+		//emit robotCmd : robotCmd("STOP")
 	]
 }
 
@@ -129,7 +189,7 @@ QActor notifier context ctxRobot -pubsub {
   		whenEvent requestNotifier -> startPolling
   	finally repeatPlan   
   	
-  	Plan startPolling resumeLastPlan[
+  	Plan startPolling [
   		delay 3000; //tempo di pausa
 		emit requestExternalProvider : requestExternalProvider
 	] switchTo waitForResponse
@@ -141,7 +201,5 @@ QActor notifier context ctxRobot -pubsub {
   	Plan handleRequestTimeAndTemperature [
 		onEvent temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) 
 		-> emit temperatureTimeRequest : temperatureTimeRequest(V,T)
-			
-		
 	] switchTo startPolling
 }

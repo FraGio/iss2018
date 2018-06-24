@@ -1,12 +1,10 @@
 System problemAnalysisModel
 
-//evento che rappresenta il command (START/STOP) inviato da GUI
 Event userCmd : userCmd ( X )
+Event mockUserCmd : mockUserCmd ( X )
 
-//evento che rappresenta il comand (START o STOP) inviato da GUI a robot
-Event robotCmd : robotCmd ( X )
-
-pubSubServer "tcp://localhost"
+pubSubServer "tcp://localhost:1883"
+//pubSubServer "tcp://broker.hivemq.com:1883"
 
 //contesto PC
 Context ctxPC ip [ host="localhost"   port=8020 ] 
@@ -27,17 +25,17 @@ QActor pc context ctxPC -pubsub {
 		println("Attesa di comandi utente da GUI")
 	]    
   	transition stopAfter 3600000   	//1h 
-  		whenEvent userCmd -> userCmdHandler
+  		whenEvent mockUserCmd -> userCmdHandler
   	finally repeatPlan  
   	
 	Plan userCmdHandler [
-		onEvent userCmd : userCmd ("START") -> {
+		onEvent mockUserCmd : mockUserCmd ('START') -> {
 			println("Eseguito comando START");
-			emit robotCmd : robotCmd("START")
+			emit userCmd : userCmd('START')
 		};
-		onEvent userCmd : userCmd ("STOP") -> {
+		onEvent mockUserCmd : mockUserCmd ('STOP') -> {
 			println("Eseguito comando STOP");
-			emit robotCmd : robotCmd("STOP")
+			emit userCmd : userCmd('STOP')
 		}
 	] 
 	switchTo waitForUserCommand
@@ -45,19 +43,24 @@ QActor pc context ctxPC -pubsub {
 
 
 //simula l'utente che clicca sui bottoni START/STOP della GUI
-QActor user context ctxPC {   
+QActor user context ctxPC -pubsub {   
 	  
-	Plan init normal [  println("utente START")   ]  
-	switchTo simulateClick 
-  	
-  	//simulazione comandi START/STOP
-	Plan simulateClick [		
-		//simulazione comandi utente
+	Plan init normal [  
+		println("utente START");
 		delay 5000;
 		println("Simulazione comando utente START da GUI");
-		emit userCmd : userCmd("START");
-		delay 5000;
-		println("Simulazione comando utente STOP da GUI");
-		emit userCmd : userCmd("STOP")		
-	]
+		emit mockUserCmd : mockUserCmd('START')
+	] 
+//	switchTo simulateClick 
+//  	
+//  	//simulazione comandi START/STOP
+//	Plan simulateClick resumeLastPlan[		
+//		//simulazione comandi utente
+//		delay 5000;
+//		println("Simulazione comando utente START da GUI");
+//		emit mockUserCmd : mockUserCmd('START')
+////		delay 10000;
+////		println("Simulazione comando utente STOP da GUI");
+////		emit mockUserCmd : mockUserCmd('STOP')		
+//	]
 }

@@ -21,9 +21,7 @@ QActor temperaturetimeprovider context ctxProvider -pubsub {
   	
   	Plan handleRequestTimeAndTemperature resumeLastPlan[
 		onEvent requestExternalProvider : requestExternalProvider 
-			-> {
-				println("Richiesti valori ...");
-				emit temperatureTimeProviderResponse : temperatureTimeProviderResponse(23,13)
-				}
+			-> emit temperatureTimeProviderResponse : temperatureTimeProviderResponse(23,9)
+				
 	]
 }
