@@ -1,9 +1,4 @@
 ﻿1) Il robot è dotato di sensore frontale per trovare i vari ostacoli anche se non espresso nei requisiti? 
 2) I sonar della stanza che raggio di azione hanno? Sono in grado di comunicare con il robot?
 3) formalizzazione entità va in domain model o nella parte analisi di problema?
-
-------------TODO----------
-
-1. Aggiunta considerazione serve user/ server rob/ server esterno
-2. Concetto di running (legato al punto 1).
-3. Concetto di movimento, di quattro direzioni, legato al concetto di avoid, ed evidenziare START/STOP
+4) il robot virtuale è nella stanza della led hue lamp o può essere in una stanza diversa?

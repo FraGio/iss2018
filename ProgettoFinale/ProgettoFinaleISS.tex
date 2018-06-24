@@ -210,11 +210,20 @@ Other requirements:\\
 \section{Requirement analysis}
 \labelsec{ReqAnalysis}
 
+Dati i requisiti forniti dal committente, ci poniamo alcune domande:\\
+\begin{itemize}
+	\item cosa intende il committente per robot?
+	\item cosa intende per robot virtuale?
+	\item possiamo avere un robot/ambiente virtuale a nostra disposizione (ad esempio dal committente)?
+	\item dove sono presenti i sonar? Solo nell'ambiente fisico, solo nel virtuale, in entrambi...?
+\end{itemize}
+
 In base ai requisiti dati emergono alcune considerazioni e osservazioni.\\
 \begin{itemize}
 \item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il requisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
 Per pulire il pavimento della stanza s'intende che il robot deve coprire tutta l'area del pavimento.\\
 Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. Non ci sono coordinate specifiche per nessuno dei due sonar.\\
+In base al colloquio col committente abbiamo appreso che, in mancanza di sonar fisici, è possibile utilizzare i sonar presenti nell'ambiente virtuale per far lavorare il robot fisico (e quindi avere punti di inizio e fine).\\
 \item R-Start: questo requisito implica che nel sistema è presente una seconda entità, rappresentata dal PC/smartphone, che si affianca all'entità robot. Deduciamo anche che il robot possa assumere uno stato di "working" dove esso sta lavorando.\\
 Ci deve essere una GUI (console) e deve essere messa a disposizione dal PC/smartphone. Questa sarà utilizzata dall'utente autorizzato per inviare comandi di START.\\
 L'utente autorizzato è un utente il quale ha effettuato un accesso sul sistema utilizzando le credenziali a sua disposizione.\\ 
@@ -226,7 +235,7 @@ Il vincolo sul valore della temperatura è relativo a quello della città in cui i
 \item R-TimeOk: il robot può lavorare soltanto all'interno di un intervallo temporale (nell'arco delle 24 ore di una giornata) prefissato. L'intervallo non è specificato nei requisiti ed è quindi a nostra discrezione.\\
 Non è specificato cosa si intenda per "current clock time", potrebbe essere il tempo interno al robot (il committente ha dichiarato che il robot possa avere un suo clock interno), o il tempo relativo al fuso orario della città in cui si trova il robot, oppure il tempo relativo alla locazione dell'utilizzatore del robot. Sono valutazioni da fare in fase di analisi del problema.\\
 \item R-BlinkLed: apprendiamo che possa essere presente un robot reale, e, se è così, che il robot reale sia dotato di un led, non è specificato il modello. Il led deve lampeggiare qualora il robot si trovi in stato di "working". Non è specificato chi debba comandare il led.\\
-\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp. Apprendiamo anche che possa essere presente un robot virtuale, e, se è così, che durante la sua attività debba lampeggiare la Led Hue Lamp presente nella stanza.\\ 
+\item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp. Apprendiamo anche che possa essere presente un robot virtuale, e, se è così, che durante la sua attività debba lampeggiare la Led Hue Lamp presente nella stanza dell'abitazione.\\ 
 Non è specificato chi comandi la lampada.\\
 \item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, come ad esempio il mobilio. Non ci viene data una definizione esplicita o formale degli ostacoli fissi.\\ 
 Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\
@@ -257,7 +266,9 @@ Un possibile scenario è dato dall'utente(e.g casalinga) che, tramite smartphone,
 
 \subsection{(Domain)model}
 La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
-Aspetto chiave dellla modellazione è catturare gli aspetti essenziali delle entità considerate in maniera non ambigua, in più vogliamo che che possa essere eseguito su una macchina. Il modello deve catturare struttura, interazione e comportamento.\\
+Aspetto chiave dellla modellazione è catturare gli aspetti essenziali delle entità considerate in maniera non ambigua, in più vogliamo che che possa essere eseguito su una macchina. Il modello deve catturare struttura, interazione e comportamento, permettendoci di mettere in primo piano (foreground) aspetti fondamentali, lasciando "sullo sfondo" (background) aspetti irrilevanti a questo livello. \\
+Ci chiediamo quanti e quali linguaggi siano presenti, quali costi e quali pro/contro abbiano, magari evidenziando anche quanto costerebbe in termini di tempo l'adottare un nuovo linguaggio. Un esempio potrebbe essere UML, strumento per delineare entità coinvolte in un sistema. Ma non va bene per due motivi; il primo è che non ci troviamo in un sistema concentrato (dove il sw è in esecuzione su un solo nodo), il secondo è il non riuscire a cogliere aspetti cardine, come struttura, interazione e comportamento, oltre al fatto di non essere eseguibile. Scegliamo di utilizzare un linguaggio di modellazione QActor, messo a disposizione dalla nostra software house, in quanto riesce a cogliere tutti gli aspetti per noi rilevanti (sopra citati). 
+Ci saranno sicuramente aspetti che tralasceremo a questo livello, perchè di più stretta competenza dei progettisti.
 A noi interessa modellare in maniera formale.\\
 
 Formalizziamo le entità espresse nei requisiti:
@@ -322,18 +333,18 @@ La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di 
 Nel caso di perdita di comunicazione con il servizio che fornisce orario (e temperatura) si decide che il robot non potrà avviare la propria attività.\\
 
 Analisi led:\\
-Dall'analisi dei requisiti sappiamo che il led è posizionato sul robot, di conseguenza sarà questo a controllare il led affinchè faccia quanto richiesto dai requisiti (blink in caso di attività).
+Dall'analisi dei requisiti sappiamo che il led è posizionato sul robot, di conseguenza sarà questo a controllare il led affinchè faccia quanto richiesto dai requisiti (blink in caso di attività).\\
 
 
 Analisi Led Hue Lamp:\\
 Dall'analisi dei requisiti sappiamo che la Led Hue Lamp è presente nella casa dove il robot agisce. Il comando della lampada viene fatto tramite rete, di conseguenza potrebbe essere a carico sia del pc/smartphone che del robot.\\
-Scegliamo di affidare questa responsabilità al robot, questo perchè l'interazione tra esso e la lampada sarà locale, con ovvi vantaggi in termini di efficienza e tempi di risposta.
+%%Scegliamo di affidare questa responsabilità al robot, questo perchè l'interazione tra esso e la lampada sarà locale, con ovvi vantaggi in termini di efficienza e tempi di risposta.\\
 
 Analisi ostacoli:\\
 Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza.\\
 In entrambi i casi il robot può e deve evitarli. Cosa intendiamo per "evitare"? Fare in modo che il robot non entri in contatto con l'ostacolo ma riesca a proseguire verso il sonar finale. Per fare questo può aggirare l'ostacolo (nel caso questo sia fisso) oppure attendere per un periodo limitato di tempo prima di proseguire (nel caso esso sia mobile).\\
 Per risolvere il problema di riconoscimento degli ostacoli lungo il cammino, prevediamo che il robot sia dotato di un sensore di movimento, posto sul muso. Alternative potrebbero essere videocamera, sistemi gps, che sono però più costose rispetto all'utilizzo del sensore.\\
-Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce il raggiungimento, al robot, del sensore finale.
+Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce il raggiungimento, al robot, del sensore finale.\\
 
 Analisi GUI:\\
 Decidiamo di avere un meccanismo a scambio di messaggi tra pc e robot, in modo da disaccoppiare e rendere flessibile il sistema.\\
@@ -353,12 +364,7 @@ L'attività del robot inizia con il comando START, che impartisce ad una logica d
 Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\ \\
 
 Analisi contesto e tipologia collegamento: \\
-Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio ad eventi, per ragioni di estendibilità, flessibilità e comodità, appoggiandosi ad un'infrastruttura mqtt (usa protocollo mqtt). Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
-
-Analisi del modello e degli strumenti: \\
-Messi in luce vari problemi derivati dall'analisi dei requisiti, a questo punto, ci occorre trovare un linguaggio suffientemente espressivo e potente, il quale ci possa permettere di formalizzare le scelte di questa fase (analisi, COSA, NON COME), in modo essenziale e conciso. Ricordiamo che fare un modello di un sistema o di un'entità significa mettere in evidenza tre aspetti cardine: STRUTTURA, INTERAZIONE e COMPORTAMENTO, permettendoci di mettere in primo piano (foreground) aspetti fondamentali, lasciando "sullo sfondo" (background) aspetti irrilevanti a questo livello. \\
-Ci chiediamo quanti e quali linguaggi siano presenti, quali costi e quali pro/contro abbiano, magari evidenziando anche quanto costerebbe in termini di tempo l'adottare un nuovo linguaggio. Un esempio potrebbe essere UML, strumento per delineare entità coinvolte in un sistema. Ma non va bene per due motivi; il primo è che non ci troviamo in un sistema concentrato (dove il sw è in esecuzione su un solo nodo), il secondo è il non riuscire a cogliere aspetti cardine, come struttura, interazione e comportamento, oltre al fatto di non essere eseguibile. Scegliamo di utilizzare un linguaggio di modellazione QActor, messo a disposizione dalla nostra software house, in quanto riesce a cogliere tutti gli aspetti per noi rilevanti (sopra citati). 
-Ci saranno sicuramente aspetti che tralasceremo a questo livello, perchè di più stretta competenza dei progettisti. \\
+Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio a messaggi, per ragioni di estendibilità, flessibilità e comodità, appoggiandosi ad un'infrastruttura mqtt (usa protocollo mqtt). Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
 
 %===========================================================================
 \subsection{Logic architecture}
