@@ -290,6 +290,12 @@ La formalizzazione delle entità in gioco è la seguente: (vedi file).
 
 
 \subsection{Test plan}
+La fase di test plan è fondamentale per garantire solidità e affidabilità al nostro software, oltre ad assicurare un corretto metodo di lavoro in team in caso di parallelizzazione dei compiti.\\
+La fase di test plan può essere affrontata in maniera formale o informale.\\
+Per formale si intende che i test vengono fatti in maniera automatica (JUnit) o manuale (personale che esegue test manuali). In questo caso i test sono eseguibili su una macchina.\\
+Informale significa valutare empiricamente e fare un confronto tra risultato reale e risultato atteso. I test non sono strutturati per essere eseguiti da una macchina.\\
+In fase di analisi sono stati pensati e eseguiti test formali, ma di tipologia manuale. Sfruttando lo stesso linguaggio di modellazione abbiamo potuto verificare che il nostro sistema si comportasse in maniera corretta secondo i requisiti e le richieste del committente (ad esempio test comandi start/stop utente, test valori temperatura, ...).\\
+In una fase successiva (progettazione/sviluppo) verranno integrati test formali automatici che ci permetteranno di ridurre il tempo dedicato ai test manuali, oltre che a validare automamente il codice che viene prodotto.
 
 %===========================================================================
 \section{Problem analysis}
@@ -355,7 +361,8 @@ Ci sono tre strade per realizzarla:
 	\item avere solo la parte di visualizzazione e comando (browser) sul dispositivo pc/smartphone, e la parte web server su un server esterno a pc e robot
 	\item avere solo la parte di visualizzazione e comando (browser) sul dispositivo pc/smartphone, e la parte web server sul dispositivo robot
 \end{enumerate}
-In base alle valutazioni su semplicità di utilizzo, costi e flessibilità, decidiamo di intraprendere la terza strada, ossia di avere la parte grafica della GUI su pc/smartphone e la parte web server che risiede sul dispositivo robot. Questo garantisce anche più flessibilità per eventuali modifiche e facilità di implementazione di estensioni future dell'interfaccia.\\
+In base alle valutazioni su semplicità di utilizzo, costi e flessibilità, decidiamo di intraprendere la seconda strada, ossia di avere la parte grafica della GUI su pc/smartphone e la parte web server che risiede su un dispositivo esterno al sistema pc-robot. Questo garantisce anche più flessibilità per eventuali modifiche e facilità di implementazione di estensioni future dell'interfaccia.\\
+Inoltre questa scelta ci permette di poter posizionare il server sia su un nodo della software house, che un nodo ospitato da servizi esterni (ad esempio Amazon AWS).\\
 Da analisi dei requisiti sappiamo che la GUI deve essere in esecuzione (running) sul pc/smartphone, per "running" noi intendiamo la componente di controllo che consente l'invio di comandi START/STOP al robot, quindi la parte di "browser" web.\\
 
 Analisi movimento/planning ostacoli:\\
@@ -364,30 +371,38 @@ L'attività del robot inizia con il comando START, che impartisce ad una logica d
 Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\ \\
 
 Analisi contesto e tipologia collegamento: \\
-Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio a messaggi, per ragioni di estendibilità, flessibilità e comodità, appoggiandosi ad un'infrastruttura mqtt (usa protocollo mqtt). Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
+Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio a messaggi, per ragioni di estendibilità, flessibilità e comodità. Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
 
 %===========================================================================
 \subsection{Logic architecture}
-L'obiettivo è produrre modelli formali. Un modello deve rispecchiare gli aspetti essenziali delle risorse al fine di far risaltare ciò che è rilevante per il problema o il dominio applicativo nel quale si colloca il problema stesso.
+L'obiettivo è produrre modelli formali. Un modello deve rispecchiare gli aspetti essenziali delle risorse al fine di far risaltare ciò che è rilevante per il problema o il dominio applicativo nel quale si colloca il problema stesso.\\
+Occorre formalizzare per rendere non ambiguo il contratto che ci lega al committente. \\
+Si vedano i modelli prodotti durante l'analisi del problema.
  
 \subsection{Abstraction gap}
+Se identifichiamo una distanza significativa tra quello che abbiamo e quello che dovremmo avere, allora siamo in presenza di un abstraction gap che dobbiamo colmare.\\
+In base alle richieste del committente, al nostro lavoro di analisi e in base ai linguaggi a nostra disposizione per risolvere i problemi emersi, non abbiamo rilevato particolari abstraction gap tra quello che è possibile fare e quello che abbiamo a nostra disposizione.
 
 \subsection{Risk analysis}
 Elenchiamo i rischi collegati alle valutazioni fatte in fase di analisi del problema:
 \begin{itemize}
-	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione tra pc/smarpthone e servizio esterno.
+	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione tra pc/smarpthone e servizio esterno. L'utilizzo di sistemi di accesso esterni potrebbe ridurre questo rischio.
 	\item Temperatura: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio metereologico, oltre che la sola caduta del servizio considerato. 
 	\item Orario: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio "timestamp", oltre che la sola caduta del servizio considerato.
 	\item Led Hue Lamp: la perdita della connessione alla rete da parte del robot, potrebbe impedire l'accensione, o lo spegnimento, della lampada
+	\item Ostacoli: possono esserci ostacoli imprevisti che compromettono la corretta esecuzione dell'attività del robot (caduta oggetti)
 \end{itemize}
 
 %===========================================================================
 \section{Work plan}
 \labelsec{wplan}
+In questa fase si valutano tempi, costi, strategie di investimento, formazione del personale e persone necessarie.\\
+Tempi e costi sono ridotti in quanto utilizziamo o prodotti open-source oppure sistemi già pronti messi a disposizione dal committente. Non necessitiamo di particolare formazione del personale, mentre per quanto riguarda le persone necessarie riteniamo sufficienti i componenti del team attuale (ossia tre persone).\\
 Ci occupiamo di scegliere l'opportuno processo produttivo, in cui ci sono due scuole in contrasto: l'agile (di cui scrum è un esempio) e model based. \\
 Agile development consiste in lavorare in gruppi auto organizzati, multifunzionali e orientati allo stretto contatto con il cliente finale, al fine di ottenere prodotti utilizzabili in tempo rapido, di migliorare costantemente i prodotti stessi e di rimanere flessibili a ipotetici cambiamenti resisi necessari nel tempo.\\
 Model based development impone che,prima di trattare il codice, sia necessario occuparsi della fase di modellazione. Solo in un secondo momento si passerà alla fase di sviluppo vero e proprio, tenendo opportunamente aggiornata la parte di modello.\\
-In questa fase entra in gioco anche il testing, che è fondamentale per assicurare solidità e riddure al minimo i rischi di bug critici in fase di produzione. I test possono essere fatti non solo alla fine della costruzione del sistema, ma anche, e soprattutto, durante. Un'ulteriore aspetto da considerare è che i test possono anche essere resi automatizzati.\\
+In base alle nostre esigenze riteniamo sia più opportuno lavorare tramite modello Agile, in particolare Scrum. Questo ci permette di focalizzarci sulle richieste del committente, affrontando quelle più prioritarie per prime, e assicurandoci un ciclo di lavoro flessibile e costantemente monitorato.\\
+Lavoreremo quindi tramite "sprint" periodici di breve durata, dove ci suddivideremo le attività da svolgere, proponendoci meeting brevi e costanti per valutare e controllare il flusso di lavoro.
 %===========================================================================
 
 %===========================================================================
