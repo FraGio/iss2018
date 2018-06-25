@@ -1,0 +1,48 @@
+<% include _headerAccess %>
+
+<h1>Robot Control</h1>
+<center>
+			<table style="background-color: #d9f7f3">
+					<tr>
+						<td align="center"><input
+							style="height: 40px; width: 90px; color:red" type="button"
+							id="ExternalAlarm" value="FIRE" onmousedown="send('e(alarm(fire))');" /></td>
+						<td align="center"><input
+							style="height: 60px; width: 90px;" type="button"
+							id="ExternalForward" value="FORWARD" onmousedown="send('w('+curSpeed+')');" /></td>
+						<td align="center"><input
+							style="height: 60px; width: 90px; color:green" type="button" 
+							id="ExternalAlarm" value="UNITY" onmousedown="send( 'unityAddr( localhost )' );" /></td>
+					</tr>
+					<tr>
+						<td align="center"><input
+							style="height: 60px; width: 90px;" type="button"
+							id="ExternalLeft" value="LEFT" onmousedown="send('a('+curSpeed+')');"  /></td>
+						<td align="center"><input
+							style="height: 60px; width: 90px;" type="button"
+							id="ExternalStop" value="STOP" onmousedown="send('h('+curSpeed+')');"  /></td>
+						<td align="center"><input
+							style="height: 60px; width: 90px;" type="button"
+							id="ExternalRight" value="RIGHT" onmousedown="send('d('+curSpeed+')');" /></td>
+					</tr>
+					<tr>
+						<td align="center"><input
+							style="height: 40px; width: 90px; color:blue" type="button"
+							id="ExternalAlarm" value="LINEFLW" onmousedown="send('f('+curSpeed+')');" /></td>
+						<td align="center"><input
+							style="height: 60px; width: 90px;" type="button"
+							id="ExternalBackward" value="BACKWARD" onmousedown="send('s('+curSpeed+')');"/></td>
+						<td align="center"><input
+							style="height: 40px; width: 90px; color:blue" type="button"
+							id="ExternalAlarm" value="EXIT" onmousedown="send('x('+curSpeed+')');" /></td>
+					</tr>
+				</table>
+</center>
+ 
+<form action="/edit" method="post">
+  <input name="displayname" type="text" class="form-control" placeholder="Display name" value="<%= currentUser.displayName || "" %>">
+  <textarea name="bio" class="form-control" placeholder="Tell us about yourself!"><%= currentUser.bio || "" %></textarea>
+  <input type="submit" value="Update" class="btn btn-primary btn-block">
+</form>
+
+<% include _footer %>

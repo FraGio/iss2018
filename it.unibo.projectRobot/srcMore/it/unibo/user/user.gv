@@ -1,0 +1,16 @@
+/*
+*
+* A GraphViz DOT FSM description 
+* Please use a GraphViz visualizer (like http://www.webgraphviz.com)
+*  
+*/
+
+digraph finite_state_machine {
+	rankdir=LR
+	size="8,5"
+	
+	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
+	simulateClick [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	
+	init -> simulateClick [ label = "switch" ][ color = red ][ fontcolor = red ][ dir = both ]
+}

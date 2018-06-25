@@ -1,0 +1,63 @@
+System problemAnalysisModel
+
+Event userCmd : userCmd ( X )
+Event mockUserCmd : mockUserCmd ( X )
+
+pubSubServer "tcp://localhost:1883"
+//pubSubServer "tcp://broker.hivemq.com:1883"
+
+//contesto PC
+Context ctxPC ip [ host="localhost"   port=8020 ] 
+
+QActor pc context ctxPC -pubsub {   
+	  
+	Plan init normal [  println("pc START")   ]  
+	switchTo authenticateUser 
+	 
+	Plan authenticateUser[
+		println("Autenticazione tramite servizio esterno . . . ");
+		delay 1000;
+		println("Autenticazione riuscita")
+	]
+	switchTo waitForUserCommand
+  	
+	Plan waitForUserCommand [
+		println("Attesa di comandi utente da GUI")
+	]    
+  	transition stopAfter 3600000   	//1h 
+  		whenEvent mockUserCmd -> userCmdHandler
+  	finally repeatPlan  
+  	
+	Plan userCmdHandler [
+		onEvent mockUserCmd : mockUserCmd ('START') -> {
+			println("Eseguito comando START");
+			emit userCmd : userCmd('START')
+		};
+		onEvent mockUserCmd : mockUserCmd ('STOP') -> {
+			println("Eseguito comando STOP");
+			emit userCmd : userCmd('STOP')
+		}
+	] 
+	switchTo waitForUserCommand
+}
+
+
+//simula l'utente che clicca sui bottoni START/STOP della GUI
+QActor user context ctxPC -pubsub {   
+	  
+	Plan init normal [  
+		println("utente START")
+	] 
+	switchTo simulateClick 
+  	
+  	//simulazione comandi START/STOP
+	Plan simulateClick resumeLastPlan[		
+		//simulazione comandi utente
+		delay 7000;
+		println("Simulazione comando utente START da GUI");
+		emit mockUserCmd : mockUserCmd('START');
+		delay 45000;
+		println("Simulazione comando utente STOP da GUI");
+		emit mockUserCmd : mockUserCmd('STOP')		
+	]
+}

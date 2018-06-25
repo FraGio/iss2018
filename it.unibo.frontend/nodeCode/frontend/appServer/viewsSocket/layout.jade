@@ -1,0 +1,13 @@
+index.jadedoctype  
+html
+  head
+    script(type="text/javascript"
+      src="/socket.io/socket.io.js").
+    script.
+       var socket = io.connect();
+       socket.on('message', function(v){ document.getElementById('display').innerHTML=v; });
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    
+  body
+    block content
