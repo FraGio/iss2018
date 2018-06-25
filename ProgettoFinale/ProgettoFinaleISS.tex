@@ -346,7 +346,7 @@ Dall'analisi dei requisiti sappiamo che il led è posizionato sul robot, di conse
 
 Analisi Led Hue Lamp:\\
 Dall'analisi dei requisiti sappiamo che la Led Hue Lamp è presente nella casa dove il robot agisce. Il comando della lampada viene fatto tramite rete, di conseguenza potrebbe essere a carico sia del pc/smartphone che del robot.\\
-%%Scegliamo di affidare questa responsabilità al robot, questo perchè l'interazione tra esso e la lampada sarà locale, con ovvi vantaggi in termini di efficienza e tempi di risposta.\\
+Scegliamo di affidare questa responsabilità al nostro software di controllo dei robot, questo perchè l'interazione tra esso e la lampada sarà locale, con ovvi vantaggi in termini di efficienza e tempi di risposta.\\
 
 Analisi ostacoli:\\
 Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza.\\
@@ -374,6 +374,12 @@ Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli ver
 
 Analisi contesto e tipologia collegamento: \\
 Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio a messaggi, per ragioni di estendibilità, flessibilità e comodità. Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
+
+Costi:\\
+E' necessario fare una valutazione delle spese e dei costi da affrontare.\\
+Per l'utilizzo dell'infrastruttura meteo e orario è stato valutato di utilizzare un servizio esterno, che offre diverse soluzioni di scalabilità (e di conseguenza costi) in base al n° di richieste effettuate al minuto. Per riferimento vedere https://www.openweathermap.org/price.\\
+Un'altra valutazione economica è quella del servizio di host del server frontend. Appoggiandoci a un servizio come Amazon AWS abbiamo vantaggi dal punto di vista della scalabilità e costi crescenti agli utenti. Per riferimento costi vedere https://aws.amazon.com/it/ec2/pricing/on-demand/.\\
+Per dotare il robot Mbot di un modulo middleware si rende opportuno l'acquisto  e l'utilizzo di un dispositivo Raspberry montato e collegato con il robot (https://www.raspberrypi.org/products/raspberry-pi-3-model-b/).
 
 %===========================================================================
 \subsection{Logic architecture}
@@ -415,16 +421,53 @@ Anche in questo caso il sistema è specificato in termini di STRUTTURA, INTERAZIO
 
 Punti aperti dalla fase di analisi del problema:
 \begin{itemize}
+\item Quale tipologia di server utilizzare per comunicazione tra pc/smartphone e server?
 \item Autenticazione attraverso provider esterni (quale utilizzare e come)
 \item Come effettuare la pulizia della stanza?
 \item Come rilevare ed evitare gli ostacoli?
 \item Come comunicare con led e led hue lamp?
 \item Come comunicare con provider esterni e quale provider utilizzare?
-\item Quale protocollo utilizzare per comunicazione tra server e robot?
-\item Quale tipologia di server utilizzare per comunicazione tra pc/smartphone e server?
-\item Come comunicano i sensori presenti nella stanza con il robot?
 \item Con quale frequenza interrogare il provider di temperatura e orario?
+\item Quale protocollo utilizzare per comunicazione tra server e robot?
+\item Come comunicano i sensori presenti nella stanza con il robot?
 \end{itemize}
+
+Server:\\
+In base alle considerazioni dell'analisi sappiamo di dover utilizzare un server su piattaforma separata da quella del pc o del robot. Alla luce di questo possiamo utilizzare un web server RESTful (utilizzando tecnologia NodeJs ed Express) ospitato su un nodo esterno, che è Amazon AWS, perchè questo comporta benefici in termini di scalabilità, nel caso il n° di utenti cresca nel tempo.
+
+Autenticazione:\\
+Come provider di autenticazione decidiamo di utilizzare il servizio di autenticazione di Google, in quanto molto sicuro, diffuso e gratuito. Per fare questo ci appoggeremo ad una libreria fornita da Google stesso (https://github.com/google/google-auth-library-nodejs).
+
+Pulizia stanza:\\
+Decidiamo di effettuare la pulizia della stanza facendo l'ipotesi che i sonar permettano di inquadrare l'area di azione, in termini di larghezza e lunghezza.\\
+L'operazione di pulizia verrà eseguita partendo dal sonar iniziale, muovendosi in linea retta fino ad intercettare il segnale del sonar finale. In tal caso si conoscono larghezza e lunghezza della stanza, e si può riconoscere la presenza dei muri in maniera automatica e invertire la direzione del robot una volta che questi vegono trovati.\\
+Nel caso, prima di arrivare al segnale del sonar finale, e quindi al primo muro, si incontri un ostacolo sarà necessario effettuare una procedura di aggiramento che porti il robot in corrispondenza del segnale del segnale del sonar finale, dandogli modo di conoscere la dimensione della stanza.\\
+Conoscendo la dimensione della stanza è possibile costruire una mappa dell'area da pulire, e suddividerla in caselle della stessa dimensione del robot (larghezza e lunghezza). In questo modo si tiene traccia del percorso eseguito e di quello da completare.\\
+Nell'operazione di svolta, da eseguire quando si incontra un muro, è necessario spostarsi di una casella verso il sonar finale e in seguito invertire la direzione e riprendere il movimento rettilineo.
+
+Rilevazione e aggiramento ostacoli:\\
+Per quanto la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà tre tentativi di rilevazione per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
+In caso di ostacolo fisso il robot deve cercare di tornare su percorsi già esplorati, con l'obiettivo di raggiungere la casella più vicina (nella traiettoria assunta prima del ritrovamento dell'ostacolo) a quella che avrebbe dovuto esplorare in assenza di ostacolo.\\
+In caso di ostacolo mobile prosegue il suo moto nella stessa direzione.
+
+Comunicazione con led e led hue lamp:\\
+Per comunicare con il led posto sul robot fisico utilizzeremo degli script bash che permettono di cambiare stato del pin (GPIO del raspberry, montato su mbot).\\
+Per quanto riguarda la led hue lamp, sappiamo che è possibile comunicare con essa tramite rete internet (Wifi) e con metodologie RESTful (https://www2.meethue.com/en-us/about-hue#about_the_system).
+
+Comunicazione con provider meteo/orario:\\
+Come servizio per reperire informazioni su meteo ed orario si utilizza OpenWeatherMap, che è un servizio web che offre API per acquisire le informazioni di nostro interesse. \\
+Per richiedere i dati occorre formulare richieste in un determinato formato (https://www.openweathermap.org/current). \\
+La struttura dei dati ricevuta è in formato JSON, a noi interessano i campi "dt", cioè il tempo espresso in Unix Epoch Clock che occorrerà convertire, e il campo "main"."temp" che identifica la temperatura attuale. Occorre specificare, tramite parametro dell'API, se ricevere dati in formato Celsius o Fahrenheit.
+
+Frequenza di interrogazione provider meteo/orario:\\
+Dall'analisi del problema sappiamo di avere un vincolo di massimo 10 minuti di attesa tra una richiesta e la seguente. Di conseguenza decidiamo di effettuare almeno una richiesta ogni minuto, fino ad un massimo di una richiesta al secondo, in modo da tenere opportunamente aggiornate le informazioni del modello logico.
+
+Protocollo per comunicazione frontend server - robot:\\
+In base all'analisi del problema sappiamo che è necessario utilizzare un sistema a scambio di messaggi. La nostra scelta ricade sul protocollo Mqtt, in quanto si può sfruttare un'infrastruttura locale di supporto (Mosquitto Broker) oppure un'infrastruttura esterna (https://www.hivemq.com/blog/mqtt-essentials-part-3-client-broker-connection-establishment).
+
+Comunicazione tra sensori e robot:\\
+Consideriamo l'ambiente virtuale, dotato di sensori di ambiente virtuali (sonar1 e sonar2), in quanto non disponiamo di sensori da applicare al mondo fisico. La comunicazione tra sensori virtuali e software di controllo viene realizzata tramite scambio di messaggi, con struttura(basata su linguaggio JSON) stabilita da chi ha realizzato l'infrastruttura virtuale (https://github.com/PierfrancescoSoffritti/configurable-threejs-app). Ci dovrà essere una entità di intermezzo che interpreta questi messaggi e li rimappa su eventi comprensibili dalla "mente".\\
+Per quanto riguarda il sensore presente su robot fisico, riusciamo ad intercettare le rilevazioni fisiche del sonar, cioè gli ostacoli rilevati, ma dobbiamo rimappare questi eventi in una struttura a messaggi (attraverso infrastruttura mqtt), ed inviare questi messaggi alla "mente" del sistema.
 
 %===========================================================================
 
