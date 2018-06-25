@@ -91,7 +91,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp("emitRobotCmd",-1);
 	    	String myselfName = "emitRobotCmd";  
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(15000,"" , "");
+	    	aar = delayReactive(17000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
@@ -99,7 +99,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(10)", guardVars ).toString();
 	    	emit( "robotSonarEvent", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(13000,"" , "");
+	    	aar = delayReactive(14000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";

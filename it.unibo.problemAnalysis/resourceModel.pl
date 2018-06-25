@@ -12,9 +12,11 @@ model( type(actuator,leds), name(ledfisico), value(off) ).
 model( type(actuator,leds), name(ledhuelamp), value(off) ).
 model( type(data,timer), name(timevalue), value(1) ).
 model( type(data,temperature), name(temperaturevalue), value(25) ).
+model( type(status,robot), name(realRobotStatus), value(off) ).
+model( type(status,robot), name(virtualRobotStatus), value(off) ).
 
-realRobot :- true.
-virtualRobot :- true.
+realRobot.
+virtualRobot.
 
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-
 		model( type(TYPE, CATEG), name(NAME), value(VALUE) ).
@@ -29,7 +31,7 @@ changeModelItem( CATEG, NAME, VALUE ) :-
 			model( type(TYPE, CATEG), name(NAME), value(_) ),  
 			model( type(TYPE, CATEG), name(NAME), value(VALUE) ) 		
 		),!,
-		%%output( changedModelAction(CATEG, NAME, VALUE) ),
+		output( changedModelAction(CATEG, NAME, VALUE) ),
 		( changedModelAction(CATEG, NAME, VALUE) %%to be defined by the appl designer
 		  ; true ).		%%to avoid the failure if no changedModelAction is defined
 		

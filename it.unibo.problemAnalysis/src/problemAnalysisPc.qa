@@ -46,21 +46,18 @@ QActor pc context ctxPC -pubsub {
 QActor user context ctxPC -pubsub {   
 	  
 	Plan init normal [  
-		println("utente START");
-		delay 5000;
-		println("Simulazione comando utente START da GUI");
-		emit mockUserCmd : mockUserCmd('START')
+		println("utente START")
 	] 
-//	switchTo simulateClick 
-//  	
-//  	//simulazione comandi START/STOP
-//	Plan simulateClick resumeLastPlan[		
-//		//simulazione comandi utente
-//		delay 5000;
-//		println("Simulazione comando utente START da GUI");
-//		emit mockUserCmd : mockUserCmd('START')
-////		delay 10000;
-////		println("Simulazione comando utente STOP da GUI");
-////		emit mockUserCmd : mockUserCmd('STOP')		
-//	]
+	switchTo simulateClick 
+  	
+  	//simulazione comandi START/STOP
+	Plan simulateClick resumeLastPlan[		
+		//simulazione comandi utente
+		delay 7000;
+		println("Simulazione comando utente START da GUI");
+		emit mockUserCmd : mockUserCmd('START');
+		delay 45000;
+		println("Simulazione comando utente STOP da GUI");
+		emit mockUserCmd : mockUserCmd('STOP')		
+	]
 }

@@ -179,21 +179,29 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Ricevuto da utente comando di avvio\"";
+	    			temporaryStr = "\"!!!!! Ricevuto da utente comando di avvio\"";
 	    			println( temporaryStr );  
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
+	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,blink)";
-	    			parg = QActorUtils.substituteVars(guardVars,parg);
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
+	    			parg = "changeModelItem(robot,realRobotStatus,on)";
+	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    			solveGoal( parg ); //sept2017
+	    			};//actionseq
 	    			}
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
+	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledhuelamp,blink)";
-	    			parg = QActorUtils.substituteVars(guardVars,parg);
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
+	    			parg = "changeModelItem(robot,virtualRobotStatus,on)";
+	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    			solveGoal( parg ); //sept2017
+	    			};//actionseq
 	    			}
 	    			};//actionseq
 	    	}
@@ -212,16 +220,24 @@ public abstract class AbstractMind extends QActor {
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
+	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,off)";
-	    			parg = QActorUtils.substituteVars(guardVars,parg);
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
+	    			parg = "changeModelItem(robot,realRobotStatus,off)";
+	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    			solveGoal( parg ); //sept2017
+	    			};//actionseq
 	    			}
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
+	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledhuelamp,off)";
-	    			parg = QActorUtils.substituteVars(guardVars,parg);
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
+	    			parg = "changeModelItem(robot,virtualRobotStatus,off)";
+	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    			solveGoal( parg ); //sept2017
+	    			};//actionseq
 	    			}
 	    			};//actionseq
 	    	}

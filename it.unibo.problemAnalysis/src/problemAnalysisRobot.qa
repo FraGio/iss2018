@@ -69,26 +69,34 @@ QActor mind context ctxRobot -pubsub {
 	
 	Plan robotCmdHandler resumeLastPlan[
 		onEvent userCmd : userCmd('START') -> {
-			println("Ricevuto da utente comando di avvio");
+			println("!!!!! Ricevuto da utente comando di avvio");
 			emit coreCmd : coreCmd('START');
 			
-			[!? realrobot ]
+			//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
+			[!? realrobot ]{
 				demo changeModelItem(leds,ledfisico,blink);
-			[!? virtualrobot ]
-				demo changeModelItem(leds,ledhuelamp,blink)
-
+				demo changeModelItem(robot,realRobotStatus,on)
+			};
+			[!? virtualrobot ] {
+				demo changeModelItem(leds,ledhuelamp,blink);
+				demo changeModelItem(robot,virtualRobotStatus,on)
+			}
 		};
 		onEvent userCmd : userCmd('STOP') -> {
 			println("Ricevuto da utente comando di stop");
 			emit robotCmd : robotCmd ('STOP');
 			emit coreCmd : coreCmd('STOP');
 			
-			[!? realrobot ]
+			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+			[!? realrobot ]{
 				demo changeModelItem(leds,ledfisico,off);
-			[!? virtualrobot ]
-				demo changeModelItem(leds,ledhuelamp,off)
-			
+				demo changeModelItem(robot,realRobotStatus,off)
+			};
+			[!? virtualrobot ]{
+				demo changeModelItem(leds,ledhuelamp,off);
+				demo changeModelItem(robot,virtualRobotStatus,off)
 			}
+		}
 	]
 	
 	//gestione degli eventi che provengono dal sonar posto sul robot
@@ -191,7 +199,7 @@ QActor sonar2 context ctxRobot -pubsub {
   	
   	//simulazione comandi START/STOP
 	Plan emitRobotCmd [	
-		delay 40000;
+		delay 45000;
 		println("Sonar2: robot rilevato");
 		
 		//coperto il requisiti R-End
@@ -208,13 +216,13 @@ QActor robotsonar context ctxRobot -pubsub {
   	
   	//simulazione comandi START/STOP
 	Plan emitRobotCmd [	
-		delay 15000;
+		delay 17000;
 		println("Sonar robot: rilevato ostacolo");
 		
 		//emissione evento "ostacolo rilevato"
 		emit robotSonarEvent : robotSonarEvent ( 10 );
 		
-		delay 13000;
+		delay 14000;
 		println("Sonar robot: rilevato ostacolo");
 		
 		//emissione evento "ostacolo rilevato"
