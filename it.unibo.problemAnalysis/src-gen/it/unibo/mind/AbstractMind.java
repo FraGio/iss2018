@@ -83,7 +83,7 @@ public abstract class AbstractMind extends QActor {
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(1000,"" , "");
+	    	aar = delayReactive(3000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
@@ -238,14 +238,14 @@ public abstract class AbstractMind extends QActor {
 	    	String myselfName = "handleRobotSonarEvent";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("sonarEvent(\"ROBOT_S\",DISTANCE)");
+	    	curT = Term.createTerm("robotSonarEvent(DISTANCE)");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotSonarEvent") && 
-	    		pengine.unify(curT, Term.createTerm("robotSonarEvent(NAME,DISTANCE)")) && 
+	    		pengine.unify(curT, Term.createTerm("robotSonarEvent(DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			String parg = "\"Ostacolo rilevato, iniziata routine per evitarlo...\"";
 	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotSonarEvent(NAME,DISTANCE)"), 
-	    			                    Term.createTerm("sonarEvent(\"ROBOT_S\",DISTANCE)"), 
+	    			parg =  updateVars( Term.createTerm("robotSonarEvent(DISTANCE)"), 
+	    			                    Term.createTerm("robotSonarEvent(DISTANCE)"), 
 	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
 	    			if( parg != null ) println( parg );
 	    	}

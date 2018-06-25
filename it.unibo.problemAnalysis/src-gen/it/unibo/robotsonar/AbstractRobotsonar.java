@@ -96,7 +96,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(NAME,DISTANCE)","robotSonarEvent(\"ROBOT_S\",10)", guardVars ).toString();
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(10)", guardVars ).toString();
 	    	emit( "robotSonarEvent", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(13000,"" , "");
@@ -104,7 +104,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(NAME,DISTANCE)","robotSonarEvent(\"ROBOT_S\",13)", guardVars ).toString();
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(13)", guardVars ).toString();
 	    	emit( "robotSonarEvent", temporaryStr );
 	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,false,false);
 	    }catch(Exception e_emitRobotCmd){  

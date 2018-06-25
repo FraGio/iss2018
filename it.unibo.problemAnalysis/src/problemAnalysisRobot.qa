@@ -3,7 +3,7 @@ System reqAnalysisModel
 Event userCmd : userCmd ( X ) //START - STOP
 Event robotCmd : robotCmd ( Y ) // h-d-r-l-stop
 Event coreCmd : coreCmd ( Z ) //START - STOP
-Event robotSonarEvent : robotSonarEvent ( NAME, DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event robotSonarEvent : robotSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
 Event roomSonarEvent : roomSonarEvent ( NAME, DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
 Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
@@ -41,7 +41,7 @@ QActor mind context ctxRobot -pubsub {
 	}
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
-		delay 1000;
+		delay 3000;
 		emit requestNotifier : requestNotifier
 	]  
 	switchTo initTempTime
@@ -93,7 +93,7 @@ QActor mind context ctxRobot -pubsub {
 	
 	//gestione degli eventi che provengono dal sonar posto sul robot
 	Plan handleRobotSonarEvent [
-		onEvent robotSonarEvent : sonarEvent("ROBOT_S", DISTANCE) 
+		onEvent robotSonarEvent : robotSonarEvent(DISTANCE) 
 			-> println("Ostacolo rilevato, iniziata routine per evitarlo...")
 	]switchTo doWork
 	
@@ -211,16 +211,14 @@ QActor robotsonar context ctxRobot -pubsub {
 		delay 15000;
 		println("Sonar robot: rilevato ostacolo");
 		
-		
 		//emissione evento "ostacolo rilevato"
-		emit robotSonarEvent : robotSonarEvent ( "ROBOT_S", 10 );
+		emit robotSonarEvent : robotSonarEvent ( 10 );
 		
 		delay 13000;
 		println("Sonar robot: rilevato ostacolo");
 		
-		
 		//emissione evento "ostacolo rilevato"
-		emit robotSonarEvent : robotSonarEvent ( "ROBOT_S", 13 )
+		emit robotSonarEvent : robotSonarEvent ( 13 )
 	]
 }
 
