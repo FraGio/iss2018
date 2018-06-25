@@ -13,7 +13,8 @@ model( type(actuator,leds), name(ledhuelamp), value(off) ).
 model( type(data,timer), name(timevalue), value(1) ).
 model( type(data,temperature), name(temperaturevalue), value(25) ).
 
-realRobot.
+realRobot :- true.
+virtualRobot :- true.
 
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-
 		model( type(TYPE, CATEG), name(NAME), value(VALUE) ).

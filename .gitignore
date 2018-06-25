@@ -3,3 +3,5 @@
 *.lock
 
 it\.unibo\.reqAnalysis/\.classpath
+
+it\.unibo\.problemAnalysis/\.classpath
