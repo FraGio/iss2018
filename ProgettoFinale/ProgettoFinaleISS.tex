@@ -335,8 +335,10 @@ Nel caso reperissimo i dati dell'orario da un servizio esterno potremmo consider
 Si mettono in evidenza due strade principali per affrontare il problema di gestire il requisito sul tempo: la prima è quella di sfruttare un'interazione a polling, cioè dove il robot prende l'iniziativa e richiede periodicamente il tempo o al pc/smartphone o ad un servizio esterno (es. servizio web).\\
 Una seconda opzione può essere quella di far arrivare i valori al robot in maniera periodica (o di valori temporali fuori range), quindi il robot dovrà predisporsi per ricevere. L'invio dei dati, in questo caso, sarebbe a carico del pc/smartphone.\\
 Quest'ultimo approccio sposterebbe parte della logica applicativa sul pc/smartphone, in più, in caso di perdita di comunicazione tra GUI e robot, sarebbe compromessa la verifica del valore del tempo richiesta nei requisiti.\\
-La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni sul tempo da un servizio esterno, anche in relazione al fatto che facciamo già polling per reperire la temperatura, quindi si può pensare di rivolgersi ad un servizio metereologico che fornisca entrambe le informazioni. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva. \\
+La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni sul tempo da un servizio esterno, anche in relazione al fatto che facciamo già polling per reperire la temperatura, quindi si può pensare di rivolgersi ad un servizio metereologico che fornisca entrambe le informazioni. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva. \\\\
+
 Nel caso di perdita di comunicazione con il servizio che fornisce orario (e temperatura) si decide che il robot non potrà avviare la propria attività.\\
+Per quanto riguarda la frequenza di aggiornamento dei suddetti valori, sebbene il committente non abbia espresso vincoli a riguardo decidiamo di considerare come intervallo massimo consentito quello di 10 minuti. In fase di progetto si concretizzerà il tempo specifico di intervallo di aggiornamento.\\
 
 Analisi led:\\
 Dall'analisi dei requisiti sappiamo che il led è posizionato sul robot, di conseguenza sarà questo a controllare il led affinchè faccia quanto richiesto dai requisiti (blink in caso di attività).\\
@@ -409,7 +411,21 @@ Lavoreremo quindi tramite "sprint" periodici di breve durata, dove ci suddivider
 \section{Project}
 \labelsec{Project}
 La fase di progetto, svolta dal progettista, prende in input il lavoro svolto dall'analista, ovvero il modello formale che descrive il sistema e propone, a sua volta, un ulteriore modello, nel quale vengono specificati e risolti problemi lasciati in sospeso dall'analista (e.g. quale protocollo? ). 
-Anche in questo caso il sistema è specificato in termini di STRUTTURA, INTERAZIONE e COMPORTAMENTO. 
+Anche in questo caso il sistema è specificato in termini di STRUTTURA, INTERAZIONE e COMPORTAMENTO. \\\\
+
+Punti aperti dalla fase di analisi del problema:
+\begin{itemize}
+\item Autenticazione attraverso provider esterni (quale utilizzare e come)
+\item Come effettuare la pulizia della stanza?
+\item Come rilevare ed evitare gli ostacoli?
+\item Come comunicare con led e led hue lamp?
+\item Come comunicare con provider esterni e quale provider utilizzare?
+\item Quale protocollo utilizzare per comunicazione tra server e robot?
+\item Quale tipologia di server utilizzare per comunicazione tra pc/smartphone e server?
+\item Come comunicano i sensori presenti nella stanza con il robot?
+\item Con quale frequenza interrogare il provider di temperatura e orario?
+\end{itemize}
+
 %===========================================================================
 
 \subsection{Structure}

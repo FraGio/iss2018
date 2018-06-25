@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  25 JUN 2018 11:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  25 JUN 2018 12:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -454,13 +454,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 323--329
  []
 
 
-Overfull \hbox (17.89844pt too wide) in paragraph at lines 331--340
+Overfull \hbox (17.89844pt too wide) in paragraph at lines 331--339
 \T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
 a-tiva sul pc/smartphone,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 331--340
+Underfull \hbox (badness 10000) in paragraph at lines 331--339
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 331--339
 
  []
 
@@ -468,45 +473,56 @@ Underfull \hbox (badness 10000) in paragraph at lines 331--340
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
-Underfull \hbox (badness 10000) in paragraph at lines 341--343
+Underfull \hbox (badness 10000) in paragraph at lines 340--342
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 345--348
+Underfull \hbox (badness 10000) in paragraph at lines 343--345
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 349--354
+Underfull \hbox (badness 10000) in paragraph at lines 347--350
 
  []
 
 
-Underfull \vbox (badness 5105) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 351--356
+
+ []
+
+
+Underfull \vbox (badness 2158) has occurred while \output is active []
 
  [10]
-Underfull \hbox (badness 10000) in paragraph at lines 364--367
+Underfull \hbox (badness 10000) in paragraph at lines 366--369
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 368--372
+Underfull \hbox (badness 10000) in paragraph at lines 370--374
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 368--372
+Underfull \hbox (badness 10000) in paragraph at lines 370--374
 
  []
 
 [11] [12]
-Underfull \vbox (badness 3260) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 413--415
 
- [13]
-[14]
+ []
 
-LaTeX Warning: Citation `natMol09' on page 15 undefined on input line 441.
+
+Underfull \hbox (badness 10000) in paragraph at lines 413--415
+
+ []
+
+[13] [14]
+
+LaTeX Warning: Citation `natMol09' on page 15 undefined on input line 457.
 
 (./ProgettoFinaleISS.bbl
 
@@ -516,7 +532,7 @@ LaTeX Warning: Empty `thebibliography' environment on input line 3.
 Here is how much of TeX's memory you used:
  2718 strings out of 494910
  35799 string characters out of 6179836
- 106568 words of memory out of 5000000
+ 105568 words of memory out of 5000000
  5979 multiletter control sequences out of 15000+600000
  9653 words of font info for 23 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
@@ -527,7 +543,7 @@ x1000.600pk> </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk
 > </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0900.600pk> </home/gi
 ova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/giova/.texmf-
 var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk>
-Output written on ProgettoFinaleISS.pdf (15 pages, 96976 bytes).
+Output written on ProgettoFinaleISS.pdf (15 pages, 97620 bytes).
 PDF statistics:
  303 PDF objects out of 1000 (max. 8388607)
  59 compressed objects within 1 object stream
