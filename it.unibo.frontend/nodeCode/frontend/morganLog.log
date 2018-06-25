@@ -10362,3 +10362,9 @@
 ::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 13.792 ms
 ::1 - POST /robot/actions/commands/a HTTP/1.1 200 2131 - 3.145 ms
 ::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 21.514 ms
+::1 - GET / HTTP/1.1 304 - - 215.987 ms
+::1 - GET /QActorWebUI.js HTTP/1.1 304 - - 5.732 ms
+::1 - GET /login HTTP/1.1 304 - - 10.541 ms
+::1 - POST /login HTTP/1.1 200 - - 218.013 ms
+::1 - POST /login HTTP/1.1 200 - - 4.331 ms
+::1 - GET /favicon.ico HTTP/1.1 200 32038 - 37.026 ms
