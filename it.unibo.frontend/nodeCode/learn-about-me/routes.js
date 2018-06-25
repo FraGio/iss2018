@@ -39,6 +39,8 @@ router.post("/login", passport.authenticate("login", {
   failureFlash: true
 }));
 
+router.get('/auth/google', function(){console.log("AAAAA")}/*passport.authenticate('google', { scope : ['profile', 'email'] })*/);
+
 router.get("/logout", function(req, res) {
   req.logout();
   res.redirect("/");

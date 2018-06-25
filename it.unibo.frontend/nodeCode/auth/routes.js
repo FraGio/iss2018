@@ -34,11 +34,7 @@ router.get("/login", function(req, res) {
 	  res.render("login");
 	});
 
-router.post("/login", passport.authenticate("login", {
-	  successRedirect: "/access",			//AN (2)
-	  failureRedirect: "/login",
-	  failureFlash: true
-}));
+router.post("/login", passport.authenticate('login', { scope : ['profile', 'email'] }));
 
 router.get("/access", ensureAuthenticated, function(req, res, next) {	//AN (3)
 	//console.log("auth routes access ");
@@ -75,11 +71,22 @@ router.post("/signup", function(req, res, next) {
     newUser.save(next);
 
   });
-}, passport.authenticate("login", {
-  successRedirect: "/",
-  failureRedirect: "/signup",
-  failureFlash: true
-}));
+}, passport.authenticate(passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+// =====================================
+// GOOGLE ROUTES =======================
+// =====================================
+// send to google to do the authentication
+// profile gets us their basic information including their name
+// email gets their emails
+router.get('/auth/google', function(){console.log("AAAAA")}/*passport.authenticate('google', { scope : ['profile', 'email'] })*/);
+
+// the callback after google has authenticated the user
+/*router.get('/auth/google/callback',
+    passport.authenticate('google', {
+            successRedirect : '/',
+            failureRedirect : '/signup'
+    }));*/
 
 router.get("/users/:username", function(req, res, next) {
   User.findOne({ username: req.params.username }, function(err, user) {

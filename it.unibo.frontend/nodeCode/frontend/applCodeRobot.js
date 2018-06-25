@@ -15,6 +15,7 @@ var serverWithSocket= require('./robotFrontendServer');
 var cors            = require('cors');
 var robotModel      = require('./appServer/models/robot');
 var User            = require("./appServer/models/user");
+var authRoutes      = require('./routes');
 var mqttUtils       ; 	//to be set later;
 var session         ; 	//to be set later for AUTH;
 var passport        ; 	//to be set later for AUTH;
@@ -23,6 +24,9 @@ var mongoose        ; 	//to be set later for AUTH;
 var flash           ; 	//to be set later for AUTH; 
 
 var app              = express();
+
+
+
 
 // view engine setup;
 app.set('views', path.join(__dirname, 'appServer', 'viewRobot'));	 
@@ -44,8 +48,10 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'jsCode')))
 
+app.use('/', authRoutes);
+
 var externalActuator = false;	//when true, the application logic is external to the server;
-var withAuth         = false;   //dice che non vuole appoggiarsi alla struttura di autenticazione
+var withAuth         = true;   //dice che non vuole appoggiarsi alla struttura di autenticazione
 
 if( externalActuator ) mqttUtils  = require('./uniboSupports/mqttUtils');
 if( withAuth ){
@@ -53,7 +59,8 @@ if( withAuth ){
 	 passport         = require("passport");			 
 	 setUpPassport    = require("./setuppassport");   
 	 mongoose         = require("mongoose");			 
-	 flash            = require("connect-flash");     	
+	 flash            = require("connect-flash"); 
+	 GoogleStrategy	  = require('passport-google-oauth').OAuth2Strategy;   
 	
 	 setUpAuth();
 }
@@ -62,7 +69,9 @@ if( withAuth ){
  * ====================== AUTH ================
  */	
  	app.get('/', function(req, res) {
- 		if( withAuth ) res.render("login");
+ 		if( withAuth ) {
+			res.render("login");
+		}
  		else 
  			res.render("access");
  	});	
@@ -205,7 +214,7 @@ function setUpAuth(){ //AUTH
 		console.log("\tWORKING WITH AUTH ... "  ) ;
 		//mongoose.connect("mongodb://localhost:27017/test");
 		//mongoose.connect("mongodb://0.0.0.0:27017/users");
-		mongoose.connect("mongodb://127.0.0.1:27017","test");
+		//mongoose.connect("mongodb://127.0.0.1:27017","test");
 		
 		setUpPassport();	
 		app.use(session({	 
@@ -213,6 +222,7 @@ function setUpAuth(){ //AUTH
 			  resave: true,
 			  saveUninitialized: true
 		}));
+                              
 		app.use(flash());
 		app.use(passport.initialize());
 		app.use(passport.session());
