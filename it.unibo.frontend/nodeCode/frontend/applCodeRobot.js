@@ -89,7 +89,7 @@ if( withAuth ){
 	}));
 	} //+
 	app.get("/access", function(req, res, next) {	 
-		res.render("access");		 
+		res.redirect("/");		 
 	});
 	/*app.get("/logout", function(req, res) {
 	  req.logout();	//a new function added by Passport;
