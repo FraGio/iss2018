@@ -1,2 +1,1 @@
 plan(1,init, sentence(true,move(print("sonar 1 START")),'','' ))
-plan(2,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))

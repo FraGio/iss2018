@@ -12,10 +12,10 @@ model( type(actuator,leds), name(ledfisico), value(off) ).
 model( type(actuator,leds), name(ledhuelamp), value(off) ).
 model( type(data,timer), name(timevalue), value(10) ).
 model( type(data,temperature), name(temperaturevalue), value(25) ).
-model( type(status,robot), name(realRobotStatus), value(off) ).
-model( type(status,robot), name(virtualRobotStatus), value(off) ).
+model( type(status,robot), name(realrobotstatus), value(off) ).
+model( type(status,robot), name(virtualrobotstatus), value(off) ).
 
-realRobot :- false.
+realRobot :- true.
 virtualRobot :- true.
 
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-
@@ -40,7 +40,7 @@ eval( ge, X, V ) :- eval( gt, X , V ) .
  
 emitevent( EVID, EVCONTENT ) :- 
 	actorobj( Actor ), 
-	output( emit( Actor, EVID, EVCONTENT ) ),
+	%%output( emit( Actor, EVID, EVCONTENT ) ),
 	Actor <- emit( EVID, EVCONTENT ).
 %%%  initialize
 initResourceTheory :- output("initializing the initResourceTheory ...").

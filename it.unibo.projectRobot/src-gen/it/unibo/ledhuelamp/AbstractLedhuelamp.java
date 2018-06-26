@@ -77,7 +77,7 @@ public abstract class AbstractLedhuelamp extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"Inizializzazione led hue lamp\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForBlink
 	        switchToPlanAsNextState(pr, myselfName, "ledhuelamp_"+myselfName, 
 	              "waitForBlink",false, false, null); 

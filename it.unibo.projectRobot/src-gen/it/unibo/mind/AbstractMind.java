@@ -79,9 +79,6 @@ public abstract class AbstractMind extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn( myself  );
-	    	it.unibo.iss2018support.mqttUtils.mqttTools.init( myself  );
-	    	it.unibo.iss2018support.owmSupport.owmSupport.init( myself  );
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
@@ -182,9 +179,11 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"--> Ricevuto da utente comando di avvio\"";
+	    			temporaryStr = "\"!!!!! Ricevuto da utente comando di avvio\"";
 	    			println( temporaryStr );  
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
+	    			emit( "coreCmd", temporaryStr );
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,blink)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
@@ -194,7 +193,7 @@ public abstract class AbstractMind extends QActor {
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledhuelamp,blink)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
@@ -204,8 +203,6 @@ public abstract class AbstractMind extends QActor {
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
-	    			emit( "coreCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//onEvent 
@@ -216,11 +213,13 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"*****Ricevuto da utente comando di stop\"";
+	    			temporaryStr = "\"Ricevuto da utente comando di stop\"";
 	    			println( temporaryStr );  
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,off)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
@@ -230,7 +229,7 @@ public abstract class AbstractMind extends QActor {
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledhuelamp,off)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
@@ -242,9 +241,7 @@ public abstract class AbstractMind extends QActor {
 	    			}
 	    			};//actionseq
 	    	}
-	    	//switchTo doWork
-	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
-	              "doWork",false, false, null); 
+	    	repeatPlanNoTransition(pr,myselfName,"mind_"+myselfName,false,true);
 	    }catch(Exception e_robotCmdHandler){  
 	    	 println( getName() + " plan=robotCmdHandler WARNING:" + e_robotCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
@@ -283,7 +280,7 @@ public abstract class AbstractMind extends QActor {
 	    	String myselfName = "handleRoomSonarEvent";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("roomSonarEvent(\"sonar2\",DISTANCE)");
+	    	curT = Term.createTerm("roomSonarEvent(\"ROOM_S2\",DISTANCE)");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonarEvent") && 
 	    		pengine.unify(curT, Term.createTerm("roomSonarEvent(NAME,DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
