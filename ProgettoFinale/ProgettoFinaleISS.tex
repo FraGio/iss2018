@@ -467,6 +467,7 @@ In base all'analisi del problema sappiamo che è necessario utilizzare un sistema
 
 Comunicazione tra sensori e robot:\\
 Consideriamo l'ambiente virtuale, dotato di sensori di ambiente virtuali (sonar1 e sonar2), in quanto non disponiamo di sensori da applicare al mondo fisico. La comunicazione tra sensori virtuali e software di controllo viene realizzata tramite scambio di messaggi, con struttura(basata su linguaggio JSON) stabilita da chi ha realizzato l'infrastruttura virtuale (https://github.com/PierfrancescoSoffritti/configurable-threejs-app). Ci dovrà essere una entità di intermezzo che interpreta questi messaggi e li rimappa su eventi comprensibili dalla "mente".\\
+Analizzando l'ambiente virtuale messo a nostra disposizione scopriamo che i sonar posti nella stanza emettono eventi con un'alta frequenza, per cui decidiamo di inoltrare messaggi alla mente del robot solo quando ci sono variazioni nelle rilevazioni dei sonar stessi.\\
 Per quanto riguarda il sensore presente su robot fisico, riusciamo ad intercettare le rilevazioni fisiche del sonar, cioè gli ostacoli rilevati, ma dobbiamo rimappare questi eventi in una struttura a messaggi (attraverso infrastruttura mqtt), ed inviare questi messaggi alla "mente" del sistema.
 
 %===========================================================================
