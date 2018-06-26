@@ -133,13 +133,19 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    			aar = delayReactive(2000,"" , "");
 	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
 	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(2000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    			emit( "robotCmd", temporaryStr );
 	    			//delay  ( no more reactive within a plan)
 	    			aar = delayReactive(2000,"" , "");
 	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
 	    			if( ! aar.getGoon() ) return ;
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
 	    			emit( "robotCmd", temporaryStr );
 	    			};//actionseq
 	    	}

@@ -142,9 +142,9 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 %-------------------------------------------------
 %  User static rules about mind
 %------------------------------------------------- 
-limitTemperatureValue( 25).
-limitTimeValueMin( 7).
-limitTimeValueMax( 10).
+limitTemperatureValue( 35).
+limitTimeValueMin( 9).
+limitTimeValueMax( 19).
 changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite!!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")),emitevent( coreCmd,coreCmd( "STOP")).
 changedModelAction( timer,timevalue,T):-limitTimeValueMin( MIN),eval( le,T,MIN), ! ,output( "tempo fuori range MIN!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")),emitevent( coreCmd,coreCmd( "STOP")).
 changedModelAction( timer,timevalue,T):-limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "tempo fuori range MAX!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")),emitevent( coreCmd,coreCmd( "STOP")).

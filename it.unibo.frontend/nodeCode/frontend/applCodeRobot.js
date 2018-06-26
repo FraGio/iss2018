@@ -269,7 +269,7 @@ function actuate(cmd, newState, req, res ){
 	res.render("access");
 }
 var emitRobotCmd = function( cmd ){ //called by delegate;
- 	var eventstr = "msg(userCmd,event,js,none,usercmd(" +cmd + "),1)"
+ 	var eventstr = "msg(userCmd,event,js,none,userCmd(" +cmd + "),1)"
   		console.log("emits> "+ eventstr);
  		mqttUtils.publish( eventstr );	//topic  = "unibo/qasys";
 }

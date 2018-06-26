@@ -10,13 +10,13 @@ le risorse si dividono in due tipi, sensori ed attuatori
 
 model( type(actuator,leds), name(ledfisico), value(off) ).
 model( type(actuator,leds), name(ledhuelamp), value(off) ).
-model( type(data,timer), name(timevalue), value(1) ).
+model( type(data,timer), name(timevalue), value(10) ).
 model( type(data,temperature), name(temperaturevalue), value(25) ).
 model( type(status,robot), name(realRobotStatus), value(off) ).
 model( type(status,robot), name(virtualRobotStatus), value(off) ).
 
-%%realRobot.
-virtualRobot.
+realRobot :- false.
+virtualRobot :- true.
 
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-
 		model( type(TYPE, CATEG), name(NAME), value(VALUE) ).
