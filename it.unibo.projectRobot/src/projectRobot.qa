@@ -196,99 +196,14 @@ QActor movecorelogic context ctxRobot -pubsub {
   	Plan executionCoreCommand resumeLastPlan[
 		onEvent coreCmd : coreCmd ('STOP') -> {
 			println("MoveCore: fermo il robot!");
-			emit robotCmd : robotCmd ('STOP')	
+			javaRun it.unibo.iss2018support.robot.robot.stopActivity()
 		};
 		
 		onEvent coreCmd : coreCmd ('START') -> {
 			println("logica di movimento mette in movimento il robot");
-			delay 1000;
-			emit robotCmd : robotCmd ('d');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('d');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('d');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('a');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('a');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('d');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('d');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('a');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('a');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('w');
-			delay 1000;
-			emit robotCmd : robotCmd ('stop')
+			javaRun it.unibo.iss2018support.robot.robot.startActivity()
 		}
-	]
+	] 
 }
 
 
