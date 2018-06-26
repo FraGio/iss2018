@@ -17,7 +17,6 @@ var robotModel      = require('./appServer/models/robot');
 var User            = require("./appServer/models/user");
 var authRoutes      = require('./routes');
 var mqttUtils       ; 	//to be set later;
-var session         ; 	//to be set later for AUTH;
 var passport        ; 	//to be set later for AUTH;
 var setUpPassport   ; 	//to be set later for AUTH;
 var mongoose        ; 	//to be set later for AUTH;
@@ -69,6 +68,7 @@ if( withAuth ){
  * ====================== AUTH ================
  */	
  	app.get('/', function(req, res) {
+
  		if( withAuth ) {
 			res.render("login");
 		}
@@ -81,17 +81,17 @@ if( withAuth ){
 	});
 
 	if(passport) { //+
-	app.post("/login", passport.authenticate("login", {
+	app.post("/login", passport.authenticate("google", {
 		  successRedirect: "/access",			 
 		  failureRedirect: "/login",
 		  failureFlash: true
 		 
 	}));
 	} //+
-	app.get("/access", ensureAuthenticated, function(req, res, next) {	 
+	app.get("/access", function(req, res, next) {	 
 		res.render("access");		 
 	});
-	app.get("/logout", function(req, res) {
+	/*app.get("/logout", function(req, res) {
 	  req.logout();	//a new function added by Passport;
 	  res.redirect("/");
 	});
@@ -143,7 +143,7 @@ if( withAuth ){
 	    req.flash("info", "Profile updated!");
 	    res.redirect("/edit");
 	  });
-	});
+	});*/
 
 /*
  * ====================== COMMANDS ================
