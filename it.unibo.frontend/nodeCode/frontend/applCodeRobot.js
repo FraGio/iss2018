@@ -68,6 +68,7 @@ if( withAuth ){
  * ====================== AUTH ================
  */	
  	app.get('/', function(req, res) {
+		console.log("Auth???: " + req.isAuthenticated());
 
  		if( withAuth ) {
 			res.render("login");
