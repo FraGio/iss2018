@@ -3,5 +3,5 @@ plan(1,authenticateUser, sentence(true,move(print("Autenticazione tramite serviz
 plan(2,authenticateUser, sentence(true,delay( 1000) ,'','' ))
 plan(3,authenticateUser, sentence(true,move(print("Autenticazione riuscita")),'','' ))
 plan(1,waitForUserCommand, sentence(true,move(print("Attesa di comandi utente da GUI")),'','' ))
-plan(1,userCmdHandler, sentence(true,eventswitch(mockUserCmd, Â»mockUserCmd( "START"), not here StateMoveNormal ),'','' ))
-plan(2,userCmdHandler, sentence(true,eventswitch(mockUserCmd, Â»mockUserCmd( "STOP"), not here StateMoveNormal ),'','' ))
+plan(1,userCmdHandler, sentence(true,eventswitch(mockUserCmd, »mockUserCmd( "START"), not here StateMoveNormal ),'','' ))
+plan(2,userCmdHandler, sentence(true,eventswitch(mockUserCmd, »mockUserCmd( "STOP"), not here StateMoveNormal ),'','' ))

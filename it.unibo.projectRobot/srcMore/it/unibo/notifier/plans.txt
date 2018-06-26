@@ -1,2 +1,3 @@
 plan(1,init, sentence(true,move(print("Notifier START")),'','' ))
 plan(1,startPolling, sentence(true,delay( 60000) ,'','' ))
+plan(2,startPolling, sentence(true,not here StateMoveNormal,'','' ))

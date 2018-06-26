@@ -86,6 +86,9 @@ public abstract class AbstractMind extends QActor {
 	    	aar = delayReactive(3000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
 	    	if( ! aar.getGoon() ) return ;
+	    	it.unibo.iss2018support.mqttUtils.mqttTools.init( myself  );
+	    	it.unibo.iss2018support.owmSupport.owmSupport.init( myself  );
+	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn( myself  );
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
 	    	emit( "requestNotifier", temporaryStr );
 	     connectToMqttServer("tcp://localhost:1883");
@@ -181,8 +184,6 @@ public abstract class AbstractMind extends QActor {
 	    			{//actionseq
 	    			temporaryStr = "\"!!!!! Ricevuto da utente comando di avvio\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
-	    			emit( "coreCmd", temporaryStr );
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,blink)";
@@ -203,6 +204,8 @@ public abstract class AbstractMind extends QActor {
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
+	    			emit( "coreCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//onEvent 
@@ -215,8 +218,6 @@ public abstract class AbstractMind extends QActor {
 	    			{//actionseq
 	    			temporaryStr = "\"Ricevuto da utente comando di stop\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){

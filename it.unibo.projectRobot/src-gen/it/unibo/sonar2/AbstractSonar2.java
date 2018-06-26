@@ -76,6 +76,9 @@ public abstract class AbstractSonar2 extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"sonar 2 START\"";
 	    	println( temporaryStr );  
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo emitSonarEvent
 	        switchToPlanAsNextState(pr, myselfName, "sonar2_"+myselfName, 
@@ -91,6 +94,9 @@ public abstract class AbstractSonar2 extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarEvent",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "emitSonarEvent";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
+	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonar2( myself  );
+	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"sonar2_"+myselfName,true,false);
 	    }catch(Exception e_emitSonarEvent){  
 	    	 println( getName() + " plan=emitSonarEvent WARNING:" + e_emitSonarEvent.getMessage() );

@@ -113,7 +113,7 @@ public abstract class AbstractLedhuelamp extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("ledHueLampCmd") && 
 	    		pengine.unify(curT, Term.createTerm("ledHueLampCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"javaRun con blink led hue lamp...\"";
+	    			String parg = "\"Blink led hue lamp...\"";
 	    			/* Print */
 	    			parg =  updateVars( Term.createTerm("ledHueLampCmd(X)"), 
 	    			                    Term.createTerm("ledHueLampCmd(\"blink\")"), 
@@ -126,7 +126,7 @@ public abstract class AbstractLedhuelamp extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("ledHueLampCmd") && 
 	    		pengine.unify(curT, Term.createTerm("ledHueLampCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"javaRun per led hue lamp off...\"";
+	    			String parg = "\"Led hue lamp off...\"";
 	    			/* Print */
 	    			parg =  updateVars( Term.createTerm("ledHueLampCmd(X)"), 
 	    			                    Term.createTerm("ledHueLampCmd(\"off\")"), 

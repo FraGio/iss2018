@@ -113,12 +113,9 @@ public abstract class AbstractLed extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("ledCmd") && 
 	    		pengine.unify(curT, Term.createTerm("ledCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"javaRun con blink led...\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("ledCmd(X)"), 
-	    			                    Term.createTerm("ledCmd(\"blink\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.ledfis.led.blinkLed(this );
+	    			}
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -126,12 +123,9 @@ public abstract class AbstractLed extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("ledCmd") && 
 	    		pengine.unify(curT, Term.createTerm("ledCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"javaRun per led off...\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("ledCmd(X)"), 
-	    			                    Term.createTerm("ledCmd(\"off\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.ledfis.led.stopLed(this );
+	    			}
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"led_"+myselfName,false,true);
 	    }catch(Exception e_handleLedCmd){  

@@ -109,16 +109,53 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    	String myselfName = "executionRobotCmdHandler";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(X)");
+	    	curT = Term.createTerm("robotCmd(\"w\")");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "X";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotCmd(Y)"), 
-	    			                    Term.createTerm("robotCmd(X)"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotForward(this );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"s\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotBackward(this );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"a\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotLeft(this );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"d\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotRight(this );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"stop\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotStop(this );
+	    			}
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"virtualrobot_"+myselfName,false,true);
 	    }catch(Exception e_executionRobotCmdHandler){  

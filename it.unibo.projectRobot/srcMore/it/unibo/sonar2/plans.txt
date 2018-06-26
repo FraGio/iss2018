@@ -1,1 +1,3 @@
 plan(1,init, sentence(true,move(print("sonar 2 START")),'','' ))
+plan(2,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
+plan(1,emitSonarEvent, sentence( virtualRobot,not here StateMoveNormal,'','' ))

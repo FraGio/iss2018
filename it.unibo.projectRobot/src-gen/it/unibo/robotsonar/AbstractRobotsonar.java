@@ -76,6 +76,9 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"sonar robot START\"";
 	    	println( temporaryStr );  
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo emitSonarRobotEvent
 	        switchToPlanAsNextState(pr, myselfName, "robotsonar_"+myselfName, 
@@ -91,6 +94,9 @@ public abstract class AbstractRobotsonar extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarRobotEvent",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "emitSonarRobotEvent";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
+	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,true,false);
 	    }catch(Exception e_emitSonarRobotEvent){  
 	    	 println( getName() + " plan=emitSonarRobotEvent WARNING:" + e_emitSonarRobotEvent.getMessage() );

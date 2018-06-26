@@ -129,6 +129,18 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    			{//actionseq
 	    			temporaryStr = "\"logica di movimento mette in movimento il robot\"";
 	    			println( temporaryStr );  
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(2000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(2000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,false);
