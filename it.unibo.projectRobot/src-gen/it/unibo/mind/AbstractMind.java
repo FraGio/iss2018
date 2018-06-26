@@ -283,7 +283,7 @@ public abstract class AbstractMind extends QActor {
 	    	String myselfName = "handleRoomSonarEvent";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("roomSonarEvent(\"ROOM_S2\",DISTANCE)");
+	    	curT = Term.createTerm("roomSonarEvent(\"sonar2\",DISTANCE)");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonarEvent") && 
 	    		pengine.unify(curT, Term.createTerm("roomSonarEvent(NAME,DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 

@@ -135,7 +135,7 @@ QActor mind context ctxRobot -pubsub {
 	
 	//gestione degli eventi che provengono dai sonar presenti nella stanza
 	Plan handleRoomSonarEvent [
-		onEvent roomSonarEvent: roomSonarEvent("ROOM_S2", DISTANCE) 
+		onEvent roomSonarEvent: roomSonarEvent("sonar2", DISTANCE) 
 			-> {
 				println("Robot rilevato da sonar stanza n.2...fermo il robot");
 				emit robotCmd : robotCmd ('STOP');
@@ -201,11 +201,91 @@ QActor movecorelogic context ctxRobot -pubsub {
 		
 		onEvent coreCmd : coreCmd ('START') -> {
 			println("logica di movimento mette in movimento il robot");
-			delay 2000;
-			emit robotCmd : robotCmd ('a');
-			delay 2000;
+			delay 1000;
+			emit robotCmd : robotCmd ('d');
+			delay 1000;
 			emit robotCmd : robotCmd ('w');
-			delay 2000;
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('d');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('d');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('a');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('a');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('d');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('d');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('a');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('a');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
+			emit robotCmd : robotCmd ('w');
+			delay 1000;
 			emit robotCmd : robotCmd ('stop')
 		}
 	]

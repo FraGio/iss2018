@@ -32,7 +32,7 @@ public class handleJsonEventRoom {
 	public static void sendCmd(String msg) throws Exception {
 		if (outToServer == null)
 			return;
-		String jsonString = "{ 'type': '" + msg + "', 'arg': 800 }";
+		String jsonString = "{ 'type': '" + msg + "', 'arg': 250 }";
 		JSONObject jsonObject = new JSONObject(jsonString);
 		msg = sep + jsonObject.toString() + sep;
 		System.out.println("sending msg=" + msg);

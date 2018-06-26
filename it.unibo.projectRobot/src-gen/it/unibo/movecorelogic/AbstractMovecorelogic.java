@@ -132,19 +132,259 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    			temporaryStr = "\"logica di movimento mette in movimento il robot\"";
 	    			println( temporaryStr );  
 	    			//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(2000,"" , "");
+	    			aar = delayReactive(1000,"" , "");
 	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
 	    			if( ! aar.getGoon() ) return ;
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
 	    			emit( "robotCmd", temporaryStr );
 	    			//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(2000,"" , "");
+	    			aar = delayReactive(1000,"" , "");
 	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
 	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    			emit( "robotCmd", temporaryStr );
 	    			//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(2000,"" , "");
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
 	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
 	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
