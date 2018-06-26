@@ -49,7 +49,7 @@ app.use(express.static(path.join(__dirname, 'jsCode')))
 
 app.use('/', authRoutes);
 
-var externalActuator = false;	//when true, the application logic is external to the server;
+var externalActuator = true;	//when true, the application logic is external to the server;
 var withAuth         = true;   //dice che non vuole appoggiarsi alla struttura di autenticazione
 
 if( externalActuator ) mqttUtils  = require('./uniboSupports/mqttUtils');
@@ -148,7 +148,7 @@ if( withAuth ){
 /*
  * ====================== COMMANDS ================
  */
-	app.post("/robot/actions/commands/appl", function(req, res) {
+	/*app.post("/robot/actions/commands/appl", function(req, res) {
 		console.info("START THE APPLICATION "   );
 		if( externalActuator ) delegate( "x(low)", "application", req, res);
  	});	
@@ -173,6 +173,17 @@ if( withAuth ){
 	app.post("/robot/actions/commands/h", function(req, res) {
   		if( externalActuator ) delegate( "h(low)", "stopped", req, res );
 		else actuate( `{  "type": "alarm",  "arg": 1000 }`, "server stopped", req, res);
+	});*/
+
+	app.post("/robot/actions/commands/start", function(req, res) {
+		console.info("START ROBOT ACTIVITY "   );
+		if( externalActuator ) delegate( "START", "application", req, res);
+ 	});	
+
+	app.post("/robot/actions/commands/stop", function(req, res) {
+		console.info("STOP ROBOT ACTIVITY "   );
+		if( externalActuator ) delegate( "STOP", "application", req, res);
+		
 	});		
 	
 	/*
@@ -257,7 +268,7 @@ function actuate(cmd, newState, req, res ){
 	res.render("access");
 }
 var emitRobotCmd = function( cmd ){ //called by delegate;
- 	var eventstr = "msg(usercmd,event,js,none,usercmd(robotgui( " +cmd + ")),1)"
+ 	var eventstr = "msg(userCmd,event,js,none,usercmd(" +cmd + "),1)"
   		console.log("emits> "+ eventstr);
  		mqttUtils.publish( eventstr );	//topic  = "unibo/qasys";
 }
