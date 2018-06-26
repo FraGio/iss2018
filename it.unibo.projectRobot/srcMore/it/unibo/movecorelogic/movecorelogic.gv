@@ -11,10 +11,10 @@ digraph finite_state_machine {
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
 	waitForStart [ color = black ][ fontcolor = black ][ penwidth = 3 ]
-	executionCoreCommand [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
+	executionCoreCommand [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	
 	waitForStart -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
-	waitForStart -> executionCoreCommand [ label = "coreCmd" ][ color = black ][ fontcolor = black ]
+	waitForStart -> executionCoreCommand [ label = "coreCmd" ][ color = red ][ fontcolor = red ][ dir = both ]
 	waitForStart -> waitForStart [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	init -> waitForStart [ label = "switch" ][ color = black ][ fontcolor = black ]
 }

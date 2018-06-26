@@ -216,7 +216,7 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Ricevuto da utente comando di stop\"";
+	    			temporaryStr = "\"*****Ricevuto da utente comando di stop\"";
 	    			println( temporaryStr );  
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
@@ -242,7 +242,9 @@ public abstract class AbstractMind extends QActor {
 	    			}
 	    			};//actionseq
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"mind_"+myselfName,false,true);
+	    	//switchTo doWork
+	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
+	              "doWork",false, false, null); 
 	    }catch(Exception e_robotCmdHandler){  
 	    	 println( getName() + " plan=robotCmdHandler WARNING:" + e_robotCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

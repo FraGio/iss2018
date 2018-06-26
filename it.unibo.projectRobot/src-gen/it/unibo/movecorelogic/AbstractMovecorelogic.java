@@ -113,11 +113,13 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
 	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg="robotCmd(\"STOP\")";
-	    			/* RaiseEvent */
-	    			parg = updateVars(Term.createTerm("coreCmd(Z)"),  Term.createTerm("coreCmd(\"STOP\")"), 
-	    				    		  					Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) emit( "robotCmd", parg );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "\"MoveCore: fermo il robot!\"";
+	    			println( temporaryStr );  
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -149,7 +151,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    			emit( "robotCmd", temporaryStr );
 	    			};//actionseq
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,false);
+	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,true);
 	    }catch(Exception e_executionCoreCommand){  
 	    	 println( getName() + " plan=executionCoreCommand WARNING:" + e_executionCoreCommand.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

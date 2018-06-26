@@ -108,11 +108,11 @@ public abstract class AbstractNotifier extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_startPolling",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "startPolling";  
+	    	it.unibo.iss2018support.owmSupport.owmSupport.acquireValues( myself  );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(60000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "startPolling";
 	    	if( ! aar.getGoon() ) return ;
-	    	it.unibo.iss2018support.owmSupport.owmSupport.acquireValues( myself  );
 	    	repeatPlanNoTransition(pr,myselfName,"notifier_"+myselfName,true,false);
 	    }catch(Exception e_startPolling){  
 	    	 println( getName() + " plan=startPolling WARNING:" + e_startPolling.getMessage() );

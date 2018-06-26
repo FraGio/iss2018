@@ -94,7 +94,7 @@ QActor mind context ctxRobot -pubsub {
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
 	]switchTo doWork
 	
-	Plan robotCmdHandler resumeLastPlan[
+	Plan robotCmdHandler [
 		onEvent userCmd : userCmd('START') -> {
 			println("--> Ricevuto da utente comando di avvio");
 			
@@ -111,7 +111,7 @@ QActor mind context ctxRobot -pubsub {
 			emit coreCmd : coreCmd('START')
 		};
 		onEvent userCmd : userCmd('STOP') -> {
-			println("Ricevuto da utente comando di stop");
+			println("*****Ricevuto da utente comando di stop");
 			emit coreCmd : coreCmd('STOP');
 			
 			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
@@ -125,6 +125,7 @@ QActor mind context ctxRobot -pubsub {
 			}
 		}
 	]
+	switchTo doWork
 	
 	//gestione degli eventi che provengono dal sonar posto sul robot
 	Plan handleRobotSonarEvent [
@@ -140,6 +141,7 @@ QActor mind context ctxRobot -pubsub {
 				emit robotCmd : robotCmd ('STOP');
 				emit coreCmd : coreCmd('STOP')
 			}
+			
 	]switchTo doWork
 }
 
@@ -191,8 +193,11 @@ QActor movecorelogic context ctxRobot -pubsub {
   		whenEvent coreCmd -> executionCoreCommand
   	finally repeatPlan 
   	
-  	Plan executionCoreCommand [
-		onEvent coreCmd : coreCmd ('STOP') -> emit robotCmd : robotCmd ('STOP');
+  	Plan executionCoreCommand resumeLastPlan[
+		onEvent coreCmd : coreCmd ('STOP') -> {
+			println("MoveCore: fermo il robot!");
+			emit robotCmd : robotCmd ('STOP')	
+		};
 		
 		onEvent coreCmd : coreCmd ('START') -> {
 			println("logica di movimento mette in movimento il robot");
@@ -301,8 +306,8 @@ QActor notifier context ctxRobot -pubsub {
   	finally repeatPlan   
   	
   	Plan startPolling [
-  		delay 60000;
-  		javaRun it.unibo.iss2018support.owmSupport.owmSupport.acquireValues()
+  		javaRun it.unibo.iss2018support.owmSupport.owmSupport.acquireValues();
+  		delay 60000
 	]
 	finally repeatPlan
 	

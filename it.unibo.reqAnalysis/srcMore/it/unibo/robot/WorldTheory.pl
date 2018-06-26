@@ -144,10 +144,6 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 %------------------------------------------------- 
 limitTemperatureValue( 25).
 changedModelAction( temperature,tempAmbiente,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite"),emitevent( robotCmd,robotCmd( "STOP")).
-limitTimeValueMin( 7).
-limitTimeValueMax( 10).
-changedModelAction( timee,timeData,T):-limitTimeValueMin( MIN),limitTimeValueMax( MAX),eval( le,T,MIN), ! ,output( "tempo fuori range"),emitevent( robotCmd,robotCmd( "STOP")).
-changedModelAction( timee,timeData,T):-limitTimeValueMin( MIN),limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "tempo fuori range"),emitevent( robotCmd,robotCmd( "STOP")).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

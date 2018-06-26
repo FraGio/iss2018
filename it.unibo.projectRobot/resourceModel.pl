@@ -40,7 +40,7 @@ eval( ge, X, V ) :- eval( gt, X , V ) .
  
 emitevent( EVID, EVCONTENT ) :- 
 	actorobj( Actor ), 
-	%%output( emit( Actor, EVID, EVCONTENT ) ),
+	output( emit( Actor, EVID, EVCONTENT ) ),
 	Actor <- emit( EVID, EVCONTENT ).
 %%%  initialize
 initResourceTheory :- output("initializing the initResourceTheory ...").

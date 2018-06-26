@@ -10,7 +10,7 @@ var logger       	= require('morgan');	//see 10.1 of nodeExpressWeb.pdf;
 var cookieParser 	= require('cookie-parser');
 var bodyParser   	= require('body-parser');
 var fs           	= require('fs');
-var toRobot         = require("./jsCode/clientRobotVirtual");
+//var toRobot         = require("./jsCode/clientRobotVirtual");
 var serverWithSocket= require('./robotFrontendServer');
 var cors            = require('cors');
 var robotModel      = require('./appServer/models/robot');
@@ -264,12 +264,12 @@ function delegate( hlcmd, newState, req, res ){
     res.render("access");	
 }
 function actuate(cmd, newState, req, res ){
-	toRobot.send( cmd );
+	/*toRobot.send( cmd );
 	robotModel.robot.state = newState;
-	res.render("access");
+	res.render("access");*/
 }
 var emitRobotCmd = function( cmd ){ //called by delegate;
- 	var eventstr = "msg(userCmd,event,js,none,userCmd(" +cmd + "),1)"
+ 	var eventstr = "msg(userCmd,event,js,none,userCmd('" +cmd + "'),1)"
   		console.log("emits> "+ eventstr);
  		mqttUtils.publish( eventstr );	//topic  = "unibo/qasys";
 }
