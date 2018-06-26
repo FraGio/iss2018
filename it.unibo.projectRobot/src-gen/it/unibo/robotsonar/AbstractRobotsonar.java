@@ -56,7 +56,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
-	    	stateTab.put("emitRobotCmd",emitRobotCmd);
+	    	stateTab.put("emitSonarRobotEvent",emitSonarRobotEvent);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -77,41 +77,26 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	temporaryStr = "\"sonar robot START\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
-	    	//switchTo emitRobotCmd
+	    	//switchTo emitSonarRobotEvent
 	        switchToPlanAsNextState(pr, myselfName, "robotsonar_"+myselfName, 
-	              "emitRobotCmd",false, false, null); 
+	              "emitSonarRobotEvent",false, false, null); 
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
 	    
-	    StateFun emitRobotCmd = () -> {	
+	    StateFun emitSonarRobotEvent = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("emitRobotCmd",-1);
-	    	String myselfName = "emitRobotCmd";  
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(17000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
-	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(10)", guardVars ).toString();
-	    	emit( "robotSonarEvent", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(14000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
-	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(13)", guardVars ).toString();
-	    	emit( "robotSonarEvent", temporaryStr );
-	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,false,false);
-	    }catch(Exception e_emitRobotCmd){  
-	    	 println( getName() + " plan=emitRobotCmd WARNING:" + e_emitRobotCmd.getMessage() );
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarRobotEvent",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "emitSonarRobotEvent";  
+	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,true,false);
+	    }catch(Exception e_emitSonarRobotEvent){  
+	    	 println( getName() + " plan=emitSonarRobotEvent WARNING:" + e_emitSonarRobotEvent.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//emitRobotCmd
+	    };//emitSonarRobotEvent
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

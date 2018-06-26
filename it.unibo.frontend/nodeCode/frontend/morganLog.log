@@ -10465,3 +10465,7 @@
 ::ffff:127.0.0.1 - GET /auth/google HTTP/1.1 302 0 - 1.984 ms
 ::1 - GET / HTTP/1.1 304 - - 35.752 ms
 ::1 - GET /auth/google HTTP/1.1 302 0 - 6.193 ms
+::ffff:127.0.0.1 - GET / HTTP/1.1 304 - - 97.170 ms
+::ffff:127.0.0.1 - GET /auth/google HTTP/1.1 302 0 - 7.050 ms
+::ffff:127.0.0.1 - GET /access?code=4/AAAre87i5EsQb3o9NLwdYCLhUiTkvy6-WvZRQYrFM9N9Jlq-68PLgMZ5hdFHObd69BPrZ45-22STeeEoKaNzDC0 HTTP/1.1 302 56 - 26.180 ms
+::ffff:127.0.0.1 - GET /login HTTP/1.1 200 351 - 3.149 ms

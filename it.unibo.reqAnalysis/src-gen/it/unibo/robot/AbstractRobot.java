@@ -122,7 +122,7 @@ public abstract class AbstractRobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Robot attivia'  avviata\"";
+	    			temporaryStr = "\"Robot attivia'ï¿½ avviata\"";
 	    			println( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
 	    			temporaryStr = "\"Robot fisico: blink led\"";
@@ -162,7 +162,7 @@ public abstract class AbstractRobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Robot attivia'  arrestata\"";
+	    			temporaryStr = "\"Robot attivia'ï¿½ arrestata\"";
 	    			println( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
 	    			temporaryStr = "\"Robot fisico: STOP blink led\"";

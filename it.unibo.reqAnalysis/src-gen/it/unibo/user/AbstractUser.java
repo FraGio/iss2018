@@ -74,9 +74,8 @@ public abstract class AbstractUser extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"sonar 2 START\"";
+	    	temporaryStr = "\"utente START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost");
 	    	//switchTo simulateClick
 	        switchToPlanAsNextState(pr, myselfName, "user_"+myselfName, 
 	              "simulateClick",false, false, null); 
@@ -91,13 +90,21 @@ public abstract class AbstractUser extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp("simulateClick",-1);
 	    	String myselfName = "simulateClick";  
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(15000,"" , "");
+	    	aar = delayReactive(5000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "simulateClick";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"Sonar2: robot rilevato\"";
+	    	temporaryStr = "\"Simulazione comando utente START da GUI\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(X)","robotCmd(\"STOP\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"START\")", guardVars ).toString();
+	    	emit( "userCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(5000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "simulateClick";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "\"Simulazione comando utente STOP da GUI\"";
+	    	println( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
+	    	emit( "userCmd", temporaryStr );
 	    	repeatPlanNoTransition(pr,myselfName,"user_"+myselfName,false,false);
 	    }catch(Exception e_simulateClick){  
 	    	 println( getName() + " plan=simulateClick WARNING:" + e_simulateClick.getMessage() );

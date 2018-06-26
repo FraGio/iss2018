@@ -1,0 +1,4 @@
+plan(1,init, sentence(true,move(print("Inizializzazione led hue lamp")),'','' ))
+plan(1,handleLedHueLampCmd, sentence(true,eventswitch(ledHueLampCmd, Â»ledHueLampCmd( "blink"), move(print("javaRun con blink led hue lamp...")) ),'','' ))
+plan(2,handleLedHueLampCmd, sentence(true,eventswitch(ledHueLampCmd, Â»ledHueLampCmd( "off"), move(print("javaRun per led hue lamp off...")) ),'','' ))
+plan(3,handleLedHueLampCmd, sentence(true,move(resumeplan),'','' ))

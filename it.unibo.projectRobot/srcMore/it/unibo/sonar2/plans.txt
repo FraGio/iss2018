@@ -1,4 +1,1 @@
 plan(1,init, sentence(true,move(print("sonar 2 START")),'','' ))
-plan(1,emitRobotCmd, sentence(true,delay( 45000) ,'','' ))
-plan(2,emitRobotCmd, sentence(true,move(print("Sonar2: robot rilevato")),'','' ))
-plan(3,emitRobotCmd, sentence(true,raise( roomSonarEvent , roomSonarEvent( "ROOM_S2",5) )'),'','' ))

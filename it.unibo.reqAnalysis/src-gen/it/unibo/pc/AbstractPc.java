@@ -78,7 +78,6 @@ public abstract class AbstractPc extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"pc START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost");
 	    	//switchTo authenticateUser
 	        switchToPlanAsNextState(pr, myselfName, "pc_"+myselfName, 
 	              "authenticateUser",false, false, null); 
@@ -153,9 +152,7 @@ public abstract class AbstractPc extends QActor {
 	    			emit( "robotCmd", temporaryStr );
 	    			};//actionseq
 	    	}
-	    	//switchTo waitForUserCommand
-	        switchToPlanAsNextState(pr, myselfName, "pc_"+myselfName, 
-	              "waitForUserCommand",false, false, null); 
+	    	repeatPlanNoTransition(pr,myselfName,"pc_"+myselfName,false,false);
 	    }catch(Exception e_userCmdHandler){  
 	    	 println( getName() + " plan=userCmdHandler WARNING:" + e_userCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
