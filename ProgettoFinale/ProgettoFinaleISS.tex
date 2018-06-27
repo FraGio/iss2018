@@ -328,14 +328,15 @@ Una strada alternativa, senza utilizzare la rete internet, sarebbe quella di uti
 La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni di temperatura da un servizio esterno. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva.\\
 
 
-Analisi tempo:\\
+Analisi orario:\\
 Sappiamo, dall'analisi dei requisiti, che esiste un "current clock time"; Esso può essere inteso come orologio interno al robot, oppure un orologio esterno come l'orologio del sistema pc/smartphone oppure quello di un servizio esterno.\\
 Utilizzando il clock interno al robot evitiamo di dover effettuare richieste tramite rete internet, e miglioriamo l'efficienza ma bisogna fare attenzione che il clock interno sia allineato con quello della città nel quale il robot opera.
 Nel caso reperissimo i dati dell'orario da un servizio esterno potremmo considerare o il fuso orario del robot o quello del pc/smartphone (sotto l'ipotesi che siano in due ambienti a fuso orario diverso). Nel caso fossero in due ambienti sotto due fusi orari diversi, si considera ragionevole considerare il fuso orario del robot come quello valido. 
 Si mettono in evidenza due strade principali per affrontare il problema di gestire il requisito sul tempo: la prima è quella di sfruttare un'interazione a polling, cioè dove il robot prende l'iniziativa e richiede periodicamente il tempo o al pc/smartphone o ad un servizio esterno (es. servizio web).\\
 Una seconda opzione può essere quella di far arrivare i valori al robot in maniera periodica (o di valori temporali fuori range), quindi il robot dovrà predisporsi per ricevere. L'invio dei dati, in questo caso, sarebbe a carico del pc/smartphone.\\
 Quest'ultimo approccio sposterebbe parte della logica applicativa sul pc/smartphone, in più, in caso di perdita di comunicazione tra GUI e robot, sarebbe compromessa la verifica del valore del tempo richiesta nei requisiti.\\
-La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni sul tempo da un servizio esterno, anche in relazione al fatto che facciamo già polling per reperire la temperatura, quindi si può pensare di rivolgersi ad un servizio metereologico che fornisca entrambe le informazioni. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva. \\\\
+La nostra scelta ricade sull'utilizzo dell'orario interno al robot, in modo da migliorare l'efficienza ed evitare di fare affidamento a servizi esterni, in quanto sappiamo che il robot dispone di un proprio orario locale. Si può pensare, in futuro, di integrare un meccanismo di modifica dell'orario interno del robot tramite interfaccia GUI.
+%%La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni sul tempo da un servizio esterno, anche in relazione al fatto che facciamo già polling per reperire la temperatura, quindi si può pensare di rivolgersi ad un servizio metereologico che fornisca entrambe le informazioni. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva. \\\\
 
 Nel caso di perdita di comunicazione con il servizio che fornisce orario (e temperatura) si decide che il robot non potrà avviare la propria attività.\\
 Per quanto riguarda la frequenza di aggiornamento dei suddetti valori, sebbene il committente non abbia espresso vincoli a riguardo decidiamo di considerare come intervallo massimo consentito quello di 10 minuti. In fase di progetto si concretizzerà il tempo specifico di intervallo di aggiornamento.\\
@@ -377,7 +378,7 @@ Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale v
 
 Costi:\\
 E' necessario fare una valutazione delle spese e dei costi da affrontare.\\
-Per l'utilizzo dell'infrastruttura meteo e orario è stato valutato di utilizzare un servizio esterno, che offre diverse soluzioni di scalabilità (e di conseguenza costi) in base al n° di richieste effettuate al minuto. Per riferimento vedere https://www.openweathermap.org/price.\\
+Per l'utilizzo dell'infrastruttura meteo è stato valutato di utilizzare un servizio esterno (OpenWeatherMap), che offre diverse soluzioni di scalabilità (e di conseguenza costi) in base al n° di richieste effettuate al minuto. Per riferimento vedere https://www.openweathermap.org/price.\\
 Un'altra valutazione economica è quella del servizio di host del server frontend. Appoggiandoci a un servizio come Amazon AWS abbiamo vantaggi dal punto di vista della scalabilità e costi crescenti agli utenti. Per riferimento costi vedere https://aws.amazon.com/it/ec2/pricing/on-demand/.\\
 Per dotare il robot Mbot di un modulo middleware si rende opportuno l'acquisto  e l'utilizzo di un dispositivo Raspberry montato e collegato con il robot (https://www.raspberrypi.org/products/raspberry-pi-3-model-b/).
 
@@ -396,7 +397,8 @@ Elenchiamo i rischi collegati alle valutazioni fatte in fase di analisi del prob
 \begin{itemize}
 	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione tra pc/smarpthone e servizio esterno. L'utilizzo di sistemi di accesso esterni potrebbe ridurre questo rischio.
 	\item Temperatura: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio metereologico, oltre che la sola caduta del servizio considerato. 
-	\item Orario: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio "timestamp", oltre che la sola caduta del servizio considerato.
+	\item Orario: utilizzando l'orario interno al robot possono esserci disallineamenti sull'orario in caso di spostamento del robot in una città con fuso orario diverso rispetto a quello con cui il robot è configurato. Una soluzione potrebbe essere quella di permettere la modifica dell'orario interno al robot tramite interfaccia GUI.
+	%%l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio "timestamp", oltre che la sola caduta del servizio considerato.
 	\item Led Hue Lamp: la perdita della connessione alla rete da parte del robot, potrebbe impedire l'accensione, o lo spegnimento, della lampada
 	\item Ostacoli: possono esserci ostacoli imprevisti che compromettono la corretta esecuzione dell'attività del robot (caduta oggetti)
 \end{itemize}
@@ -427,7 +429,7 @@ Punti aperti dalla fase di analisi del problema:
 \item Come rilevare ed evitare gli ostacoli?
 \item Come comunicare con led e led hue lamp?
 \item Come comunicare con provider esterni e quale provider utilizzare?
-\item Con quale frequenza interrogare il provider di temperatura e orario?
+\item Con quale frequenza interrogare il provider di temperatura o controllare l'orario?
 \item Quale protocollo utilizzare per comunicazione tra server e robot?
 \item Come comunicano i sensori presenti nella stanza con il robot?
 \end{itemize}
@@ -459,8 +461,9 @@ Come servizio per reperire informazioni su meteo ed orario si utilizza OpenWeath
 Per richiedere i dati occorre formulare richieste in un determinato formato (https://www.openweathermap.org/current). \\
 La struttura dei dati ricevuta è in formato JSON, a noi interessano i campi "dt", cioè il tempo espresso in Unix Epoch Clock che occorrerà convertire, e il campo "main"."temp" che identifica la temperatura attuale. Occorre specificare, tramite parametro dell'API, se ricevere dati in formato Celsius o Fahrenheit.
 
-Frequenza di interrogazione provider meteo/orario:\\
-Dall'analisi del problema sappiamo di avere un vincolo di massimo 10 minuti di attesa tra una richiesta e la seguente. Di conseguenza decidiamo di effettuare almeno una richiesta ogni minuto, fino ad un massimo di una richiesta al secondo, in modo da tenere opportunamente aggiornate le informazioni del modello logico.
+Frequenza di interrogazione provider meteo / controllo orario:\\
+Dall'analisi del problema sappiamo di avere un vincolo di massimo 10 minuti di attesa tra una richiesta e la seguente. Di conseguenza decidiamo di effettuare almeno una richiesta ogni minuto, fino ad un massimo di una richiesta al secondo, in modo da tenere opportunamente aggiornate le informazioni del modello logico.\\
+Applicheremo gli stessi vincoli di frequenza anche al controllo sull'orario.\\
 
 Protocollo per comunicazione frontend server - robot:\\
 In base all'analisi del problema sappiamo che è necessario utilizzare un sistema a scambio di messaggi. La nostra scelta ricade sul protocollo Mqtt, in quanto si può sfruttare un'infrastruttura locale di supporto (Mosquitto Broker) oppure un'infrastruttura esterna (https://www.hivemq.com/blog/mqtt-essentials-part-3-client-broker-connection-establishment).
