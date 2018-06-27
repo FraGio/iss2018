@@ -149,12 +149,18 @@ QActor mind context ctxRobot -pubsub {
 	
 	//gestione degli eventi che provengono dai sonar presenti nella stanza
 	Plan handleRoomSonarEvent [
-		onEvent roomSonarEvent: roomSonarEvent("sonar2", DISTANCE) 
+		onEvent roomSonarEvent: roomSonarEvent("sonar2", 3) 
 			-> {
-				println("Robot rilevato da sonar stanza n.2...fermo il robot");
+				println("Robot VICINISSIMO a sonar stanza n.2...fermo il robot");
 				emit userCmd : userCmd('STOP')
 				
+			};
+		onEvent roomSonarEvent: roomSonarEvent("sonar2", DISTANCE) 
+			-> {
+				println("Robot rilevato da sonar stanza n.2...");
+				emit coreCmd : coreCmd('muroSonar2')
 			}
+		
 			
 	]switchTo doWork
 }
@@ -222,38 +228,55 @@ QActor movecorelogic context ctxRobot -pubsub {
   			onEvent coreCmd : coreCmd('STOP') -> { 
   				removeRule robotCanMove;
   				delay 1000
+  			};
+  			onEvent coreCmd : coreCmd('uroSonar2') -> {
+  				addRule sonar2Reached;
+  				removeRule robotCanMove;
+  				delay 500
   			}
-	] transition whenTime 2000 -> move1
+	] transition whenTime 2000 -> forwardPlan
 		whenEvent coreCmd -> executionCoreCommand
 	finally repeatPlan
 	
-	Plan move1 [
-			[!? robotCanMove]
-				emit robotCmd : robotCmd('w')
-	] transition whenTime 2000-> move2
-		whenEvent coreCmd -> executionCoreCommand
-	finally repeatPlan
 	
-	Plan move2 [
+	//pianificatore prossima mossa
+	Plan forwardPlan resumeLastPlan[
+		
+		//mossa in avanti
 			[!? robotCanMove]
-				emit robotCmd : robotCmd('a')
-	] transition whenTime 2000-> move3
-		whenEvent coreCmd -> executionCoreCommand
-	finally repeatPlan
-	
-	Plan move3 [
-			[!? robotCanMove]
-				emit robotCmd : robotCmd('w')
-	] transition whenTime 2000-> move4
-		whenEvent coreCmd -> executionCoreCommand
-	finally repeatPlan
-	
-	Plan move4 [
-			[!? robotCanMove]
-				emit robotCmd : robotCmd('d')
-	] transition whenTime 2000-> executionCoreCommand
-		whenEvent coreCmd -> executionCoreCommand
-	finally repeatPlan
+				emit robotCmd : robotCmd('w'); 
+				
+		//svolta sinistra
+			[!? sonar2Reached]{
+				[!? goDown]{
+					emit robotCmd : robotCmd('a');
+					delay 500; 
+					emit robotCmd : robotCmd('w');
+					delay 500; 
+					emit robotCmd : robotCmd('a');
+					delay 500; 
+					removeRule sonar2Reached;
+					addRule robotCanMove;
+					removeRule goDown;
+					addRule goUp	
+				
+				}
+			};
+			
+			//svolta a destra
+			[!? goUp]{
+				emit robotCmd : robotCmd('d');
+				delay 500; 
+				emit robotCmd : robotCmd('w');
+				delay 500; 
+				emit robotCmd : robotCmd('d');
+				delay 500; 
+				addRule robotCanMove;
+				addRule goDown;
+				removeRule goUp
+			}
+				
+	]
 }
 
 

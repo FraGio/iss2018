@@ -58,10 +58,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForStart",waitForStart);
 	    	stateTab.put("executionCoreCommand",executionCoreCommand);
-	    	stateTab.put("move1",move1);
-	    	stateTab.put("move2",move2);
-	    	stateTab.put("move3",move3);
-	    	stateTab.put("move4",move4);
+	    	stateTab.put("forwardPlan",forwardPlan);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -152,96 +149,111 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    			if( ! aar.getGoon() ) return ;
 	    			};//actionseq
 	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("coreCmd(\"uroSonar2\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
+	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "sonar2Reached";
+	    			addRule( temporaryStr );  
+	    			temporaryStr = "robotCanMove";
+	    			removeRule( temporaryStr );  
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(500,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "executionCoreCommand";
+	    			if( ! aar.getGoon() ) return ;
+	    			};//actionseq
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
 	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
 	          new String[]{"true","E","coreCmd" },
-	          2000, "move1" );//msgTransition
+	          2000, "forwardPlan" );//msgTransition
 	    }catch(Exception e_executionCoreCommand){  
 	    	 println( getName() + " plan=executionCoreCommand WARNING:" + e_executionCoreCommand.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//executionCoreCommand
 	    
-	    StateFun move1 = () -> {	
+	    StateFun forwardPlan = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_move1",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "move1";  
+	     PlanRepeat pr = PlanRepeat.setUp("forwardPlan",-1);
+	    	String myselfName = "forwardPlan";  
 	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?robotCanMove" )) != null ){
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
 	    	}
-	    	//bbb
-	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
-	          new String[]{"true","E","coreCmd" },
-	          2000, "move2" );//msgTransition
-	    }catch(Exception e_move1){  
-	    	 println( getName() + " plan=move1 WARNING:" + e_move1.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//move1
-	    
-	    StateFun move2 = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_move2",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "move2";  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?robotCanMove" )) != null ){
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?sonar2Reached" )) != null ){
+	    	{//actionseq
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?goDown" )) != null ){
+	    	{//actionseq
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
-	    	}
-	    	//bbb
-	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
-	          new String[]{"true","E","coreCmd" },
-	          2000, "move3" );//msgTransition
-	    }catch(Exception e_move2){  
-	    	 println( getName() + " plan=move2 WARNING:" + e_move2.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//move2
-	    
-	    StateFun move3 = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_move3",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "move3";  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?robotCanMove" )) != null ){
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "sonar2Reached";
+	    	removeRule( temporaryStr );  
+	    	temporaryStr = "robotCanMove";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = "goDown";
+	    	removeRule( temporaryStr );  
+	    	temporaryStr = "goUp";
+	    	addRule( temporaryStr );  
+	    	};//actionseq
 	    	}
-	    	//bbb
-	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
-	          new String[]{"true","E","coreCmd" },
-	          2000, "move4" );//msgTransition
-	    }catch(Exception e_move3){  
-	    	 println( getName() + " plan=move3 WARNING:" + e_move3.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//move3
-	    
-	    StateFun move4 = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_move4",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "move4";  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?robotCanMove" )) != null ){
+	    	};//actionseq
+	    	}
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?goUp" )) != null ){
+	    	{//actionseq
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "robotCanMove";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = "goDown";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = "goUp";
+	    	removeRule( temporaryStr );  
+	    	};//actionseq
 	    	}
-	    	//bbb
-	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
-	          new String[]{"true","E","coreCmd" },
-	          2000, "executionCoreCommand" );//msgTransition
-	    }catch(Exception e_move4){  
-	    	 println( getName() + " plan=move4 WARNING:" + e_move4.getMessage() );
+	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,true);
+	    }catch(Exception e_forwardPlan){  
+	    	 println( getName() + " plan=forwardPlan WARNING:" + e_forwardPlan.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//move4
+	    };//forwardPlan
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor
