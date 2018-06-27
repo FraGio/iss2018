@@ -378,8 +378,8 @@ Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale v
 
 Costi:\\
 E' necessario fare una valutazione delle spese e dei costi da affrontare.\\
-Per l'utilizzo dell'infrastruttura meteo è stato valutato di utilizzare un servizio esterno (OpenWeatherMap), che offre diverse soluzioni di scalabilità (e di conseguenza costi) in base al n° di richieste effettuate al minuto. Per riferimento vedere https://www.openweathermap.org/price.\\
-Un'altra valutazione economica è quella del servizio di host del server frontend. Appoggiandoci a un servizio come Amazon AWS abbiamo vantaggi dal punto di vista della scalabilità e costi crescenti agli utenti. Per riferimento costi vedere https://aws.amazon.com/it/ec2/pricing/on-demand/.\\
+Per l'utilizzo dell'infrastruttura meteo è stato valutato di utilizzare un servizio esterno, che offre diverse soluzioni di scalabilità (e di conseguenza costi) in base al n° di richieste effettuate al minuto. Per servizio di esempio vedere https://www.openweathermap.org/price.\\
+Un'altra valutazione economica è quella del servizio di host del server frontend. Appoggiandoci a un servizio come Amazon AWS abbiamo vantaggi dal punto di vista della scalabilità e costi crescenti agli utenti. Per servizio di esempio e costi vedere https://aws.amazon.com/it/ec2/pricing/on-demand/.\\
 Per dotare il robot Mbot di un modulo middleware si rende opportuno l'acquisto  e l'utilizzo di un dispositivo Raspberry montato e collegato con il robot (https://www.raspberrypi.org/products/raspberry-pi-3-model-b/).
 
 %===========================================================================
@@ -475,9 +475,48 @@ Per quanto riguarda il sensore presente su robot fisico, riusciamo ad intercetta
 
 %===========================================================================
 
+\subsection{System}
+Il nostro sistema si compone di diverse entità: pc/smartphone dotata di GUI, server frontend, server per scambio di messaggi (mqtt), robot (fisico/virtuale), led montato su robot fisico, led hue lamp presente nella stanza, sonar ambientali.\\
+
+Software di controllo del Robot:\\
+è suddiviso in diverse sotto-entità:
+\begin{itemize}
+\item mind
+\item core di movimento
+\item notificatore meteo/orario
+\item gestore led/led hue lamp
+\end{itemize}
+
+Pc/Smartphone:\\
+è strutturato come un browser che fa da GUI e che si collega al server di frontend.\\
+
+Server frontend:\\
+server web RESTFul realizzato in linguaggio NodeJs più Express.\\
+
+Server per scambio di messaggi:\\
+Server con struttura publish/subscribe, utilizza il protocollo mqtt con implementazione Mosquitto.\\
+
+Robot fisico:\\
+Robot Mbot, per riferimenti ufficiali sulla struttura vedere https://www.makeblock.com/steam-kits/mbot
+
+Robot virtuale:\\
+Robot costruito con linguaggio Javascript, per riferimento vedere https://github.com/PierfrancescoSoffritti/configurable-threejs-app.\\
+
+Led:\\
+Led ELEGOO, per riferimento https://www.elegoo.com/product/elegoo-electronic-fun-kit-bundle/.\\
+
+Led Hue Lamp:\\
+Lampada a led Philips, per riferimento https://www2.meethue.com/en-us/about-hue#about_the_system.\\
+
+Sonar ambientali:\\
+Sonar per rilevazione entità nell'ambiente, il modello utilizzato è lo stesso montato sull'Mbot. (Me Ultrasonic Sensor v3.0)
+
 \subsection{Structure}
+%%modello QActor
 \subsection{Interaction}
+%%modello QActor
 \subsection{Behavior}
+%%modello QActor
 
 %===========================================================================
 \section{Implementation}
