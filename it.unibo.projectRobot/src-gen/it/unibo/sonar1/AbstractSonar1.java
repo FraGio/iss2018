@@ -56,7 +56,7 @@ public abstract class AbstractSonar1 extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
-	    	stateTab.put("emitRobotCmd",emitRobotCmd);
+	    	stateTab.put("emitSonarEvent",emitSonarEvent);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -76,26 +76,30 @@ public abstract class AbstractSonar1 extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"sonar 1 START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost:1883");
-	    	//switchTo emitRobotCmd
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
+	     connectToMqttServer("tcp://192.168.43.84:1883");
+	    	//switchTo emitSonarEvent
 	        switchToPlanAsNextState(pr, myselfName, "sonar1_"+myselfName, 
-	              "emitRobotCmd",false, false, null); 
+	              "emitSonarEvent",false, false, null); 
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
 	    
-	    StateFun emitRobotCmd = () -> {	
+	    StateFun emitSonarEvent = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("emitRobotCmd",-1);
-	    	String myselfName = "emitRobotCmd";  
-	    	repeatPlanNoTransition(pr,myselfName,"sonar1_"+myselfName,false,false);
-	    }catch(Exception e_emitRobotCmd){  
-	    	 println( getName() + " plan=emitRobotCmd WARNING:" + e_emitRobotCmd.getMessage() );
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarEvent",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "emitSonarEvent";  
+	    	repeatPlanNoTransition(pr,myselfName,"sonar1_"+myselfName,true,false);
+	    }catch(Exception e_emitSonarEvent){  
+	    	 println( getName() + " plan=emitSonarEvent WARNING:" + e_emitSonarEvent.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//emitRobotCmd
+	    };//emitSonarEvent
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

@@ -1,5 +1,7 @@
 package it.unibo.iss2018support.owmSupport;
 
+import java.time.LocalDateTime;
+
 import it.unibo.iss2018support.mqttUtils.mqttTools;
 import it.unibo.qactors.akka.QActor;
 import net.aksingh.owmjapis.api.APIException;
@@ -25,7 +27,7 @@ public class owmSupport {
 //                    + "\'C H:"+cwd.getDateTime().getHours());
 
 			mqttTools.publish(actor,"msg(temperatureTimeRequest,event,java,none,temperatureTimeRequest"
-	        		+ "("+(cwd.getMainData().getTempMax()-273.15) + "," + cwd.getDateTime().getHours() +"),1)");
+	        		+ "("+(cwd.getMainData().getTempMax()-273.15) + "," + LocalDateTime.now().getHour() +"),1)");
 
 		} catch (APIException e) {
 			// TODO Auto-generated catch block

@@ -79,16 +79,28 @@ public abstract class AbstractMind extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
+	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn( myself  );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	it.unibo.iss2018support.mqttUtils.mqttTools.init( myself  );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
+	    	it.unibo.iss2018support.owmSupport.owmSupport.init( myself  );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(2000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(3000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
-	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
 	    	emit( "requestNotifier", temporaryStr );
-	     connectToMqttServer("tcp://localhost:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo initTempTime
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
 	              "initTempTime",false, false, null); 
@@ -179,30 +191,34 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"!!!!! Ricevuto da utente comando di avvio\"";
+	    			temporaryStr = "\"--> Ricevuto da utente comando di avvio\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
-	    			emit( "coreCmd", temporaryStr );
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,blink)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
-	    			parg = "changeModelItem(robot,realRobotStatus,on)";
+	    			parg = "changeModelItem(robot,realrobotstatus,on)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledhuelamp,blink)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
-	    			parg = "changeModelItem(robot,virtualRobotStatus,on)";
+	    			parg = "changeModelItem(robot,virtualrobotstatus,on)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"START\")", guardVars ).toString();
+	    			emit( "coreCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//onEvent 
@@ -213,35 +229,41 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Ricevuto da utente comando di stop\"";
+	    			temporaryStr = "\"*****Ricevuto da utente comando di stop\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(1000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "robotCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
+	    			emit( "robotCmd", temporaryStr );
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,off)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
-	    			parg = "changeModelItem(robot,realRobotStatus,off)";
+	    			parg = "changeModelItem(robot,realrobotstatus,off)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledhuelamp,off)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
-	    			parg = "changeModelItem(robot,virtualRobotStatus,off)";
+	    			parg = "changeModelItem(robot,virtualrobotstatus,off)";
 	    			//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    			solveGoal( parg ); //sept2017
 	    			};//actionseq
 	    			}
 	    			};//actionseq
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"mind_"+myselfName,false,true);
+	    	//switchTo doWork
+	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
+	              "doWork",false, false, null); 
 	    }catch(Exception e_robotCmdHandler){  
 	    	 println( getName() + " plan=robotCmdHandler WARNING:" + e_robotCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
@@ -280,7 +302,7 @@ public abstract class AbstractMind extends QActor {
 	    	String myselfName = "handleRoomSonarEvent";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("roomSonarEvent(\"ROOM_S2\",DISTANCE)");
+	    	curT = Term.createTerm("roomSonarEvent(\"sonar2\",DISTANCE)");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonarEvent") && 
 	    		pengine.unify(curT, Term.createTerm("roomSonarEvent(NAME,DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
@@ -288,10 +310,8 @@ public abstract class AbstractMind extends QActor {
 	    			{//actionseq
 	    			temporaryStr = "\"Robot rilevato da sonar stanza n.2...fermo il robot\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "coreCmd", temporaryStr );
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "userCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//switchTo doWork

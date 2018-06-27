@@ -14,7 +14,8 @@ import it.unibo.qactors.akka.QActor;
  * su mqtt broker, in modo che la mind possa riceverli
  */
 public class handleJsonEventRoom {
-	private static String hostName = "localhost";
+//	private static String hostName = "localhost";
+	private static String hostName = "192.168.43.84";
 	private static int port = 8999;
 	private static String sep = ";";
 	private static int lastvaluesonar1;

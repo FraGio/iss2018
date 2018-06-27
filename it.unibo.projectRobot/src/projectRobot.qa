@@ -12,14 +12,14 @@ Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
 Event ledCmd : ledCmd ( X ) // X=blink/off
 Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
 
-pubSubServer "tcp://192.168.1.112:1883"
+//pubSubServer "tcp://192.168.1.112:1883"
+pubSubServer "tcp://192.168.43.84:1883"
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
-Context ctxRobot ip [ host="localhost"   port=8021 ] //-httpserver
+Context ctxRobot ip [ host="192.168.43.84"   port=8021 ] //-httpserver
 
  
- 
-EventHandler evh for coreCmd -print {	//event-driven ; no Mqtt support yet
+EventHandler evh for coreCmd -print {	//event-driven
  	forwardEvent movecorelogic -m coreCmd  	//from event to message
 }; 
 
@@ -69,9 +69,10 @@ QActor mind context ctxRobot -pubsub {
 	Plan init normal [ 
 		//init servizio mosquitto e meteo/orario
 		javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn();
-		[!? realRobot ]
-			javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
+		delay 500;
 		javaRun it.unibo.iss2018support.mqttUtils.mqttTools.init();
+		delay 500;
+		javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
 		javaRun it.unibo.iss2018support.owmSupport.owmSupport.init();
 		 
 		delay 2000; 
@@ -102,6 +103,7 @@ QActor mind context ctxRobot -pubsub {
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
 	]switchTo doWork
+	
 	
 	Plan robotCmdHandler [
 		onEvent userCmd : userCmd('START') -> {
@@ -150,9 +152,7 @@ QActor mind context ctxRobot -pubsub {
 		onEvent roomSonarEvent: roomSonarEvent("sonar2", DISTANCE) 
 			-> {
 				println("Robot rilevato da sonar stanza n.2...fermo il robot");
-				emit coreCmd : coreCmd('STOP');
-				delay 1000;
-				emit robotCmd : robotCmd ('stop')
+				emit userCmd : userCmd('STOP')
 				
 			}
 			
@@ -244,6 +244,13 @@ QActor movecorelogic context ctxRobot -pubsub {
 	Plan move3 [
 			[!? robotCanMove]
 				emit robotCmd : robotCmd('w')
+	] transition whenTime 2000-> move4
+		whenEvent coreCmd -> executionCoreCommand
+	finally repeatPlan
+	
+	Plan move4 [
+			[!? robotCanMove]
+				emit robotCmd : robotCmd('d')
 	] transition whenTime 2000-> executionCoreCommand
 		whenEvent coreCmd -> executionCoreCommand
 	finally repeatPlan
