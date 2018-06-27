@@ -10,7 +10,8 @@ digraph finite_state_machine {
 	size="8,5"
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
-	emitRobotCmd [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
+	emitSonarRobotEvent [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
 	
-	init -> emitRobotCmd [ label = "switch" ][ color = black ][ fontcolor = black ]
+	init -> emitSonarRobotEvent [ label = "switch" ][ color = black ][ fontcolor = black ]
+	emitSonarRobotEvent -> emitSonarRobotEvent [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 }

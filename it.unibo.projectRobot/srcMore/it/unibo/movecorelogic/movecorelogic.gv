@@ -10,11 +10,26 @@ digraph finite_state_machine {
 	size="8,5"
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
+	move1 [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	move2 [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	move3 [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	waitForStart [ color = black ][ fontcolor = black ][ penwidth = 3 ]
-	executionCoreCommand [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
+	executionCoreCommand [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	
+	move1 -> move2 [ label = "timeout(2000)" ][ color = green ][ fontcolor = green ]
+	executionCoreCommand -> move1 [ label = "timeout(2000)" ][ color = green ][ fontcolor = green ]
+	executionCoreCommand -> executionCoreCommand [ label = "coreCmd" ][ color = black ][ fontcolor = black ]
 	waitForStart -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	executionCoreCommand -> executionCoreCommand [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	move2 -> move3 [ label = "timeout(2000)" ][ color = green ][ fontcolor = green ]
+	move3 -> executionCoreCommand [ label = "coreCmd" ][ color = black ][ fontcolor = black ]
+	move3 -> move3 [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	move1 -> executionCoreCommand [ label = "coreCmd" ][ color = black ][ fontcolor = black ]
+	move2 -> executionCoreCommand [ label = "coreCmd" ][ color = black ][ fontcolor = black ]
+	move2 -> move2 [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	move1 -> move1 [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	waitForStart -> executionCoreCommand [ label = "coreCmd" ][ color = black ][ fontcolor = black ]
 	waitForStart -> waitForStart [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	move3 -> executionCoreCommand [ label = "timeout(2000)" ][ color = green ][ fontcolor = green ]
 	init -> waitForStart [ label = "switch" ][ color = black ][ fontcolor = black ]
 }

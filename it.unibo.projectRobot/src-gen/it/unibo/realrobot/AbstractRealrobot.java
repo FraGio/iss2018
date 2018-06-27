@@ -77,7 +77,7 @@ public abstract class AbstractRealrobot extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"Accensione del real robot completata!\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "realrobot_"+myselfName, 
 	              "waitForCmd",false, false, null); 
@@ -109,16 +109,83 @@ public abstract class AbstractRealrobot extends QActor {
 	    	String myselfName = "executionRobotCmdHandler";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(X)");
+	    	curT = Term.createTerm("robotCmd(\"w\")");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "X";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotCmd(Y)"), 
-	    			                    Term.createTerm("robotCmd(X)"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			{/* JavaLikeMove */ 
+	    			String arg1 = "forward" ;
+	    			//end arg1
+	    			String arg2 = "0" ;
+	    			//end arg2
+	    			String arg3 = "0" ;
+	    			//end arg3
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"s\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			String arg1 = "backward" ;
+	    			//end arg1
+	    			String arg2 = "0" ;
+	    			//end arg2
+	    			String arg3 = "0" ;
+	    			//end arg3
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"a\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			String arg1 = "left" ;
+	    			//end arg1
+	    			String arg2 = "0" ;
+	    			//end arg2
+	    			String arg3 = "0" ;
+	    			//end arg3
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"d\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			String arg1 = "right" ;
+	    			//end arg1
+	    			String arg2 = "0" ;
+	    			//end arg2
+	    			String arg3 = "0" ;
+	    			//end arg3
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			}
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("robotCmd(\"stop\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
+	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			{/* JavaLikeMove */ 
+	    			String arg1 = "stop" ;
+	    			//end arg1
+	    			String arg2 = "0" ;
+	    			//end arg2
+	    			String arg3 = "0" ;
+	    			//end arg3
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			}
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"realrobot_"+myselfName,false,true);
 	    }catch(Exception e_executionRobotCmdHandler){  

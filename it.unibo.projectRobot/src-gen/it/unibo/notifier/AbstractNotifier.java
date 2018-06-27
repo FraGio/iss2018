@@ -58,8 +58,6 @@ public abstract class AbstractNotifier extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForFirstRequest",waitForFirstRequest);
 	    	stateTab.put("startPolling",startPolling);
-	    	stateTab.put("waitForResponse",waitForResponse);
-	    	stateTab.put("handleRequestTimeAndTemperature",handleRequestTimeAndTemperature);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -79,7 +77,7 @@ public abstract class AbstractNotifier extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"Notifier START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForFirstRequest
 	        switchToPlanAsNextState(pr, myselfName, "notifier_"+myselfName, 
 	              "waitForFirstRequest",false, false, null); 
@@ -107,63 +105,20 @@ public abstract class AbstractNotifier extends QActor {
 	    
 	    StateFun startPolling = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("startPolling",-1);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_startPolling",0);
+	     pr.incNumIter(); 	
 	    	String myselfName = "startPolling";  
+	    	it.unibo.iss2018support.owmSupport.owmSupport.acquireValues( myself  );
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(3000,"" , "");
+	    	aar = delayReactive(60000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "startPolling";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestExternalProvider","requestExternalProvider", guardVars ).toString();
-	    	emit( "requestExternalProvider", temporaryStr );
-	    	//switchTo waitForResponse
-	        switchToPlanAsNextState(pr, myselfName, "notifier_"+myselfName, 
-	              "waitForResponse",false, false, null); 
+	    	repeatPlanNoTransition(pr,myselfName,"notifier_"+myselfName,true,false);
 	    }catch(Exception e_startPolling){  
 	    	 println( getName() + " plan=startPolling WARNING:" + e_startPolling.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//startPolling
-	    
-	    StateFun waitForResponse = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForResponse",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "waitForResponse";  
-	    	//bbb
-	     msgTransition( pr,myselfName,"notifier_"+myselfName,false,
-	          new StateFun[]{stateTab.get("handleRequestTimeAndTemperature") }, 
-	          new String[]{"true","E","temperatureTimeProviderResponse" },
-	          3600000, "handleToutBuiltIn" );//msgTransition
-	    }catch(Exception e_waitForResponse){  
-	    	 println( getName() + " plan=waitForResponse WARNING:" + e_waitForResponse.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//waitForResponse
-	    
-	    StateFun handleRequestTimeAndTemperature = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("handleRequestTimeAndTemperature",-1);
-	    	String myselfName = "handleRequestTimeAndTemperature";  
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("temperatureTimeProviderResponse(V,T)");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("temperatureTimeProviderResponse") && 
-	    		pengine.unify(curT, Term.createTerm("temperatureTimeProviderResponse(V,T)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg="temperatureTimeRequest(V,T)";
-	    			/* RaiseEvent */
-	    			parg = updateVars(Term.createTerm("temperatureTimeProviderResponse(V,T)"),  Term.createTerm("temperatureTimeProviderResponse(V,T)"), 
-	    				    		  					Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) emit( "temperatureTimeRequest", parg );
-	    	}
-	    	//switchTo startPolling
-	        switchToPlanAsNextState(pr, myselfName, "notifier_"+myselfName, 
-	              "startPolling",false, false, null); 
-	    }catch(Exception e_handleRequestTimeAndTemperature){  
-	    	 println( getName() + " plan=handleRequestTimeAndTemperature WARNING:" + e_handleRequestTimeAndTemperature.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//handleRequestTimeAndTemperature
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor
