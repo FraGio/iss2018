@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  25 JUN 2018 15:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  27 JUN 2018 13:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -454,41 +454,31 @@ Underfull \hbox (badness 10000) in paragraph at lines 323--329
  []
 
 
-Overfull \hbox (17.89844pt too wide) in paragraph at lines 331--339
+Overfull \hbox (17.89844pt too wide) in paragraph at lines 331--340
 \T1/cmr/m/n/10 Quest'ultimo ap-proc-cio sposterebbe parte della log-ica ap-plic
 a-tiva sul pc/smartphone,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 331--339
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 331--339
-
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
-Underfull \hbox (badness 10000) in paragraph at lines 340--342
+Underfull \hbox (badness 10000) in paragraph at lines 341--343
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 343--345
+Underfull \hbox (badness 10000) in paragraph at lines 344--346
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 347--350
+Underfull \hbox (badness 10000) in paragraph at lines 348--351
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 351--356
+Underfull \hbox (badness 10000) in paragraph at lines 352--357
 
  []
 
@@ -496,49 +486,45 @@ Underfull \hbox (badness 10000) in paragraph at lines 351--356
 Underfull \vbox (badness 2158) has occurred while \output is active []
 
  [10]
-Underfull \hbox (badness 10000) in paragraph at lines 366--369
+Underfull \hbox (badness 10000) in paragraph at lines 367--370
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 370--374
+Underfull \hbox (badness 10000) in paragraph at lines 371--375
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 370--374
+Underfull \hbox (badness 10000) in paragraph at lines 371--375
 
  []
 
 [11]
-Overfull \hbox (179.41455pt too wide) in paragraph at lines 378--383
+Overfull \hbox (179.41455pt too wide) in paragraph at lines 379--384
 \T1/cmr/m/n/10 e l'utilizzo di un dis-pos-i-tivo Rasp-berry mon-tato e col-le-g
 ato con il robot (https://www.raspberrypi.org/products/raspberry-
  []
 
-
-Underfull \vbox (badness 5316) has occurred while \output is active []
-
- [12]
-[13]
-Underfull \hbox (badness 10000) in paragraph at lines 419--421
+[12] [13]
+Underfull \hbox (badness 10000) in paragraph at lines 421--423
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 419--421
+Underfull \hbox (badness 10000) in paragraph at lines 421--423
 
  []
 
 
-Overfull \hbox (37.35202pt too wide) in paragraph at lines 438--440
+Overfull \hbox (37.35202pt too wide) in paragraph at lines 440--442
 \T1/cmr/m/n/10 ap-pog-ger-emo ad una li-bre-ria for-nita da Google stesso (http
 s://github.com/google/google-
  []
 
 [14]
 ! You can't use `macro parameter character #' in horizontal mode.
-l.455 ...https://www2.meethue.com/en-us/about-hue#
+l.457 ...https://www2.meethue.com/en-us/about-hue#
                                                   about_the_system).
 Sorry, but I'm not programmed to handle this case;
 I'll just pretend that you didn't ask for it.
@@ -548,7 +534,7 @@ return to the right one by typing `I}' or `I$' or `I\par'.
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.455 ...//www2.meethue.com/en-us/about-hue#about_
+l.457 ...//www2.meethue.com/en-us/about-hue#about_
                                                   the_system).
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
@@ -556,41 +542,140 @@ you left one out. Proceed, with fingers crossed.
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.456 
+l.458 
       
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
 
 
-Overfull \hbox (53.86188pt too wide) in paragraph at lines 453--456
+Overfull \hbox (53.86188pt too wide) in paragraph at lines 455--458
 \T1/cmr/m/n/10 essa tramite rete in-ter-net (Wifi) e con metodolo-gie REST-ful 
 (https://www2.meethue.com/en-
  []
 
 
-Overfull \hbox (166.7232pt too wide) in paragraph at lines 457--461
+Overfull \hbox (166.7232pt too wide) in paragraph at lines 459--463
 \T1/cmr/m/n/10 Per richiedere i dati oc-corre for-mu-lare richi-este in un de-t
 er-mi-nato for-mato (https://www.openweathermap.org/current). 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 464--467
+
+ []
+
+
+Underfull \vbox (badness 2158) has occurred while \output is active []
 
  [15]
-Overfull \hbox (58.33301pt too wide) in paragraph at lines 468--471
+Overfull \hbox (58.33301pt too wide) in paragraph at lines 471--475
 \T1/cmr/m/n/10 ha re-al-iz-zato l'infrastruttura vir-tuale (https://github.com/
 PierfrancescoSoffritti/configurable-
  []
 
-[16]
 
-LaTeX Warning: Citation `natMol09' on page 17 undefined on input line 500.
+Underfull \hbox (badness 10000) in paragraph at lines 479--480
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 490--492
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 493--495
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 496--498
+
+ []
+
+[16]
+Overfull \hbox (63.30402pt too wide) in paragraph at lines 499--501
+\T1/cmr/m/n/10 Robot Mbot, per rifer-i-menti uf-fi-ciali sulla strut-tura veder
+e https://www.makeblock.com/steam-
+ []
+
+
+Overfull \hbox (173.66595pt too wide) in paragraph at lines 502--504
+\T1/cmr/m/n/10 Robot costru-ito con lin-guag-gio Javascript, per rifer-i-mento 
+vedere https://github.com/PierfrancescoSoffritti/configurable-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 502--504
+
+ []
+
+
+Overfull \hbox (12.77469pt too wide) in paragraph at lines 505--507
+\T1/cmr/m/n/10 Led ELE-GOO, per rifer-i-mento https://www.elegoo.com/product/el
+egoo-electronic-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 505--507
+
+ []
+
+! You can't use `macro parameter character #' in horizontal mode.
+l.509 ...https://www2.meethue.com/en-us/about-hue#
+                                                  about_the_system.\\
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.509 ...//www2.meethue.com/en-us/about-hue#about_
+                                                  the_system.\\
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.510 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+Overfull \hbox (2.76324pt too wide) in paragraph at lines 508--510
+\T1/cmr/m/n/10 Lampada a led Philips, per rifer-i-mento https://www2.meethue.co
+m/en-us/about-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 508--510
+
+ []
+
+
+Overfull \hbox (21.00879pt too wide) in paragraph at lines 524--527
+\T1/cmr/m/n/10 client fron-tend con au-t-en-ti-cazione, re-al-iz-zazione del me
+c-ca-n-ismo di blink/spegnimento
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 524--527
+
+ []
+
+[17] [18]
+
+LaTeX Warning: Citation `natMol09' on page 19 undefined on input line 545.
 
 (./ProgettoFinaleISS.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [17] (./ProgettoFinaleISS.aux)
+) [19] (./ProgettoFinaleISS.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
@@ -612,10 +697,10 @@ ecbx1440.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 mi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on ProgettoFinaleISS.pdf (17 pages, 133751 bytes).
+Output written on ProgettoFinaleISS.pdf (19 pages, 136152 bytes).
 PDF statistics:
- 325 PDF objects out of 1000 (max. 8388607)
- 75 compressed objects within 1 object stream
+ 332 PDF objects out of 1000 (max. 8388607)
+ 80 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
