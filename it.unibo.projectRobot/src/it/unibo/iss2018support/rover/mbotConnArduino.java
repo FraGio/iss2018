@@ -26,12 +26,16 @@ private static QActor curActor ;
 
  	private static void init(String port)   {
 		try {
-	 		System.out.println("MbotConnArduino starts");
+	 		System.out.println("---->MbotConnArduino starts");
 			serialConn = new JSSCSerialComm(null);
 			conn = serialConn.connect(port);	//returns a SerialPortConnSupport
-			if( conn == null ) return;
+			if( conn == null ) {
+				System.out.println("CONNECTION WITH ARDUINO NULL!!");
+				return;
+			}
  			curDataFromArduino = conn.receiveALine();
-			System.out.println("MbotConnArduino received:" + dataSonar);
+ 			System.out.println("---->CONNECTION WITH ARDUINO ALL RIGHT!!");
+			System.out.println("---->MbotConnArduino received:" + dataSonar);
  			getDataFromArduino();
 		}catch( Exception e) {
 			System.out.println("MbotConnArduino ERROR" + e.getMessage());

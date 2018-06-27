@@ -77,7 +77,7 @@ public abstract class AbstractRealrobot extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"Accensione del real robot completata!\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "realrobot_"+myselfName, 
 	              "waitForCmd",false, false, null); 

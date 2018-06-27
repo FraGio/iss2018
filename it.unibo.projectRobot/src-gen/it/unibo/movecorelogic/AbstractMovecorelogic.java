@@ -61,6 +61,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	stateTab.put("move1",move1);
 	    	stateTab.put("move2",move2);
 	    	stateTab.put("move3",move3);
+	    	stateTab.put("move4",move4);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -80,7 +81,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"Inizializzazione del core della logica di movimento\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo waitForStart
 	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
 	              "waitForStart",false, false, null); 
@@ -215,12 +216,32 @@ public abstract class AbstractMovecorelogic extends QActor {
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
 	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
 	          new String[]{"true","E","coreCmd" },
-	          2000, "executionCoreCommand" );//msgTransition
+	          2000, "move4" );//msgTransition
 	    }catch(Exception e_move3){  
 	    	 println( getName() + " plan=move3 WARNING:" + e_move3.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//move3
+	    
+	    StateFun move4 = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_move4",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "move4";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?robotCanMove" )) != null ){
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	}
+	    	//bbb
+	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
+	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
+	          new String[]{"true","E","coreCmd" },
+	          2000, "executionCoreCommand" );//msgTransition
+	    }catch(Exception e_move4){  
+	    	 println( getName() + " plan=move4 WARNING:" + e_move4.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//move4
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

@@ -80,10 +80,16 @@ public abstract class AbstractMind extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
 	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn( myself  );
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
-	    	}
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
 	    	it.unibo.iss2018support.mqttUtils.mqttTools.init( myself  );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
 	    	it.unibo.iss2018support.owmSupport.owmSupport.init( myself  );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(2000,"" , "");
@@ -94,7 +100,7 @@ public abstract class AbstractMind extends QActor {
 	    	solveGoal( parg ); //sept2017
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
 	    	emit( "requestNotifier", temporaryStr );
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo initTempTime
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
 	              "initTempTime",false, false, null); 
@@ -304,14 +310,8 @@ public abstract class AbstractMind extends QActor {
 	    			{//actionseq
 	    			temporaryStr = "\"Robot rilevato da sonar stanza n.2...fermo il robot\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "coreCmd", temporaryStr );
-	    			//delay  ( no more reactive within a plan)
-	    			aar = delayReactive(1000,"" , "");
-	    			if( aar.getInterrupted() ) curPlanInExec   = "handleRoomSonarEvent";
-	    			if( ! aar.getGoon() ) return ;
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "userCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//switchTo doWork
