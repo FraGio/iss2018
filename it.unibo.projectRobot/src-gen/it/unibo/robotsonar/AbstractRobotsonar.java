@@ -56,7 +56,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
-	    	stateTab.put("emitSonarRobotEvent",emitSonarRobotEvent);
+	    	stateTab.put("emitRobotCmd",emitRobotCmd);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -76,33 +76,42 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"sonar robot START\"";
 	    	println( temporaryStr );  
-	    	parg = "consult(\"./resourceModel.pl\")";
-	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
-	    	solveGoal( parg ); //sept2017
 	     connectToMqttServer("tcp://localhost:1883");
-	    	//switchTo emitSonarRobotEvent
+	    	//switchTo emitRobotCmd
 	        switchToPlanAsNextState(pr, myselfName, "robotsonar_"+myselfName, 
-	              "emitSonarRobotEvent",false, false, null); 
+	              "emitRobotCmd",false, false, null); 
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
 	    
-	    StateFun emitSonarRobotEvent = () -> {	
+	    StateFun emitRobotCmd = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarRobotEvent",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "emitSonarRobotEvent";  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
-	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,true,false);
-	    }catch(Exception e_emitSonarRobotEvent){  
-	    	 println( getName() + " plan=emitSonarRobotEvent WARNING:" + e_emitSonarRobotEvent.getMessage() );
+	     PlanRepeat pr = PlanRepeat.setUp("emitRobotCmd",-1);
+	    	String myselfName = "emitRobotCmd";  
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(17000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
+	    	println( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(10)", guardVars ).toString();
+	    	emit( "robotSonarEvent", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(14000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
+	    	println( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(13)", guardVars ).toString();
+	    	emit( "robotSonarEvent", temporaryStr );
+	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,false,false);
+	    }catch(Exception e_emitRobotCmd){  
+	    	 println( getName() + " plan=emitRobotCmd WARNING:" + e_emitRobotCmd.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//emitSonarRobotEvent
+	    };//emitRobotCmd
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor
