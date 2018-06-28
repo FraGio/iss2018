@@ -2,7 +2,7 @@
 *.bin
 *.lock
 *.classpath
-
+*.txt
 
 it\.unibo\.reqAnalysis/\.classpath
 
