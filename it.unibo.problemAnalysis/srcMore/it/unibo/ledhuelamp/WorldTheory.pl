@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor mind
+% WorldTheory.pl for actor ledhuelamp
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qatumind).	%%old version (deprecated)
-actorobj(qatumind).	%% see registerActorInProlog18 in QActor
+myname(qatuledhuelamp).	%%old version (deprecated)
+actorobj(qatuledhuelamp).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -81,7 +81,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor mind
+%  TuProlo FEATURES of the QActor ledhuelamp
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -89,7 +89,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of mind" ). 
+%% :- stdout <- println(  "hello from world theory of ledhuelamp" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -140,18 +140,8 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about mind
+%  User static rules about ledhuelamp
 %------------------------------------------------- 
-limitTemperatureValue( 25).
-limitTimeValueMin( 7).
-limitTimeValueMax( 10).
-changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite!!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")).
-changedModelAction( timer,timevalue,T):-limitTimeValueMin( MIN),eval( le,T,MIN), ! ,output( "tempo fuori range MIN!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")).
-changedModelAction( timer,timevalue,T):-limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "tempo fuori range MAX!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")).
-changedModelAction( leds,ledfisico,blink):-emitevent( ledCmd,ledCmd( "blink")).
-changedModelAction( leds,ledfisico,off):-emitevent( ledCmd,ledCmd( "off")).
-changedModelAction( leds,ledhuelamp,blink):-emitevent( ledHueLampCmd,ledHueLampCmd( "blink")).
-changedModelAction( leds,ledhuelamp,off):-emitevent( ledHueLampCmd,ledHueLampCmd( "off")).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

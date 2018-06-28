@@ -1,5 +1,5 @@
 plan(1,init, sentence(true,move(print("pc START")),'','' ))
 plan(1,authenticateUser, sentence(true,move(print("Autenticazione OK")),'','' ))
 plan(1,waitForUserCommand, sentence(true,move(print("Attesa di comandi utente da GUI")),'','' ))
-plan(1,userCmdHandler, sentence(true,eventswitch(userCmd, Â»userCmd( "START"), not here StateMoveNormal ),'','' ))
-plan(2,userCmdHandler, sentence(true,eventswitch(userCmd, Â»userCmd( "STOP"), not here StateMoveNormal ),'','' ))
+plan(1,mockUserCmdHandler, sentence(true,eventswitch(mockUserCmd, Â»mockUserCmd( "START"), not here StateMoveNormal ),'','' ))
+plan(2,mockUserCmdHandler, sentence(true,eventswitch(mockUserCmd, Â»mockUserCmd( "STOP"), not here StateMoveNormal ),'','' ))
