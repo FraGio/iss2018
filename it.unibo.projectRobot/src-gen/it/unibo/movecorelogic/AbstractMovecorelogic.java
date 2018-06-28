@@ -93,8 +93,6 @@ public abstract class AbstractMovecorelogic extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForStart",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "waitForStart";  
-	    	temporaryStr = "\"logica di movimento FERMA\"";
-	    	println( temporaryStr );  
 	    	//bbb
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
 	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
@@ -151,7 +149,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("coreCmd(\"uroSonar2\")");
+	    	curT = Term.createTerm("coreCmd(\"muroSonar2\")");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
 	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 

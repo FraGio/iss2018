@@ -75,8 +75,14 @@ public abstract class AbstractRealrobot extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    	temporaryStr = "\"Accensione del real robot completata!\"";
+	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    	println( temporaryStr );  
+	    	}
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "realrobot_"+myselfName, 
@@ -113,15 +119,12 @@ public abstract class AbstractRealrobot extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			{/* JavaLikeMove */ 
-	    			String arg1 = "forward" ;
-	    			//end arg1
-	    			String arg2 = "0" ;
-	    			//end arg2
-	    			String arg3 = "0" ;
-	    			//end arg3
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"forward", "0", "0"  );
 	    			}
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -129,15 +132,12 @@ public abstract class AbstractRealrobot extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			{/* JavaLikeMove */ 
-	    			String arg1 = "backward" ;
-	    			//end arg1
-	    			String arg2 = "0" ;
-	    			//end arg2
-	    			String arg3 = "0" ;
-	    			//end arg3
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"backward", "0", "0"  );
 	    			}
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -145,15 +145,12 @@ public abstract class AbstractRealrobot extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			{/* JavaLikeMove */ 
-	    			String arg1 = "left" ;
-	    			//end arg1
-	    			String arg2 = "0" ;
-	    			//end arg2
-	    			String arg3 = "0" ;
-	    			//end arg3
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"left", "0", "0"  );
 	    			}
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -161,15 +158,12 @@ public abstract class AbstractRealrobot extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			{/* JavaLikeMove */ 
-	    			String arg1 = "right" ;
-	    			//end arg1
-	    			String arg2 = "0" ;
-	    			//end arg2
-	    			String arg3 = "0" ;
-	    			//end arg3
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"right", "0", "0"  );
 	    			}
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -177,15 +171,12 @@ public abstract class AbstractRealrobot extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			{/* JavaLikeMove */ 
-	    			String arg1 = "stop" ;
-	    			//end arg1
-	    			String arg2 = "0" ;
-	    			//end arg2
-	    			String arg3 = "0" ;
-	    			//end arg3
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar(this,arg1,arg2,arg3 );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"stop", "0", "0"  );
 	    			}
+	    			};//actionseq
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"realrobot_"+myselfName,false,true);
 	    }catch(Exception e_executionRobotCmdHandler){  

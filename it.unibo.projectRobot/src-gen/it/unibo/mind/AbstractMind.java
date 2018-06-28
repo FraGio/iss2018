@@ -134,6 +134,8 @@ public abstract class AbstractMind extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForSonar1",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "waitForSonar1";  
+	    	temporaryStr = "\"[INFO] Acquisiti valori iniziali di temperatura e tempo... attesa posizionamento su sonar1\"";
+	    	println( temporaryStr );  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("temperatureTimeRequest(V,T)");
@@ -174,11 +176,18 @@ public abstract class AbstractMind extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_doWork",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "doWork";  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?alreadyStarted" )) != null )
-	    	{
-	    	temporaryStr = "\"Robot rilevato da sonar1, tutto pronto per ricevere comando di AVVIO\"";
-	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    	println( temporaryStr );  
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("roomSonar1Event(X)");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonar1Event") && 
+	    		pengine.unify(curT, Term.createTerm("roomSonar1Event(DISTANCE)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			String parg = "\"[INFO] Robot rilevato da sonar1, tutto pronto per ricevere comando di AVVIO\"";
+	    			/* Print */
+	    			parg =  updateVars( Term.createTerm("roomSonar1Event(DISTANCE)"), 
+	    			                    Term.createTerm("roomSonar1Event(X)"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) println( parg );
 	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
@@ -347,12 +356,11 @@ public abstract class AbstractMind extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotSonarEvent") && 
 	    		pengine.unify(curT, Term.createTerm("robotSonarEvent(DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Ostacolo rilevato, iniziata routine per evitarlo...\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotSonarEvent(DISTANCE)"), 
-	    			                    Term.createTerm("robotSonarEvent(DISTANCE)"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			String parg="coreCmd(\"OSTACOLO\")";
+	    			/* RaiseEvent */
+	    			parg = updateVars(Term.createTerm("robotSonarEvent(DISTANCE)"),  Term.createTerm("robotSonarEvent(DISTANCE)"), 
+	    				    		  					Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) emit( "coreCmd", parg );
 	    	}
 	    	//switchTo doWork
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
@@ -373,13 +381,11 @@ public abstract class AbstractMind extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonar2Event") && 
 	    		pengine.unify(curT, Term.createTerm("roomSonar2Event(DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			temporaryStr = "\"Robot VICINISSIMO a sonar stanza n.2...fermo il robot\"";
-	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "userCmd", temporaryStr );
-	    			};//actionseq
+	    			String parg="userCmd(\"SONAR2STOP\")";
+	    			/* RaiseEvent */
+	    			parg = updateVars(Term.createTerm("roomSonar2Event(DISTANCE)"),  Term.createTerm("roomSonar2Event(\"-3\")"), 
+	    				    		  					Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) emit( "userCmd", parg );
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
@@ -387,13 +393,11 @@ public abstract class AbstractMind extends QActor {
 	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonar2Event") && 
 	    		pengine.unify(curT, Term.createTerm("roomSonar2Event(DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			temporaryStr = "\"Robot rilevato da sonar stanza n.2...\"";
-	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"muroSonar2\")", guardVars ).toString();
-	    			emit( "coreCmd", temporaryStr );
-	    			};//actionseq
+	    			String parg="coreCmd(\"SONAR2\")";
+	    			/* RaiseEvent */
+	    			parg = updateVars(Term.createTerm("roomSonar2Event(DISTANCE)"),  Term.createTerm("roomSonar2Event(DISTANCE)"), 
+	    				    		  					Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) emit( "coreCmd", parg );
 	    	}
 	    	//switchTo doWork
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
