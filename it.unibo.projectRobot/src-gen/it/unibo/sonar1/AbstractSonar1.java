@@ -74,12 +74,12 @@ public abstract class AbstractSonar1 extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"sonar 1 START\"";
-	    	println( temporaryStr );  
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	     connectToMqttServer("tcp://192.168.43.84:1883");
+	    	temporaryStr = "\"sonar 1 START\"";
+	    	println( temporaryStr );  
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo emitSonarEvent
 	        switchToPlanAsNextState(pr, myselfName, "sonar1_"+myselfName, 
 	              "emitSonarEvent",false, false, null); 

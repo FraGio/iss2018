@@ -115,19 +115,26 @@ QActor mind context ctxRobot -pubsub {
 				}
 			}
 		};
-		onEvent userCmd : userCmd('STOP') -> {
-			println("Ricevuto da utente comando di stop");
-			emit robotCmd : robotCmd ('stop');
-			emit coreCmd : coreCmd('STOP');
+		
+		[not !? alreadyStopped]{
+			//posso fermarlo SOLO SE E' STATO AVVIATO!
+			[!? alreadyStarted] {
+					onEvent userCmd : userCmd('STOP') -> {
+					println("Ricevuto da utente comando di stop");
+					emit robotCmd : robotCmd ('stop');
+					emit coreCmd : coreCmd('STOP');
 			
-			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
-			[!? realrobot ]{
-				demo changeModelItem(leds,ledfisico,off);
-				demo changeModelItem(robot,realRobotStatus,off)
-			};
-			[!? virtualrobot ]{
-				demo changeModelItem(leds,ledhuelamp,off);
-				demo changeModelItem(robot,virtualRobotStatus,off)
+					addRule alreadyStopped;
+					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+					[!? realrobot ]{
+						demo changeModelItem(leds,ledfisico,off);
+						demo changeModelItem(robot,realRobotStatus,off)
+					};
+					[!? virtualrobot ]{
+						demo changeModelItem(leds,ledhuelamp,off);
+						demo changeModelItem(robot,virtualRobotStatus,off)
+					}
+				}
 			}
 		}
 	]

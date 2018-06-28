@@ -90,8 +90,10 @@ public abstract class AbstractMind extends QActor {
 	    	aar = delayReactive(500,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
 	    	if( ! aar.getGoon() ) return ;
-	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
 	    	it.unibo.iss2018support.owmSupport.owmSupport.init( myself  );
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
+	    	it.unibo.iss2018support.rover.mbotConnArduino.initRasp( myself  );
+	    	}
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(2000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
@@ -101,7 +103,7 @@ public abstract class AbstractMind extends QActor {
 	    	solveGoal( parg ); //sept2017
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
 	    	emit( "requestNotifier", temporaryStr );
-	     connectToMqttServer("tcp://192.168.43.84:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo initTempTime
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
 	              "initTempTime",false, false, null); 
@@ -172,6 +174,12 @@ public abstract class AbstractMind extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_doWork",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "doWork";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?alreadyStarted" )) != null )
+	    	{
+	    	temporaryStr = "\"Robot rilevato da sonar1, tutto pronto per ricevere comando di AVVIO\"";
+	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    	println( temporaryStr );  
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
 	          new StateFun[]{stateTab.get("robotCmdHandler"), stateTab.get("updateValues"), stateTab.get("handleRobotSonarEvent"), stateTab.get("handleRoomSonarEvent") }, 
@@ -224,6 +232,9 @@ public abstract class AbstractMind extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("robotCmdHandler",-1);
 	    	String myselfName = "robotCmdHandler";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?alreadyStarted" )) != null )
+	    	{
+	    	{//actionseq
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("userCmd(\"START\")");
@@ -232,8 +243,10 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"--> Ricevuto da utente comando di avvio\"";
+	    			temporaryStr = "\"Ricevuto da utente comando di avvio\"";
 	    			println( temporaryStr );  
+	    			temporaryStr = "alreadyStarted";
+	    			addRule( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,blink)";
@@ -262,6 +275,13 @@ public abstract class AbstractMind extends QActor {
 	    			emit( "coreCmd", temporaryStr );
 	    			};//actionseq
 	    	}
+	    	};//actionseq
+	    	}
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?alreadyStopped" )) != null )
+	    	{
+	    	{//actionseq
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?alreadyStarted" )) != null ){
+	    	{//actionseq
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("userCmd(\"STOP\")");
@@ -270,7 +290,7 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"*****Ricevuto da utente comando di stop\"";
+	    			temporaryStr = "\"Ricevuto da utente comando di stop\"";
 	    			println( temporaryStr );  
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
@@ -280,6 +300,8 @@ public abstract class AbstractMind extends QActor {
 	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
 	    			emit( "robotCmd", temporaryStr );
+	    			temporaryStr = "alreadyStopped";
+	    			addRule( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,off)";
@@ -301,6 +323,10 @@ public abstract class AbstractMind extends QActor {
 	    			};//actionseq
 	    			}
 	    			};//actionseq
+	    	}
+	    	};//actionseq
+	    	}
+	    	};//actionseq
 	    	}
 	    	//switchTo doWork
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 

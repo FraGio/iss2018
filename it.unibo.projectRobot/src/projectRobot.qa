@@ -14,10 +14,11 @@ Event ledCmd : ledCmd ( X ) // X=blink/off
 Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
 
 //pubSubServer "tcp://192.168.1.112:1883"
-pubSubServer "tcp://192.168.43.84:1883"
+//pubSubServer "tcp://192.168.43.84:1883"
+pubSubServer "tcp://192.168.1.112:1883"
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
-Context ctxRobot ip [ host="192.168.43.84"   port=8021 ] //-httpserver
+Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
 
  
 EventHandler evh for coreCmd -print {	//event-driven
@@ -74,12 +75,13 @@ QActor mind context ctxRobot -pubsub {
 		delay 500;
 		javaRun it.unibo.iss2018support.mqttUtils.mqttTools.init();
 		delay 500;
-		javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
 		javaRun it.unibo.iss2018support.owmSupport.owmSupport.init();
-		 
+		
+		[!? realRobot ]
+			javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
+		
 		delay 2000; 
 		demo consult("./resourceModel.pl");
-		
 		
 		emit requestNotifier : requestNotifier
 	]  
@@ -100,7 +102,8 @@ QActor mind context ctxRobot -pubsub {
 	finally repeatPlan
 	 
 	Plan doWork[
-		//println("Robot in attesa...")
+		[not !? alreadyStarted]
+			println("Robot rilevato da sonar1, tutto pronto per ricevere comando di AVVIO")
 	]
 	transition stopAfter 3600000   	//1h 
 		whenEvent userCmd -> robotCmdHandler,
@@ -117,37 +120,49 @@ QActor mind context ctxRobot -pubsub {
 	
 	
 	Plan robotCmdHandler [
-		onEvent userCmd : userCmd('START') -> {
-			println("--> Ricevuto da utente comando di avvio");
+		
+		[not !? alreadyStarted]{
+			onEvent userCmd : userCmd('START') -> {
+				println("Ricevuto da utente comando di avvio");
 			
-			//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
-			[!? realRobot ]{
-				demo changeModelItem(leds,ledfisico,blink);
-				demo changeModelItem(robot,realrobotstatus,on)
-			};
-			[!? virtualRobot ] {
-				demo changeModelItem(leds,ledhuelamp,blink);
-				demo changeModelItem(robot,virtualrobotstatus,on)
-			};
+				addRule alreadyStarted;
+				//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
+				[!? realRobot ]{
+					demo changeModelItem(leds,ledfisico,blink);
+					demo changeModelItem(robot,realrobotstatus,on)
+				};
+				[!? virtualRobot ] {
+					demo changeModelItem(leds,ledhuelamp,blink);
+					demo changeModelItem(robot,virtualrobotstatus,on)
+				};
 			
-			delay 1000;
-			emit coreCmd : coreCmd('START')
-		};
-		onEvent userCmd : userCmd('STOP') -> {
-			println("*****Ricevuto da utente comando di stop");
-			emit coreCmd : coreCmd('STOP');
-			delay 1000;
-			emit robotCmd : robotCmd ('stop');
-			
-			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
-			[!? realRobot ]{
-				demo changeModelItem(leds,ledfisico,off);
-				demo changeModelItem(robot,realrobotstatus,off)
-			};
-			[!? virtualRobot ]{
-				demo changeModelItem(leds,ledhuelamp,off);
-				demo changeModelItem(robot,virtualrobotstatus,off)
+				delay 1000;
+				emit coreCmd : coreCmd('START')
 			}
+		};
+		
+		[not !? alreadyStopped] {
+			
+			//posso fermarlo SOLO SE E' STATO AVVIATO!
+			[!? alreadyStarted] {
+				onEvent userCmd : userCmd('STOP') -> {
+					println("Ricevuto da utente comando di stop");
+					emit coreCmd : coreCmd('STOP');
+					delay 1000;
+					emit robotCmd : robotCmd ('stop');
+			
+					addRule alreadyStopped;
+					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+					[!? realRobot ]{
+						demo changeModelItem(leds,ledfisico,off);
+						demo changeModelItem(robot,realrobotstatus,off)
+					};
+					[!? virtualRobot ]{
+						demo changeModelItem(leds,ledhuelamp,off);
+						demo changeModelItem(robot,virtualrobotstatus,off)
+					}
+				}
+				}
 		}
 	]
 	switchTo doWork
@@ -194,47 +209,6 @@ QActor led context ctxRobot -pubsub {
   		onEvent ledCmd : ledCmd('off') -> javaRun it.unibo.iss2018support.ledfis.led.stopLed()
 	]
 }
-
-//QActor led context ctxRobot -pubsub { 
-//	Plan init normal [  
-//		println("Inizializzazione led")
-//	] 
-//	switchTo waitForBlink
-//	
-//	Plan waitForBlink[
-//	]
-//	transition stopAfter 3600000   	//1h 
-//  		whenEvent ledCmd -> handleLedCmd
-//  	finally repeatPlan 
-//  	
-//  	Plan handleLedCmd [
-//  		onEvent ledCmd : ledCmd('blink') -> {
-//  			[not !? ledOn]
-//  				addRule ledOn
-//  		};
-//  		onEvent ledCmd : ledCmd('off') -> {
-//  			removeRule ledOn
-//		}
-//	]
-//	transition whenTime 500 -> execute   	//1h 
-//  		whenEvent ledCmd -> handleLedCmd
-//  	finally repeatPlan 
-//  	
-//  	//switch led status
-//  	Plan execute resumeLastPlan[
-//		[!? ledOn]{
-//			println("Led ON!");
-//			addRule ledOff;
-//			removeRule ledOn
-//		}
-//		else {
-//			println("Led OFF!");
-//			addRule ledOn;
-//			removeRule ledOff
-//		}
-//	]
-//	transition whenTime 500 -> handleLedCmd
-//}
 
 QActor ledhuelamp context ctxRobot -pubsub { 
 	Plan init normal [  
@@ -376,9 +350,9 @@ QActor virtualrobot context ctxRobot -pubsub {
 
 QActor sonar1 context ctxRobot -pubsub {   
 	  
-	Plan init normal [  
-		println("sonar 1 START");
-		demo consult("./resourceModel.pl")
+	Plan init normal [ 
+		demo consult("./resourceModel.pl"); 
+		println("sonar 1 START")
 	]  switchTo emitSonarEvent 
   	
   	//emissione eventi sonar1 (iniziale)
@@ -393,8 +367,8 @@ QActor sonar1 context ctxRobot -pubsub {
 QActor sonar2 context ctxRobot -pubsub {   
 	  
 	Plan init normal [  
-		println("sonar 2 START");
-		demo consult("./resourceModel.pl")
+		demo consult("./resourceModel.pl");
+		println("sonar 2 START")
 	] switchTo emitSonarEvent
   	
   	//emissione eventi sonar2 (finale)
@@ -409,11 +383,10 @@ QActor sonar2 context ctxRobot -pubsub {
 //rappresenta il sonar posto sul robot, che deve captare ostacoli
 QActor robotsonar context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("sonar robot START");
-		demo consult("./resourceModel.pl")
+		demo consult("./resourceModel.pl");
+		println("sonar robot START")
 	] switchTo emitSonarRobotEvent 
   	
-  	//emissione eventi sonar robot
 	Plan emitSonarRobotEvent[	
 		[!? virtualRobot ]
 			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonarRobotVirtual()

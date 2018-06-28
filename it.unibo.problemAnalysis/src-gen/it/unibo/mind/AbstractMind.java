@@ -253,6 +253,11 @@ public abstract class AbstractMind extends QActor {
 	    	}
 	    	};//actionseq
 	    	}
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?alreadyStopped" )) != null )
+	    	{
+	    	{//actionseq
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?alreadyStarted" )) != null ){
+	    	{//actionseq
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("userCmd(\"STOP\")");
@@ -267,6 +272,8 @@ public abstract class AbstractMind extends QActor {
 	    			emit( "robotCmd", temporaryStr );
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmd(Z)","coreCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "coreCmd", temporaryStr );
+	    			temporaryStr = "alreadyStopped";
+	    			addRule( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realrobot" )) != null ){
 	    			{//actionseq
 	    			parg = "changeModelItem(leds,ledfisico,off)";
@@ -288,6 +295,10 @@ public abstract class AbstractMind extends QActor {
 	    			};//actionseq
 	    			}
 	    			};//actionseq
+	    	}
+	    	};//actionseq
+	    	}
+	    	};//actionseq
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"mind_"+myselfName,false,true);
 	    }catch(Exception e_robotCmdHandler){  

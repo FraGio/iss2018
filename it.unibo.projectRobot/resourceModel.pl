@@ -15,7 +15,7 @@ model( type(data,temperature), name(temperaturevalue), value(25) ).
 model( type(status,robot), name(realrobotstatus), value(off) ).
 model( type(status,robot), name(virtualrobotstatus), value(off) ).
 
-realRobot :- true.
+realRobot :- false.
 virtualRobot :- true.
 
 getModelItem( TYPE, CATEG, NAME, VALUE ) :-

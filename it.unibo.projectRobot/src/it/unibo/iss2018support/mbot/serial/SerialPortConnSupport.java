@@ -48,8 +48,7 @@ private String curString = "";
 	//FEB2018 for mBot
 	public void sendCmd(String msg) throws Exception {
 		if(serialPort != null)
-			System.out.println("------>MESSAGE FOR ARDUINO: " + msg);
-  		serialPort.writeBytes(msg.getBytes());
+			serialPort.writeBytes(msg.getBytes());
  	}
 	public void sendCmd(byte[] cmd) throws Exception {
   		serialPort.writeBytes(cmd);

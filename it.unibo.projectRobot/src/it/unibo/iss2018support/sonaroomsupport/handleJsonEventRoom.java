@@ -14,8 +14,8 @@ import it.unibo.qactors.akka.QActor;
  * su mqtt broker, in modo che la mind possa riceverli
  */
 public class handleJsonEventRoom {
-//	private static String hostName = "localhost";
-	private static String hostName = "192.168.43.84";
+	private static String hostName = "192.168.1.112";
+//	private static String hostName = "192.168.43.84";
 	private static int port = 8999;
 	private static String sep = ";";
 	private static int lastvaluesonar1;
@@ -104,7 +104,7 @@ public class handleJsonEventRoom {
 					if (lastvaluesonar1 != value) {
 						lastvaluesonar1 = value;
 						mqttTools.publish(actor,
-								"msg(roomSonarEvent,event,java,none,roomSonar1Event(" + value + "),1)");
+								"msg(roomSonar1Event,event,java,none,roomSonar1Event(" + value + "),1)");
 					}
 				}
 			}
@@ -132,7 +132,7 @@ public class handleJsonEventRoom {
 					if (lastvaluesonar2 != value) {
 						lastvaluesonar2 = value;
 						mqttTools.publish(actor,
-								"msg(roomSonarEvent,event,java,none,roomSona2Event(" + value + "),1)");
+								"msg(roomSonar2Event,event,java,none,roomSona2Event(" + value + "),1)");
 					}
 				}
 			}
@@ -142,31 +142,27 @@ public class handleJsonEventRoom {
 	}
 	
 	public static void retriveEventFromSonarRobotVirtual(QActor actor) {
-//		String line = null;
-//		String type = null;
-//		int value;
-//		lastvaluesonar2 = Integer.MAX_VALUE;
-//
-//		try {
-//			// System.out.println("retrieving data from sonar2... ");
-//
-//			while ((line = inFromServer.readLine()) != null) {
-//				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
-//				type = jsonObject.getString("type");
-//				if (!type.equals("webpage-ready") && !type.equals("collision")) {
-//					value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
-//
-//					// System.out.println(name + "|" + value);
-//					if (lastvaluesonar2 != value) {
-//						lastvaluesonar2 = value;
-//						mqttTools.publish(actor,
-//								"msg(roomSonarEvent,event,java,none,roomSona2Event(" + value + "),1)");
-//					}
-//				}
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-	}
+		String line = null;
+		String type = null;
+		String collision;
 
+		try {
+			// System.out.println("retrieving data from sonar2... ");
+
+			while ((line = inFromServer.readLine()) != null) {
+				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
+				type = jsonObject.getString("type");
+				if (type.equals("collision")) {
+					collision = jsonObject.getJSONObject("arg").getString("objectName");
+
+//					 System.out.println("-->" + collision);
+						mqttTools.publish(actor,
+								"msg(robotSonarEvent,event,java,none,robotSonarEvent(" + collision + "),1)");
+					
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
