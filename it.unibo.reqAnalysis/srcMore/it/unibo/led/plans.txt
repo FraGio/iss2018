@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(print("Inizializzazione led")),'','' ))
-plan(1,handleLedCmd, sentence(true,eventswitch(ledCmd, Â»ledCmd( "blink"), move(print("Blink led")) ),'','' ))
-plan(2,handleLedCmd, sentence(true,eventswitch(ledCmd, Â»ledCmd( "off"), move(print("Led off")) ),'','' ))
+plan(1,handleLedCmd, sentence(true,eventswitch(ledCmd, »ledCmd( "blink"), move(print("Blink led")) ),'','' ))
+plan(2,handleLedCmd, sentence(true,eventswitch(ledCmd, »ledCmd( "off"), move(print("Led off")) ),'','' ))
 plan(3,handleLedCmd, sentence(true,move(resumeplan),'','' ))
