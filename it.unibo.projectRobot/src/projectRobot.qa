@@ -1,0 +1,387 @@
+System reqAnalysisModel
+
+Event userCmd : userCmd ( X ) //START - STOP
+Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra
+Event coreCmd : coreCmd ( Z ) //START - STOP
+Event robotSonarEvent : robotSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event roomSonarEvent : roomSonarEvent ( NAME, DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event requestNotifier : requestNotifier //le richiede entrambe
+Event requestExternalProvider : requestExternalProvider //le richiede entrambe
+Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
+Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
+Event ledCmd : ledCmd ( X ) // X=blink/off
+Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
+
+//pubSubServer "tcp://192.168.1.112:1883"
+pubSubServer "tcp://192.168.43.84:1883"
+//pubSubServer "tcp://broker.hivemq.com:1883"
+
+Context ctxRobot ip [ host="192.168.43.84"   port=8021 ] //-httpserver
+
+ 
+EventHandler evh for coreCmd -print {	//event-driven
+ 	forwardEvent movecorelogic -m coreCmd  	//from event to message
+}; 
+
+QActor mind context ctxRobot -pubsub {   
+	
+	Rules {
+		limitTemperatureValue( 35 ).
+		limitTimeValueMin( 9 ).
+		limitTimeValueMax( 23 ).
+		
+		changedModelAction( temperature, temperaturevalue, V  ):-
+				limitTemperatureValue( MAX ), 
+	 		    eval( ge, V , MAX ), !,   
+	 		    output('temperatura sopra limite!!!!!!!'),
+	 			emitevent( robotCmd,  robotCmd ('STOP') ),
+	 			emitevent( coreCmd,  coreCmd ('STOP') ).
+	 		
+	 	changedModelAction(timer,timevalue, T ):-
+				limitTimeValueMin( MIN ),
+	 		    eval( le, T , MIN ), !,  
+	 		    output('tempo fuori range MIN!!!!!!'),
+	 			emitevent( robotCmd,  robotCmd ('STOP') ),
+	 			emitevent( coreCmd,  coreCmd ('STOP') ).
+	 			
+	 	changedModelAction(timer,timevalue, T ):-
+				limitTimeValueMax( MAX ),
+	 		    eval( ge, T , MAX ), !,   
+	 		    output('tempo fuori range MAX!!!!!!'),
+	 			emitevent( robotCmd,  robotCmd ('STOP') ),
+	 			emitevent( coreCmd,  coreCmd ('STOP') ).
+	 			
+	 	changedModelAction(leds,ledfisico, blink ):- 
+	 		    //output('led fisico blink...'),
+	 			emitevent( ledCmd,  ledCmd ('blink') ).
+	 			
+	 	changedModelAction(leds,ledfisico, off ):- 
+	 		    //output('led fisico off...'),
+	 			emitevent( ledCmd,  ledCmd ('off') ).
+	 			
+	 	changedModelAction(leds,ledhuelamp, blink ):- 
+	 		    //output('ledhuelamp blink...'),
+	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('blink') ).
+	 			
+	 	changedModelAction(leds,ledhuelamp, off ):- 
+	 		    //output('ledhuelamp off...'),
+	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('off') ).
+	}
+	Plan init normal [ 
+		//init servizio mosquitto e meteo/orario
+		javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn();
+		delay 500;
+		javaRun it.unibo.iss2018support.mqttUtils.mqttTools.init();
+		delay 500;
+		javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
+		javaRun it.unibo.iss2018support.owmSupport.owmSupport.init();
+		 
+		delay 2000; 
+		demo consult("./resourceModel.pl");
+		
+		
+		emit requestNotifier : requestNotifier
+	]  
+	switchTo initTempTime
+	 
+	Plan initTempTime[]
+	transition stopAfter 3600000   	//1h 
+		whenEvent temperatureTimeRequest -> updateValues
+	finally repeatPlan
+	 
+	Plan doWork[
+		//println("Robot in attesa...")
+	]
+	transition stopAfter 3600000   	//1h 
+		whenEvent userCmd -> robotCmdHandler,
+		whenEvent temperatureTimeRequest -> updateValues,
+		whenEvent robotSonarEvent -> handleRobotSonarEvent,
+		whenEvent roomSonarEvent -> handleRoomSonarEvent
+	finally repeatPlan
+	
+	
+	Plan updateValues [
+		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
+			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
+	]switchTo doWork
+	
+	
+	Plan robotCmdHandler [
+		onEvent userCmd : userCmd('START') -> {
+			println("--> Ricevuto da utente comando di avvio");
+			
+			//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
+			[!? realRobot ]{
+				demo changeModelItem(leds,ledfisico,blink);
+				demo changeModelItem(robot,realrobotstatus,on)
+			};
+			[!? virtualRobot ] {
+				demo changeModelItem(leds,ledhuelamp,blink);
+				demo changeModelItem(robot,virtualrobotstatus,on)
+			};
+			
+			delay 1000;
+			emit coreCmd : coreCmd('START')
+		};
+		onEvent userCmd : userCmd('STOP') -> {
+			println("*****Ricevuto da utente comando di stop");
+			emit coreCmd : coreCmd('STOP');
+			delay 1000;
+			emit robotCmd : robotCmd ('stop');
+			
+			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+			[!? realRobot ]{
+				demo changeModelItem(leds,ledfisico,off);
+				demo changeModelItem(robot,realrobotstatus,off)
+			};
+			[!? virtualRobot ]{
+				demo changeModelItem(leds,ledhuelamp,off);
+				demo changeModelItem(robot,virtualrobotstatus,off)
+			}
+		}
+	]
+	switchTo doWork
+	
+	//gestione degli eventi che provengono dal sonar posto sul robot
+	Plan handleRobotSonarEvent [
+		onEvent robotSonarEvent : robotSonarEvent(DISTANCE) 
+			-> println("Ostacolo rilevato, iniziata routine per evitarlo...")
+	]switchTo doWork
+	
+	//gestione degli eventi che provengono dai sonar presenti nella stanza
+	Plan handleRoomSonarEvent [
+		onEvent roomSonarEvent: roomSonarEvent("sonar2", 3) 
+			-> {
+				println("Robot VICINISSIMO a sonar stanza n.2...fermo il robot");
+				emit userCmd : userCmd('STOP')
+				
+			};
+		onEvent roomSonarEvent: roomSonarEvent("sonar2", DISTANCE) 
+			-> {
+				println("Robot rilevato da sonar stanza n.2...");
+				emit coreCmd : coreCmd('muroSonar2')
+			}
+		
+			
+	]switchTo doWork
+}
+
+QActor led context ctxRobot -pubsub { 
+	Plan init normal [  
+		println("Inizializzazione led")
+	] 
+	switchTo waitForBlink
+	
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledCmd -> handleLedCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedCmd resumeLastPlan[
+  		onEvent ledCmd : ledCmd('blink') -> javaRun it.unibo.iss2018support.ledfis.led.blinkLed();
+  		onEvent ledCmd : ledCmd('off') -> javaRun it.unibo.iss2018support.ledfis.led.stopLed()
+	]
+}
+
+QActor ledhuelamp context ctxRobot -pubsub { 
+	Plan init normal [  
+		println("Inizializzazione led hue lamp")
+	] 
+	switchTo waitForBlink 
+	 
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledHueLampCmd -> handleLedHueLampCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedHueLampCmd resumeLastPlan[
+  		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
+  		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
+	]
+}
+
+QActor movecorelogic context ctxRobot -pubsub {   
+	Rules {
+		robotCanMove.
+	}
+	
+	Plan init normal [  
+		println("Inizializzazione del core della logica di movimento")
+	]  
+	switchTo waitForStart 
+	 
+	Plan waitForStart[
+		println("logica di movimento FERMA")
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent coreCmd -> executionCoreCommand
+  	finally repeatPlan 
+  	
+  	Plan executionCoreCommand [
+  			onEvent coreCmd : coreCmd('START') -> { 
+  				emit robotCmd : robotCmd('d');
+  				[ not !? robotCanMove ]
+  					addRule robotCanMove;
+  				delay 1000
+  			};
+  			onEvent coreCmd : coreCmd('STOP') -> { 
+  				removeRule robotCanMove;
+  				delay 1000
+  			};
+  			onEvent coreCmd : coreCmd('uroSonar2') -> {
+  				addRule sonar2Reached;
+  				removeRule robotCanMove;
+  				delay 500
+  			}
+	] transition whenTime 2000 -> forwardPlan
+		whenEvent coreCmd -> executionCoreCommand
+	finally repeatPlan
+	
+	
+	//pianificatore prossima mossa
+	Plan forwardPlan resumeLastPlan[
+		
+		//mossa in avanti
+			[!? robotCanMove]
+				emit robotCmd : robotCmd('w'); 
+				
+		//svolta sinistra
+			[!? sonar2Reached]{
+				[!? goDown]{
+					emit robotCmd : robotCmd('a');
+					delay 500; 
+					emit robotCmd : robotCmd('w');
+					delay 500; 
+					emit robotCmd : robotCmd('a');
+					delay 500; 
+					removeRule sonar2Reached;
+					addRule robotCanMove;
+					removeRule goDown;
+					addRule goUp	
+				
+				}
+			};
+			
+			//svolta a destra
+			[!? goUp]{
+				emit robotCmd : robotCmd('d');
+				delay 500; 
+				emit robotCmd : robotCmd('w');
+				delay 500; 
+				emit robotCmd : robotCmd('d');
+				delay 500; 
+				addRule robotCanMove;
+				addRule goDown;
+				removeRule goUp
+			}
+				
+	]
+}
+
+
+QActor realrobot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Accensione del real robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> executionRobotCmdHandler
+  	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd('w') -> javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("forward","0","0");
+		onEvent robotCmd : robotCmd('s') -> javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("backward","0","0");
+		onEvent robotCmd : robotCmd('a') -> javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("left","0","0");
+		onEvent robotCmd : robotCmd('d') -> javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("right","0","0");
+		onEvent robotCmd : robotCmd('stop') -> javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("stop","0","0")
+	]
+}
+
+QActor virtualrobot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Accensione del virtual robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+	]transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> executionRobotCmdHandler
+  	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd('w') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotForward();
+		onEvent robotCmd : robotCmd('s') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotBackward();
+		onEvent robotCmd : robotCmd('a') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotLeft();
+		onEvent robotCmd : robotCmd('d') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotRight();
+		onEvent robotCmd : robotCmd('stop') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotStop()
+	]
+}
+
+QActor sonar1 context ctxRobot -pubsub {   
+	  
+	Plan init normal [  
+		println("sonar 1 START");
+		demo consult("./resourceModel.pl")
+	]  switchTo emitSonarEvent 
+  	
+  	//emissione eventi sonar1 (iniziale)
+	Plan emitSonarEvent [	
+//		[!? virtualRobot ]
+//			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonar1()
+	]
+	finally repeatPlan
+}
+
+QActor sonar2 context ctxRobot -pubsub {   
+	  
+	Plan init normal [  
+		println("sonar 2 START");
+		demo consult("./resourceModel.pl")
+	] switchTo emitSonarEvent
+  	
+  	//emissione eventi sonar2 (finale)
+	Plan emitSonarEvent [	
+		[!? virtualRobot ]
+			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonar2()
+	]
+	finally repeatPlan
+}
+
+//rappresenta il sonar posto sul robot, che deve captare ostacoli
+QActor robotsonar context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("sonar robot START");
+		demo consult("./resourceModel.pl")
+	] switchTo emitSonarRobotEvent 
+  	
+  	//emissione eventi sonar robot
+	Plan emitSonarRobotEvent[	
+//		[!? realRobot ]
+//			javaRun  it.unibo.iss2018support.rover.mbotConnArduino.initRasp()
+	]
+	finally repeatPlan
+}
+
+//entita' che recupera valori di temperatura e orario
+QActor notifier context ctxRobot -pubsub {   
+	  
+	Plan init normal [  
+		println("Notifier START")   
+	]switchTo waitForFirstRequest
+	 
+	Plan waitForFirstRequest[]transition stopAfter 3600000   	//1h 
+  		whenEvent requestNotifier -> startPolling
+  	finally repeatPlan   
+  	
+  	Plan startPolling [
+  		javaRun it.unibo.iss2018support.owmSupport.owmSupport.acquireValues();
+  		delay 60000
+	]
+	finally repeatPlan
+	
+}
