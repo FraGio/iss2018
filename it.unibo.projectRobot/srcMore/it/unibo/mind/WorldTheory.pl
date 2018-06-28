@@ -145,9 +145,9 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 limitTemperatureValue( 35).
 limitTimeValueMin( 9).
 limitTimeValueMax( 23).
-changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "[INFO] Temperatura sopra limite"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmd,coreCmd( "STOP")).
-changedModelAction( timer,timevalue,T):-limitTimeValueMin( MIN),eval( le,T,MIN), ! ,output( "[INFO] Tempo fuori range MIN"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmd,coreCmd( "STOP")).
-changedModelAction( timer,timevalue,T):-limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "[INFO] Tempo fuori range MAX"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmd,coreCmd( "STOP")).
+changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "[INFO] Temperatura sopra limite"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).
+changedModelAction( timer,timevalue,T):-limitTimeValueMin( MIN),eval( le,T,MIN), ! ,output( "[INFO] Tempo fuori range MIN"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).
+changedModelAction( timer,timevalue,T):-limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "[INFO] Tempo fuori range MAX"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).
 changedModelAction( leds,ledfisico,blink):-emitevent( ledCmd,ledCmd( "blink")).
 changedModelAction( leds,ledfisico,off):-emitevent( ledCmd,ledCmd( "off")).
 changedModelAction( leds,ledhuelamp,blink):-emitevent( ledHueLampCmd,ledHueLampCmd( "blink")).

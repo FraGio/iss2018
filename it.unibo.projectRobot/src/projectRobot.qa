@@ -2,10 +2,17 @@ System reqAnalysisModel
 
 Event userCmd : userCmd ( X ) //START - STOP
 Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra
-Event coreCmd : coreCmd ( Z ) //START - STOP - OSTACOLO - SONAR2 - SONAR2STOP
-Event robotSonarEvent : robotSonarEvent ( DISTANCE ) 
+
+// =========== start core ===========
+Event coreCmdStart : coreCmdStart 
+Event coreCmdStop : coreCmdStop 
+Event virtualRobotSonarEvent : virtualRobotSonarEvent
+Event realRobotSonarEvent : realRobotSonarEvent  ( DISTANCE ) 
 Event roomSonar1Event : roomSonar1Event ( DISTANCE ) 
 Event roomSonar2Event : roomSonar2Event ( DISTANCE ) 
+Event coreHasFinished : coreHasFinished
+// =========== end core ===========
+
 Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
@@ -15,15 +22,10 @@ Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
 
 //pubSubServer "tcp://192.168.1.112:1883"
 //pubSubServer "tcp://192.168.43.84:1883"
-pubSubServer "tcp://192.168.1.112:1883"
+pubSubServer "tcp://192.168.1.112:1883" 
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
 Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
-
-
-EventHandler evh for coreCmd {	//event-driven
- 	forwardEvent movecorelogic -m coreCmd  	//from event to message
-};
 
 QActor mind context ctxRobot -pubsub {   
 	
@@ -37,21 +39,21 @@ QActor mind context ctxRobot -pubsub {
 	 		    eval( ge, V , MAX ), !,   
 	 		    output('[INFO] Temperatura sopra limite'),
 	 			emitevent( robotCmd,  robotCmd ('stop') ),
-	 			emitevent( coreCmd,  coreCmd ('STOP') ).
+	 			emitevent( coreCmdStop,  coreCmdStop ).
 	 		
 	 	changedModelAction(timer,timevalue, T ):-
 				limitTimeValueMin( MIN ),
 	 		    eval( le, T , MIN ), !,  
 	 		    output('[INFO] Tempo fuori range MIN'),
 	 			emitevent( robotCmd,  robotCmd ('stop') ),
-	 			emitevent( coreCmd,  coreCmd ('STOP') ).
+	 			emitevent( coreCmdStop,  coreCmdStop ).
 	 			
 	 	changedModelAction(timer,timevalue, T ):-
 				limitTimeValueMax( MAX ),
 	 		    eval( ge, T , MAX ), !,   
 	 		    output('[INFO] Tempo fuori range MAX'),
 	 			emitevent( robotCmd,  robotCmd ('stop') ),
-	 			emitevent( coreCmd,  coreCmd ('STOP') ).
+	 			emitevent( coreCmdStop,  coreCmdStop ).
 	 			
 	 	changedModelAction(leds,ledfisico, blink ):- 
 	 			emitevent( ledCmd,  ledCmd ('blink') ).
@@ -105,16 +107,13 @@ QActor mind context ctxRobot -pubsub {
 	transition stopAfter 3600000   	//1h 
 		whenEvent userCmd -> robotCmdHandler,
 		whenEvent temperatureTimeRequest -> updateValues,
-		whenEvent robotSonarEvent -> handleRobotSonarEvent,
-		whenEvent roomSonar2Event -> handleRoomSonarEvent
+		whenEvent coreHasFinished -> coreHasFinishedHandler
 	finally repeatPlan
-	
 	
 	Plan updateValues [
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
 	]switchTo doWork
-	
 	
 	Plan robotCmdHandler [
 		
@@ -134,7 +133,7 @@ QActor mind context ctxRobot -pubsub {
 				};
 			
 				delay 1000;
-				emit coreCmd : coreCmd('START')
+				emit coreCmdStart : coreCmdStart
 			}
 		};
 		
@@ -144,9 +143,8 @@ QActor mind context ctxRobot -pubsub {
 			[!? alreadyStarted] {
 				onEvent userCmd : userCmd('STOP') -> {
 					println("Ricevuto da utente comando di stop");
-					emit coreCmd : coreCmd('STOP');
+					emit coreCmdStop : coreCmdStop;
 					delay 1000;
-					emit robotCmd : robotCmd ('stop');
 			
 					addRule alreadyStopped;
 					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
@@ -164,38 +162,32 @@ QActor mind context ctxRobot -pubsub {
 	]
 	switchTo doWork
 	
-	//gestione degli eventi che provengono dal sonar posto sul robot FISICO o VIRTUALE
-	Plan handleRobotSonarEvent [
-		onEvent robotSonarEvent : robotSonarEvent(DISTANCE) 
-			-> emit coreCmd : coreCmd('OSTACOLO')
-	]switchTo doWork
 	
-	Plan handleRoomSonarEvent [
-//		onEvent roomSonar2Event: roomSonar2Event('3') 
-//			-> {
-//					println("[INFO] Arrivato al sonar2 .. terminazione");
-//					emit coreCmd : coreCmd('SONAR2STOP');
-//					delay 1000;
-//					emit robotCmd : robotCmd ('stop');
-//			
-//					addRule alreadyStopped;
-//					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
-//					[!? realRobot ]{
-//						demo changeModelItem(leds,ledfisico,off);
-//						demo changeModelItem(robot,realrobotstatus,off)
-//					};
-//					[!? virtualRobot ]{
-//						demo changeModelItem(leds,ledhuelamp,off);
-//						demo changeModelItem(robot,virtualrobotstatus,off)
-//			}
-//		};
-		onEvent roomSonar2Event: roomSonar2Event(X) 
-			-> emit coreCmd : coreCmd('SONAR2')
-	] switchTo doWork
+	Plan coreHasFinishedHandler [
+		println("[INFO] Mind ha ricevuto segnale di fine lavoro da coreLogic");
+			delay 1000;
+			
+			addRule alreadyStopped;
+			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+			[!? realRobot ]{
+				demo changeModelItem(leds,ledfisico,off);
+				demo changeModelItem(robot,realrobotstatus,off)
+			};
+			[!? virtualRobot ]{
+				demo changeModelItem(leds,ledhuelamp,off);
+				demo changeModelItem(robot,virtualrobotstatus,off)
+			}
+	]
 }
 
-QActor movecorelogic context ctxRobot -pubsub {   
+QActor movecorelogic context ctxRobot -pubsub{   
 	Plan init normal [  
+		delay 2000;
+		emit robotCmd : robotCmd('d');
+		delay 1000;
+		emit robotCmd : robotCmd('d');
+		delay 1000;
+		
 		println("[INFO] Inizializzazione del core della logica di movimento")
 	]  
 	switchTo waitForStart 
@@ -203,109 +195,87 @@ QActor movecorelogic context ctxRobot -pubsub {
 	Plan waitForStart[
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent coreCmd -> executionCoreCommand
+  		whenEvent coreCmdStart -> forwardOn
   	finally repeatPlan 
   	
-  	Plan executionCoreCommand [
-  			onEvent coreCmd : coreCmd('START') -> {
-  				[not !? forwardOn ] {
-  					addRule forwardOn;
-  					println('[INFO] START')
-  				}
-  			};
-  			onEvent coreCmd : coreCmd('STOP') -> { 
-  				[not !? forwardStop ] {
-  					addRule forwardStop;
-  					removeRule forwardOn;
-  					println('[INFO] STOP')
-  				}
-  			};
-  			
-  			onEvent coreCmd : coreCmd('SONAR2') -> { 
-  				[not !? sonar2 ] {
-  					addRule sonar2;
-  					removeRule forwardOn;
-  					println('[INFO] SONAR2 (NO FINE!)')
-  				}
-  			};
-  			
-  			onEvent coreCmd : coreCmd('OSTACOLO') -> { 
-  				[not !? sonar2] {
-  					[not !? ostacolo ]{
-  						addRule ostacolo;
-  						removeRule forwardOn;
-  						println('[INFO] OSTACOLO')
-  						}
-  					}
-  			};
-  			
-  			onEvent coreCmd : coreCmd('SONAR2STOP') -> { 
-  				[not !? sonar2stop] {
-  					addRule sonar2stop;
-  					removeRule forwardOn;
-  					removeRule sonar2;
-  					println('[INFO] SONAR2STOP')
-  				}
-  			}
-  			
-	] transition whenTime 1500 -> forwardPlan
-		whenEvent coreCmd -> executionCoreCommand
+  	Plan forwardOn [
+  			delay 500;
+  			emit robotCmd : robotCmd('w')
+	] transition stopAfter 3600000   	//1h 
+		whenEvent coreCmdStop -> stopPlan,
+		whenEvent roomSonar2Event -> sonar2Detected,
+		whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
+		whenEvent realRobotSonarEvent -> handleRealSonarEvent
 	finally repeatPlan
-		
-		
-	Plan forwardPlan [ 
-		
-		//primo step in avanti, da sonar 1
-		[!? forwardOn] {
-			[not !? firstRotation] {
+	
+	Plan handleRealSonarEvent [
+		//prima attesa 
+		[not !? firstWait]
+			addRule firstWait;
+			
+		[not !? secondWait]{
+			[!? firstWait] {
 				emit robotCmd : robotCmd('d');
 				delay 500;
-				emit robotCmd : robotCmd('d');
-				delay 500;
-				addRule firstRotation
+				emit robotCmd : robotCmd('w');
+				delay 100
 			};
-			
-			emit robotCmd : robotCmd('w')
+			addRule secondWait
 		};
 		
-		[!? forwardStop] {
-			emit robotCmd : robotCmd('stop');
-			removeRule forwardOn
-		};
-			
-		[!? sonar2] {
-				emit robotCmd : robotCmd('a');
-				delay 500;
-				emit robotCmd : robotCmd('w');
-				delay 300;
-				emit robotCmd : robotCmd('a');
-				delay 500;
-				addRule forwardOn;
-				removeRule sonar2
-		};
-		
-		[!? ostacolo] {
-			[not !? sonar2] {
-				emit robotCmd : robotCmd('d');
-				delay 500;
-				emit robotCmd : robotCmd('w');
-				delay 300;
-				emit robotCmd : robotCmd('d');
-				delay 500;
-				addRule forwardOn;
-				removeRule ostacolo
+		[not !? impossibleToAvoid ]{
+			[!? firstWait] {
+				[!? secondWait] {
+					addRule impossibleToAvoid;
+					emit coreCmdStop : coreCmdStop
+				}
 			}
 		}
 		
-//		[!? sonar2stop] {
-////				addRule forwardOn;
-////				removeRule sonar2
-//		}
+	] transition whenTime 3000 -> forwardOn
 		
+	Plan handleVirtualSonarEvent [
+			[not !? justTurnedUpBottom ] {
+				println("[INFO] Sonar virtuale ha trovato muro!");
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 100;
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				addRule justTurnedUpBottom;
+				removeRule justTurnedBottomUp;
+				
+				removeRule firstWait;
+				removeRule secondWait
+		}
+	] switchTo forwardOn
 		
-	] transition whenTime 1500 -> executionCoreCommand
-		whenEvent coreCmd -> executionCoreCommand
-	finally repeatPlan
+	Plan sonar2Detected [
+			[not !? justTurnedBottomUp ] {
+				println("[INFO] Sonar2 raggiunto, non finito, SI SVOLTA!");
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 100;
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				addRule justTurnedBottomUp;
+				removeRule justTurnedUpBottom;
+				
+				removeRule firstWait;
+				removeRule secondWait
+			}
+	] switchTo forwardOn
+	
+	
+	Plan stopPlan [
+		emit robotCmd : robotCmd('stop');
+		emit coreHasFinished : coreHasFinished;
+		println("[INFO] Corelogic fermata")
+	] transition stopAfter 3600000   	//1h 
+	
+	
 }
 
 QActor led context ctxRobot -pubsub { 

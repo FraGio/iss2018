@@ -10,7 +10,7 @@ import it.unibo.qactors.akka.QActor;
 
 public class mqttTools {
 	private static String topic = "unibo/qasys";
-	private static int qos = 2;
+	private static int qos = 0;
 	private static String broker = "tcp://192.168.1.112:1883";
 //	private static String broker = "tcp://192.168.43.84:1883";
 	// private static String broker = "tcp://iot.eclipse.org:1883";

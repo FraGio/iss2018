@@ -59,7 +59,7 @@ private static QActor curActor ;
 //								System.out.println("MbotConnArduino sonar:" + dataSonar);
 								
 								// PUBLISH ON MQTT BROKER 
-								mqttTools.publish(null,"msg(robotSonarEvent,event,java,none,robotSonarEvent("+dataSonar+"),1)");
+								mqttTools.publish(null,"msg(realRobotSonarEvent,event,java,none,realRobotSonarEvent("+dataSonar+"),1)");
 //								QActorUtils.raiseEvent(curActor, curActor.getName(), "realSonar", 
 //										"sonar( DISTANCE )".replace("DISTANCE", ""+dataSonar ));
  							}

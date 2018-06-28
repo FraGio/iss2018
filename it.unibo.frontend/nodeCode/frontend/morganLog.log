@@ -11643,3 +11643,5 @@
 ::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 2.408 ms
 ::1 - POST /robot/actions/commands/start HTTP/1.1 200 2520 - 2.469 ms
 ::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 8.626 ms
+::1 - POST /robot/actions/commands/start HTTP/1.1 200 2520 - 67.125 ms
+::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 21.932 ms

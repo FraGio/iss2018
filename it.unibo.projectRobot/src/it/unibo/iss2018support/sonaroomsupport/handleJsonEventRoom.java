@@ -31,7 +31,14 @@ public class handleJsonEventRoom {
 	public static void sendCmd(String msg) throws Exception {
 		if (outToServer == null)
 			return;
-		String jsonString = "{ 'type': '" + msg + "', 'arg': 300 }";
+
+		String jsonString = null;
+
+		if (msg.equals("moveForward"))
+			jsonString = "{ 'type': '" + msg + "', 'arg': -1 }";
+		else
+			jsonString = "{ 'type': '" + msg + "', 'arg': 300 }";
+
 		JSONObject jsonObject = new JSONObject(jsonString);
 		msg = sep + jsonObject.toString() + sep;
 		System.out.println("sending msg=" + msg);
@@ -100,20 +107,23 @@ public class handleJsonEventRoom {
 					value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
 					name = jsonObject.getJSONObject("arg").getString("sonarName");
 
-					if (name.equals("sonar1"))
-						mqttTools.publish(actor,
-								"msg(roomSonar1Event,event,java,none,roomSonar1Event(" + value + "),1)");
-					if (name.equals("sonar2"))
-						mqttTools.publish(actor,
-								"msg(roomSonar2Event,event,java,none,roomSonar2Event(" + value + "),1)");
-
+					if (value == 3)
+						mqttTools.publish(actor, "msg(coreCmdStop,event,java,none,coreCmdStop,1)");
+					else {
+						if (name.equals("sonar1"))
+							mqttTools.publish(actor,
+									"msg(roomSonar1Event,event,java,none,roomSonar1Event('" + value + "'),1)");
+						if (name.equals("sonar2"))
+							mqttTools.publish(actor,
+									"msg(roomSonar2Event,event,java,none,roomSonar2Event('" + value + "'),1)");
+					}
 				}
 
 				if (type.equals("collision")) {
 					collision = jsonObject.getJSONObject("arg").getString("objectName");
 
 					mqttTools.publish(actor,
-							"msg(robotSonarEvent,event,java,none,robotSonarEvent(" + collision + "),1)");
+							"msg(virtualRobotSonarEvent,event,java,none,virtualRobotSonarEvent,1)");
 
 				}
 			}
