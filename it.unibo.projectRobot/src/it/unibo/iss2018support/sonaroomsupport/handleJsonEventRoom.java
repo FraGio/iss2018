@@ -83,19 +83,17 @@ public class handleJsonEventRoom {
 		}
 	}
 
-	public static void retriveEventFromSonar1(QActor actor) {
+	public static void retriveEventFromVirtual(QActor actor) {
 		String line = null;
 		String type = null;
 		String name = null;
+		String collision = null;
 		int value;
-		Socket clientSocket1 = null;
-		
+
 		try {
-			clientSocket1 = new Socket(hostName, port);
-			BufferedReader inFromServer1 = new BufferedReader(new InputStreamReader(clientSocket1.getInputStream()));
 			// System.out.println("retrieving data from sonar1... ");
 
-			while ((line = inFromServer1.readLine()) != null) {
+			while ((line = inFromServer.readLine()) != null) {
 				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
 				type = jsonObject.getString("type");
 				if (!type.equals("webpage-ready") && !type.equals("collision")) {
@@ -105,55 +103,12 @@ public class handleJsonEventRoom {
 					if (name.equals("sonar1"))
 						mqttTools.publish(actor,
 								"msg(roomSonar1Event,event,java,none,roomSonar1Event(" + value + "),1)");
-
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void retriveEventFromSonar2(QActor actor) {
-		String line = null;
-		String type = null;
-		String name = null;
-		int value;
-		Socket clientSocket2 = null;
-
-		try {
-			clientSocket2 = new Socket(hostName, port);
-			BufferedReader inFromServer2 = new BufferedReader(new InputStreamReader(clientSocket2.getInputStream()));
-			// System.out.println("retrieving data from sonar2... ");
-
-			while ((line = inFromServer2.readLine()) != null) {
-				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
-				type = jsonObject.getString("type");
-				if (!type.equals("webpage-ready") && !type.equals("collision")) {
-					value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
-					name = jsonObject.getJSONObject("arg").getString("sonarName");
-
 					if (name.equals("sonar2"))
 						mqttTools.publish(actor,
 								"msg(roomSonar2Event,event,java,none,roomSonar2Event(" + value + "),1)");
 
 				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
-	public static void retriveEventFromSonarRobotVirtual(QActor actor) {
-		String line = null;
-		String type = null;
-		String collision;
-
-		try {
-			// System.out.println("retrieving data from sonar2... ");
-
-			while ((line = inFromServer.readLine()) != null) {
-				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
-				type = jsonObject.getString("type");
 				if (type.equals("collision")) {
 					collision = jsonObject.getJSONObject("arg").getString("objectName");
 
@@ -166,4 +121,90 @@ public class handleJsonEventRoom {
 			e.printStackTrace();
 		}
 	}
+
+	// public static void retriveEventFromSonar1(QActor actor) {
+	// String line = null;
+	// String type = null;
+	// String name = null;
+	// int value;
+	// Socket clientSocket1 = null;
+	//
+	// try {
+	// clientSocket1 = new Socket(hostName, port);
+	// BufferedReader inFromServer1 = new BufferedReader(new
+	// InputStreamReader(clientSocket1.getInputStream()));
+	// // System.out.println("retrieving data from sonar1... ");
+	//
+	// while ((line = inFromServer1.readLine()) != null) {
+	// JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
+	// type = jsonObject.getString("type");
+	// if (!type.equals("webpage-ready") && !type.equals("collision")) {
+	// value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
+	// name = jsonObject.getJSONObject("arg").getString("sonarName");
+	//
+	// if (name.equals("sonar1"))
+	// mqttTools.publish(actor,
+	// "msg(roomSonar1Event,event,java,none,roomSonar1Event(" + value + "),1)");
+	//
+	// }
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// public static void retriveEventFromSonar2(QActor actor) {
+	// String line = null;
+	// String type = null;
+	// String name = null;
+	// int value;
+	// Socket clientSocket2 = null;
+	//
+	// try {
+	// clientSocket2 = new Socket(hostName, port);
+	// BufferedReader inFromServer2 = new BufferedReader(new
+	// InputStreamReader(clientSocket2.getInputStream()));
+	// // System.out.println("retrieving data from sonar2... ");
+	//
+	// while ((line = inFromServer2.readLine()) != null) {
+	// JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
+	// type = jsonObject.getString("type");
+	// if (!type.equals("webpage-ready") && !type.equals("collision")) {
+	// value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
+	// name = jsonObject.getJSONObject("arg").getString("sonarName");
+	//
+	// if (name.equals("sonar2"))
+	// mqttTools.publish(actor,
+	// "msg(roomSonar2Event,event,java,none,roomSonar2Event(" + value + "),1)");
+	//
+	// }
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// public static void retriveEventFromSonarRobotVirtual(QActor actor) {
+	// String line = null;
+	// String type = null;
+	// String collision;
+	//
+	// try {
+	// // System.out.println("retrieving data from sonar2... ");
+	//
+	// while ((line = inFromServer.readLine()) != null) {
+	// JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
+	// type = jsonObject.getString("type");
+	// if (type.equals("collision")) {
+	// collision = jsonObject.getJSONObject("arg").getString("objectName");
+	//
+	// mqttTools.publish(actor,
+	// "msg(robotSonarEvent,event,java,none,robotSonarEvent(" + collision + "),1)");
+	//
+	// }
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
 }

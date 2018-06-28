@@ -58,6 +58,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForStart",waitForStart);
 	    	stateTab.put("executionCoreCommand",executionCoreCommand);
+	    	stateTab.put("forwardPlan",forwardPlan);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -75,9 +76,9 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Inizializzazione del core della logica di movimento\"";
+	    	temporaryStr = "\"[INFO] Inizializzazione del core della logica di movimento\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForStart
 	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
 	              "waitForStart",false, false, null); 
@@ -105,20 +106,9 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    
 	    StateFun executionCoreCommand = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("executionCoreCommand",-1);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_executionCoreCommand",0);
+	     pr.incNumIter(); 	
 	    	String myselfName = "executionCoreCommand";  
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("coreCmd(\"STOP\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
-	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg="robotCmd(\"STOP\")";
-	    			/* RaiseEvent */
-	    			parg = updateVars(Term.createTerm("coreCmd(Z)"),  Term.createTerm("coreCmd(\"STOP\")"), 
-	    				    		  					Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) emit( "robotCmd", parg );
-	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
 	    	curT = Term.createTerm("coreCmd(\"START\")");
@@ -127,16 +117,224 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"logica di movimento mette in movimento il robot\"";
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " not !?forwardOn" )) != null )
+	    			{
+	    			{//actionseq
+	    			temporaryStr = "forwardOn";
+	    			addRule( temporaryStr );  
+	    			temporaryStr = "\"[INFO] START\"";
 	    			println( temporaryStr );  
 	    			};//actionseq
+	    			}
+	    			};//actionseq
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,false);
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("coreCmd(\"STOP\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
+	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " not !?forwardStop" )) != null )
+	    			{
+	    			{//actionseq
+	    			temporaryStr = "forwardStop";
+	    			addRule( temporaryStr );  
+	    			temporaryStr = "forwardOn";
+	    			removeRule( temporaryStr );  
+	    			temporaryStr = "\"[INFO] STOP\"";
+	    			println( temporaryStr );  
+	    			};//actionseq
+	    			}
+	    			};//actionseq
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("coreCmd(\"SONAR2\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
+	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " not !?sonar2" )) != null )
+	    			{
+	    			{//actionseq
+	    			temporaryStr = "sonar2";
+	    			addRule( temporaryStr );  
+	    			temporaryStr = "forwardOn";
+	    			removeRule( temporaryStr );  
+	    			temporaryStr = "\"[INFO] SONAR2 (NO FINE!)\"";
+	    			println( temporaryStr );  
+	    			};//actionseq
+	    			}
+	    			};//actionseq
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("coreCmd(\"OSTACOLO\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
+	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " not !?sonar2" )) != null )
+	    			{
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " not !?ostacolo" )) != null )
+	    			{
+	    			{//actionseq
+	    			temporaryStr = "ostacolo";
+	    			addRule( temporaryStr );  
+	    			temporaryStr = "forwardOn";
+	    			removeRule( temporaryStr );  
+	    			temporaryStr = "\"[INFO] OSTACOLO\"";
+	    			println( temporaryStr );  
+	    			};//actionseq
+	    			}
+	    			};//actionseq
+	    			}
+	    			};//actionseq
+	    	}
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("coreCmd(\"SONAR2STOP\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("coreCmd") && 
+	    		pengine.unify(curT, Term.createTerm("coreCmd(Z)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " not !?sonar2stop" )) != null )
+	    			{
+	    			{//actionseq
+	    			temporaryStr = "sonar2stop";
+	    			addRule( temporaryStr );  
+	    			temporaryStr = "forwardOn";
+	    			removeRule( temporaryStr );  
+	    			temporaryStr = "sonar2";
+	    			removeRule( temporaryStr );  
+	    			temporaryStr = "\"[INFO] SONAR2STOP\"";
+	    			println( temporaryStr );  
+	    			};//actionseq
+	    			}
+	    			};//actionseq
+	    	}
+	    	//bbb
+	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
+	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
+	          new String[]{"true","E","coreCmd" },
+	          1500, "forwardPlan" );//msgTransition
 	    }catch(Exception e_executionCoreCommand){  
 	    	 println( getName() + " plan=executionCoreCommand WARNING:" + e_executionCoreCommand.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//executionCoreCommand
+	    
+	    StateFun forwardPlan = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_forwardPlan",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "forwardPlan";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?forwardOn" )) != null ){
+	    	{//actionseq
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?firstRotation" )) != null )
+	    	{
+	    	{//actionseq
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "firstRotation";
+	    	addRule( temporaryStr );  
+	    	};//actionseq
+	    	}
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	};//actionseq
+	    	}
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?forwardStop" )) != null ){
+	    	{//actionseq
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	temporaryStr = "forwardOn";
+	    	removeRule( temporaryStr );  
+	    	};//actionseq
+	    	}
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?sonar2" )) != null ){
+	    	{//actionseq
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(300,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "forwardOn";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = "sonar2";
+	    	removeRule( temporaryStr );  
+	    	};//actionseq
+	    	}
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?ostacolo" )) != null ){
+	    	{//actionseq
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?sonar2" )) != null )
+	    	{
+	    	{//actionseq
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(300,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardPlan";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "forwardOn";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = "ostacolo";
+	    	removeRule( temporaryStr );  
+	    	};//actionseq
+	    	}
+	    	};//actionseq
+	    	}
+	    	//bbb
+	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
+	          new StateFun[]{stateTab.get("executionCoreCommand") }, 
+	          new String[]{"true","E","coreCmd" },
+	          1500, "executionCoreCommand" );//msgTransition
+	    }catch(Exception e_forwardPlan){  
+	    	 println( getName() + " plan=forwardPlan WARNING:" + e_forwardPlan.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//forwardPlan
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

@@ -65,20 +65,20 @@ QActor mind context ctxRobot -pubsub {
 	 	changedModelAction(leds,ledhuelamp, off ):- 
 	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('off') ).
 	}
-	Plan init normal [ 
-		//init servizio mosquitto e meteo/orario
+	Plan init normal [
 		javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn();
 		delay 500;
 		javaRun it.unibo.iss2018support.mqttUtils.mqttTools.init();
 		delay 500;
 		javaRun it.unibo.iss2018support.owmSupport.owmSupport.init();
 		
+		demo consult("./resourceModel.pl");
+		delay 1000; 
+		
 		[!? realRobot ]
 			javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
 		
 		delay 2000; 
-		demo consult("./resourceModel.pl");
-		
 		emit requestNotifier : requestNotifier
 	]  
 	switchTo initTempTime
@@ -414,7 +414,7 @@ QActor sonar1 context ctxRobot -pubsub {
 	Plan emitSonarEvent [	
 		delay 1000;
 		[!? virtualRobot ]
-			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonar1()
+			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }
@@ -430,7 +430,7 @@ QActor sonar2 context ctxRobot -pubsub {
 	Plan emitSonarEvent [	
 		delay 1000;
 		[!? virtualRobot ]
-			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonar2()
+			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }
@@ -442,8 +442,8 @@ QActor robotsonar context ctxRobot -pubsub {
 	] switchTo emitSonarRobotEvent 
   	
 	Plan emitSonarRobotEvent[	
-		[!? virtualRobot ]
-			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonarRobotVirtual()
+			[!? virtualRobot ]
+			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }
