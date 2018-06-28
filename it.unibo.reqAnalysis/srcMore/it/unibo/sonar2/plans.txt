@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(print("sonar 2 START")),'','' ))
-plan(1,emitRobotCmd, sentence(true,delay( 15000) ,'','' ))
-plan(2,emitRobotCmd, sentence(true,move(print("Sonar2: robot rilevato")),'','' ))
-plan(3,emitRobotCmd, sentence(true,raise( robotCmd , robotCmd( "STOP") )'),'','' ))
+plan(1,emituserCmd, sentence(true,delay( 15000) ,'','' ))
+plan(2,emituserCmd, sentence(true,move(print("Sonar2: robot rilevato")),'','' ))
+plan(3,emituserCmd, sentence(true,raise( userCmd , userCmd( "STOP") )'),'','' ))

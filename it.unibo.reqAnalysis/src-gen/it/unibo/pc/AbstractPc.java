@@ -152,7 +152,9 @@ public abstract class AbstractPc extends QActor {
 	    			emit( "robotCmd", temporaryStr );
 	    			};//actionseq
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"pc_"+myselfName,false,false);
+	    	//switchTo waitForUserCommand
+	        switchToPlanAsNextState(pr, myselfName, "pc_"+myselfName, 
+	              "waitForUserCommand",false, false, null); 
 	    }catch(Exception e_userCmdHandler){  
 	    	 println( getName() + " plan=userCmdHandler WARNING:" + e_userCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

@@ -2,14 +2,16 @@ System reqAnalysisModel
 
 
 //evento che rappresenta il comand (START o STOP) inviato da GUI a robot
-Event robotCmd : robotCmd ( X )
+Event userCmd : userCmd ( X )
 
-pubSubServer "tcp://localhost"
+Event ledCmd : ledCmd ( X )
+
+Event ledHueLampCmd : ledHueLampCmd ( X )
 
 //contesto Robot
 Context ctxRobot ip [ host="localhost"   port=8021 ]
 
-QActor robot context ctxRobot -pubsub {   
+QActor robot context ctxRobot {   
 	
 	
 	Rules{
@@ -23,7 +25,7 @@ QActor robot context ctxRobot -pubsub {
 				limitTemperatureValue( MAX ), 
 	 		    eval( ge, V , MAX ), !,   
 	 		    output('temperatura sopra limite'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			emitevent( userCmd,  userCmd ('STOP') ).
 	 		
 	 		
 	 	//copre requisito R-TimeOk e R-TimeKo		
@@ -36,7 +38,7 @@ QActor robot context ctxRobot -pubsub {
 				limitTimeValueMax( MAX ),
 	 		    eval( le, T , MIN ), !,  
 	 		    output('tempo fuori range'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			emitevent( userCmd,  userCmd ('STOP') ).
 	 			
 	 	changedModelAction(timee,timeData, T ):-
 	 			//output(T),
@@ -44,7 +46,7 @@ QActor robot context ctxRobot -pubsub {
 				limitTimeValueMax( MAX ),
 	 		    eval( ge, T , MAX ), !,   
 	 		    output('tempo fuori range'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			emitevent( userCmd,  userCmd ('STOP') ).
 	 			
 	}
 	  
@@ -59,21 +61,21 @@ QActor robot context ctxRobot -pubsub {
 		println("Robot in attesa di comandi")
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent robotCmd -> robotCmdHandler
+  		whenEvent userCmd -> userCmdHandler
   	finally repeatPlan 
   	
   	//gestione dei comandi ricevuti da GUI
-	Plan robotCmdHandler [
+	Plan userCmdHandler [
 		//coperto il requisito R-TimeOk, R-TimeKo, R-TempOk, R-TempKo
 		println("Valutazione TEMPERATURA ed ORARIO");
 		
 		//coperto il requisito R-FloorClean
-		onEvent robotCmd : robotCmd ("START") -> { 
-			println("Robot attivia'  avviata"); 
+		onEvent userCmd : userCmd ("START") -> { 
+			println("Robot attivia'ï¿½ avviata"); 
 			
 			//coperto il requisito R-BlinkLed e R-BlinkHue
-			[ !? isRealRobot ] println("Robot fisico: blink led")
-					else println("Robot virtuale: blink Red-Hue-Lamp");
+			[ !? isRealRobot ] emit ledCmd : ledCmd('blink')
+					else emit ledHueLampCmd : ledHueLampCmd('blink');
 					
 			delay 5000;
 			
@@ -89,37 +91,77 @@ QActor robot context ctxRobot -pubsub {
 			
 			//coperto il requisiti R-Obstacle
 			println("Trovato ostacolo inevitabile, mi arresto");
-			emit robotCmd : robotCmd("STOP")
+			emit userCmd : userCmd("STOP");
+			
+			[ !? isRealRobot ] emit ledCmd : ledCmd('off')
+					else emit ledHueLampCmd : ledHueLampCmd('off')
 		};
 		
-		onEvent robotCmd : robotCmd ("STOP") -> { 
-			println("Robot attivia'  arrestata"); 
+		//coperto il requisito R-Stop
+		onEvent userCmd : userCmd ("STOP") -> { 
+			println("Robot attivia'ï¿½ arrestata"); 
 			
 			//coperto il requisito R-BlinkLed e R-BlinkHue
-			[ !? isRealRobot ] println("Robot fisico: STOP blink led")
-					else println("Robot virtuale: STOP blink Red-Hue-Lamp")
+			[ !? isRealRobot ] emit ledCmd : ledCmd('off')
+					else emit ledHueLampCmd : ledHueLampCmd('off')
 		}
 	] 
 	switchTo waitForCmd
 }
 
 
-QActor sonar2 context ctxRobot -pubsub {   
+QActor sonar2 context ctxRobot {   
 	  
 	Plan init normal [  println("sonar 2 START")   ]  
-	switchTo emitRobotCmd 
+	switchTo emituserCmd 
   	
   	//simulazione comandi START/STOP
-	Plan emitRobotCmd [	
+	Plan emituserCmd [	
 		delay 15000;
 		println("Sonar2: robot rilevato");	
 		
 		//coperto il requisiti R-End
-		emit robotCmd : robotCmd("STOP")
+		emit userCmd : userCmd("STOP")
 	]
 }
 
-QActor sonar1 context ctxRobot -pubsub {   
+QActor sonar1 context ctxRobot {   
 	  
 	Plan init normal [  println("sonar 1 START")   ]  
+}
+
+QActor led context ctxRobot { 
+	Plan init normal [  
+		println("Inizializzazione led")
+	] 
+	switchTo waitForBlink
+	
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledCmd -> handleLedCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedCmd resumeLastPlan[
+  		onEvent ledCmd : ledCmd('blink') -> println("Blink led");
+  		onEvent ledCmd : ledCmd('off') -> println("Led off")
+	]
+}
+
+QActor ledhuelamp context ctxRobot { 
+	Plan init normal [  
+		println("Inizializzazione led hue lamp")
+	] 
+	switchTo waitForBlink 
+	 
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledHueLampCmd -> handleLedHueLampCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedHueLampCmd resumeLastPlan[
+  		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
+  		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
+	]
 }

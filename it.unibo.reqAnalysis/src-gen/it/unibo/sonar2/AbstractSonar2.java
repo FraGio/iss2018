@@ -56,7 +56,7 @@ public abstract class AbstractSonar2 extends QActor {
 	    protected void initStateTable(){  	
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
-	    	stateTab.put("emitRobotCmd",emitRobotCmd);
+	    	stateTab.put("emituserCmd",emituserCmd);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -76,34 +76,33 @@ public abstract class AbstractSonar2 extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"sonar 2 START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost");
-	    	//switchTo emitRobotCmd
+	    	//switchTo emituserCmd
 	        switchToPlanAsNextState(pr, myselfName, "sonar2_"+myselfName, 
-	              "emitRobotCmd",false, false, null); 
+	              "emituserCmd",false, false, null); 
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//init
 	    
-	    StateFun emitRobotCmd = () -> {	
+	    StateFun emituserCmd = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("emitRobotCmd",-1);
-	    	String myselfName = "emitRobotCmd";  
+	     PlanRepeat pr = PlanRepeat.setUp("emituserCmd",-1);
+	    	String myselfName = "emituserCmd";  
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(15000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
+	    	if( aar.getInterrupted() ) curPlanInExec   = "emituserCmd";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Sonar2: robot rilevato\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(X)","robotCmd(\"STOP\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
+	    	emit( "userCmd", temporaryStr );
 	    	repeatPlanNoTransition(pr,myselfName,"sonar2_"+myselfName,false,false);
-	    }catch(Exception e_emitRobotCmd){  
-	    	 println( getName() + " plan=emitRobotCmd WARNING:" + e_emitRobotCmd.getMessage() );
+	    }catch(Exception e_emituserCmd){  
+	    	 println( getName() + " plan=emituserCmd WARNING:" + e_emituserCmd.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//emitRobotCmd
+	    };//emituserCmd
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

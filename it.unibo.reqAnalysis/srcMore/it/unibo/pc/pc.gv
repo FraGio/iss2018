@@ -12,9 +12,10 @@ digraph finite_state_machine {
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
 	waitForUserCommand [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	authenticateUser [ color = black ][ fontcolor = black ][ penwidth = 3 ]
-	userCmdHandler [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
+	userCmdHandler [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	
 	init -> authenticateUser [ label = "switch" ][ color = black ][ fontcolor = black ]
+	userCmdHandler -> waitForUserCommand [ label = "switch" ][ color = black ][ fontcolor = black ]
 	authenticateUser -> waitForUserCommand [ label = "switch" ][ color = black ][ fontcolor = black ]
 	waitForUserCommand -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
 	waitForUserCommand -> userCmdHandler [ label = "userCmd" ][ color = black ][ fontcolor = black ]

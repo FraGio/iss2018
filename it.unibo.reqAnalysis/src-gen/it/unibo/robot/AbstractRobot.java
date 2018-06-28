@@ -57,7 +57,7 @@ public abstract class AbstractRobot extends QActor {
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForCmd",waitForCmd);
-	    	stateTab.put("robotCmdHandler",robotCmdHandler);
+	    	stateTab.put("userCmdHandler",userCmdHandler);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -98,8 +98,8 @@ public abstract class AbstractRobot extends QActor {
 	    	println( temporaryStr );  
 	    	//bbb
 	     msgTransition( pr,myselfName,"robot_"+myselfName,false,
-	          new StateFun[]{stateTab.get("robotCmdHandler") }, 
-	          new String[]{"true","E","robotCmd" },
+	          new StateFun[]{stateTab.get("userCmdHandler") }, 
+	          new String[]{"true","E","userCmd" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_waitForCmd){  
 	    	 println( getName() + " plan=waitForCmd WARNING:" + e_waitForCmd.getMessage() );
@@ -107,42 +107,82 @@ public abstract class AbstractRobot extends QActor {
 	    }
 	    };//waitForCmd
 	    
-	    StateFun robotCmdHandler = () -> {	
+	    StateFun userCmdHandler = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("robotCmdHandler",-1);
-	    	String myselfName = "robotCmdHandler";  
+	     PlanRepeat pr = PlanRepeat.setUp("userCmdHandler",-1);
+	    	String myselfName = "userCmdHandler";  
+	    	temporaryStr = "\"Valutazione TEMPERATURA ed ORARIO\"";
+	    	println( temporaryStr );  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"START\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
+	    	curT = Term.createTerm("userCmd(\"START\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("userCmd") && 
+	    		pengine.unify(curT, Term.createTerm("userCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Robot attività avviata\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotCmd(X)"), 
-	    			                    Term.createTerm("robotCmd(\"START\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "\"Robot attivia'� avviata\"";
+	    			println( temporaryStr );  
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledCmd(X)","ledCmd(\"blink\")", guardVars ).toString();
+	    			emit( "ledCmd", temporaryStr );
+	    			}
+	    			else{ temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledHueLampCmd(X)","ledHueLampCmd(\"blink\")", guardVars ).toString();
+	    			emit( "ledHueLampCmd", temporaryStr );
+	    			}//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(5000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "userCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = "\"Trovato ostacolo fisso, cerco di evitarlo\"";
+	    			println( temporaryStr );  
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(5000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "userCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = "\"Trovato ostacolo mobile, cerco di evitarlo\"";
+	    			println( temporaryStr );  
+	    			//delay  ( no more reactive within a plan)
+	    			aar = delayReactive(5000,"" , "");
+	    			if( aar.getInterrupted() ) curPlanInExec   = "userCmdHandler";
+	    			if( ! aar.getGoon() ) return ;
+	    			temporaryStr = "\"Trovato ostacolo inevitabile, mi arresto\"";
+	    			println( temporaryStr );  
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "userCmd", temporaryStr );
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledCmd(X)","ledCmd(\"off\")", guardVars ).toString();
+	    			emit( "ledCmd", temporaryStr );
+	    			}
+	    			else{ temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledHueLampCmd(X)","ledHueLampCmd(\"off\")", guardVars ).toString();
+	    			emit( "ledHueLampCmd", temporaryStr );
+	    			}};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"STOP\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(X)")) && 
+	    	curT = Term.createTerm("userCmd(\"STOP\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("userCmd") && 
+	    		pengine.unify(curT, Term.createTerm("userCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Robot attività arrestata\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("robotCmd(X)"), 
-	    			                    Term.createTerm("robotCmd(\"STOP\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
+	    			//println("WARNING: variable substitution not yet fully implemented " ); 
+	    			{//actionseq
+	    			temporaryStr = "\"Robot attivia'� arrestata\"";
+	    			println( temporaryStr );  
+	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledCmd(X)","ledCmd(\"off\")", guardVars ).toString();
+	    			emit( "ledCmd", temporaryStr );
+	    			}
+	    			else{ temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledHueLampCmd(X)","ledHueLampCmd(\"off\")", guardVars ).toString();
+	    			emit( "ledHueLampCmd", temporaryStr );
+	    			}};//actionseq
 	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"robot_"+myselfName,false,false);
-	    }catch(Exception e_robotCmdHandler){  
-	    	 println( getName() + " plan=robotCmdHandler WARNING:" + e_robotCmdHandler.getMessage() );
+	    	//switchTo waitForCmd
+	        switchToPlanAsNextState(pr, myselfName, "robot_"+myselfName, 
+	              "waitForCmd",false, false, null); 
+	    }catch(Exception e_userCmdHandler){  
+	    	 println( getName() + " plan=userCmdHandler WARNING:" + e_userCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//robotCmdHandler
+	    };//userCmdHandler
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

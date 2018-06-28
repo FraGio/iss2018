@@ -75,7 +75,6 @@ public abstract class AbstractSonar1 extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"sonar 1 START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost");
 	    	repeatPlanNoTransition(pr,myselfName,"sonar1_"+myselfName,false,false);
 	    }catch(Exception e_init){  
 	    	 println( getName() + " plan=init WARNING:" + e_init.getMessage() );
