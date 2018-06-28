@@ -94,6 +94,9 @@ public abstract class AbstractRobotsonar extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarRobotEvent",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "emitSonarRobotEvent";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
+	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonarRobotVirtual( myself  );
+	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,true,false);
 	    }catch(Exception e_emitSonarRobotEvent){  
 	    	 println( getName() + " plan=emitSonarRobotEvent WARNING:" + e_emitSonarRobotEvent.getMessage() );

@@ -95,16 +95,16 @@ public abstract class AbstractUser extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Simulazione comando utente START da GUI\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"START\")", guardVars ).toString();
-	    	emit( "userCmd", temporaryStr );
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "mockUserCmd(X)","mockUserCmd(\"START\")", guardVars ).toString();
+	    	emit( "mockUserCmd", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(5000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "simulateClick";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"Simulazione comando utente STOP da GUI\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
-	    	emit( "userCmd", temporaryStr );
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "mockUserCmd(X)","mockUserCmd(\"STOP\")", guardVars ).toString();
+	    	emit( "mockUserCmd", temporaryStr );
 	    	repeatPlanNoTransition(pr,myselfName,"user_"+myselfName,false,false);
 	    }catch(Exception e_simulateClick){  
 	    	 println( getName() + " plan=simulateClick WARNING:" + e_simulateClick.getMessage() );

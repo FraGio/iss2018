@@ -94,6 +94,13 @@ public abstract class AbstractSonar1 extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_emitSonarEvent",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "emitSonarEvent";  
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(1000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "emitSonarEvent";
+	    	if( ! aar.getGoon() ) return ;
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
+	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromSonar1( myself  );
+	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"sonar1_"+myselfName,true,false);
 	    }catch(Exception e_emitSonarEvent){  
 	    	 println( getName() + " plan=emitSonarEvent WARNING:" + e_emitSonarEvent.getMessage() );

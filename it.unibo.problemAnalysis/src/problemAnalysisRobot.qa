@@ -4,16 +4,19 @@ Event userCmd : userCmd ( X ) //START - STOP
 Event robotCmd : robotCmd ( Y ) // h-d-r-l-stop
 Event coreCmd : coreCmd ( Z ) //START - STOP
 Event robotSonarEvent : robotSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
-Event roomSonarEvent : roomSonarEvent ( NAME, DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event roomSonar1Event : roomSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event roomSonar2Event : roomSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
 Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
+Event ledCmd : ledCmd ( X ) // X=blink/off
+Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
 
 pubSubServer "tcp://localhost:1883"
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
-Context ctxRobot ip [ host="localhost"   port=8021 ] //-httpserver
+Context ctxRobot ip [ host="localhost"   port=8021 ]
 
 QActor mind context ctxRobot -pubsub {   
 	Rules {
@@ -38,6 +41,22 @@ QActor mind context ctxRobot -pubsub {
 	 		    eval( ge, T , MAX ), !,   
 	 		    output('tempo fuori range MAX!!!!!!'),
 	 			emitevent( robotCmd,  robotCmd ('STOP') ).
+	 			
+	 	changedModelAction(leds,ledfisico, blink ):- 
+	 		    //output('led fisico blink...'),
+	 			emitevent( ledCmd,  ledCmd ('blink') ).
+	 			
+	 	changedModelAction(leds,ledfisico, off ):- 
+	 		    //output('led fisico off...'),
+	 			emitevent( ledCmd,  ledCmd ('off') ).
+	 			
+	 	changedModelAction(leds,ledhuelamp, blink ):- 
+	 		    //output('ledhuelamp blink...'),
+	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('blink') ).
+	 			
+	 	changedModelAction(leds,ledhuelamp, off ):- 
+	 		    //output('ledhuelamp off...'),
+	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('off') ).
 	}
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
@@ -48,7 +67,16 @@ QActor mind context ctxRobot -pubsub {
 	 
 	Plan initTempTime[]
 	transition stopAfter 3600000   	//1h 
-		whenEvent temperatureTimeRequest -> updateValues
+		whenEvent temperatureTimeRequest -> waitForSonar1
+	finally repeatPlan
+	
+	//attesa segnale da sonar 1
+	Plan waitForSonar1[
+		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
+			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
+	]
+	transition stopAfter 3600000   	//1h 
+		whenEvent roomSonar1Event -> doWork
 	finally repeatPlan
 	 
 	Plan doWork[
@@ -58,7 +86,7 @@ QActor mind context ctxRobot -pubsub {
 		whenEvent userCmd -> robotCmdHandler,
 		whenEvent temperatureTimeRequest -> updateValues,
 		whenEvent robotSonarEvent -> handleRobotSonarEvent,
-		whenEvent roomSonarEvent -> handleRoomSonarEvent
+		whenEvent roomSonar2Event -> handleRoomSonarEvent
 	finally repeatPlan
 	
 	
@@ -68,23 +96,28 @@ QActor mind context ctxRobot -pubsub {
 	]switchTo doWork
 	
 	Plan robotCmdHandler resumeLastPlan[
-		onEvent userCmd : userCmd('START') -> {
-			println("!!!!! Ricevuto da utente comando di avvio");
-			emit coreCmd : coreCmd('START');
-			
-			//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
-			[!? realrobot ]{
-				demo changeModelItem(leds,ledfisico,blink);
-				demo changeModelItem(robot,realRobotStatus,on)
-			};
-			[!? virtualrobot ] {
-				demo changeModelItem(leds,ledhuelamp,blink);
-				demo changeModelItem(robot,virtualRobotStatus,on)
+		//se il robot è già partito il robot non deve sentire altri START
+		[not !? alreadyStarted]{
+			onEvent userCmd : userCmd('START') -> {
+				println("Ricevuto da utente comando di avvio");
+				emit coreCmd : coreCmd('START');
+				
+				addRule alreadyStarted;
+				
+				//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
+				[!? realrobot ]{
+					demo changeModelItem(leds,ledfisico,blink);
+					demo changeModelItem(robot,realRobotStatus,on)
+				};
+				[!? virtualrobot ] {
+					demo changeModelItem(leds,ledhuelamp,blink);
+					demo changeModelItem(robot,virtualRobotStatus,on)
+				}
 			}
 		};
 		onEvent userCmd : userCmd('STOP') -> {
 			println("Ricevuto da utente comando di stop");
-			emit robotCmd : robotCmd ('STOP');
+			emit robotCmd : robotCmd ('stop');
 			emit coreCmd : coreCmd('STOP');
 			
 			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
@@ -107,11 +140,15 @@ QActor mind context ctxRobot -pubsub {
 	
 	//gestione degli eventi che provengono dai sonar presenti nella stanza
 	Plan handleRoomSonarEvent [
-		onEvent roomSonarEvent: roomSonarEvent("ROOM_S2", DISTANCE) 
+		onEvent roomSonar2Event: roomSonar2Event('-3') 
 			-> {
 				println("Robot rilevato da sonar stanza n.2...fermo il robot");
-				emit robotCmd : robotCmd ('STOP');
+				emit robotCmd : robotCmd ('stop');
 				emit coreCmd : coreCmd('STOP')
+			};
+		onEvent roomSonar2Event: roomSonar2Event(DISTANCE) 
+			-> {
+				println("Robot rilevato da sonar stanza n.2...inversione robot")
 			}
 	]switchTo doWork
 }
@@ -129,7 +166,7 @@ QActor movecorelogic context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan executionCoreCommand [
-		onEvent coreCmd : coreCmd ('STOP') -> emit robotCmd : robotCmd ('STOP');
+		onEvent coreCmd : coreCmd ('STOP') -> emit robotCmd : robotCmd ('stop');
 		
 		onEvent coreCmd : coreCmd ('START') -> {
 			println("logica di movimento mette in movimento il robot")
@@ -183,11 +220,10 @@ QActor sonar1 context ctxRobot -pubsub {
   	
   	//simulazione comandi START/STOP
 	Plan emitRobotCmd [	
-//		delay 15000;
-//		println("Sonar1: robot rilevato");
+		delay 2000;
+		println("Sonar1: robot rilevato");
 		
-		//coperto il requisiti R-End
-		//emit roomSonarEvent : roomSonarEvent("ROOM_S1", 0)
+		emit roomSonar1Event : roomSonar1Event(X)
 	]
 }
 
@@ -202,8 +238,7 @@ QActor sonar2 context ctxRobot -pubsub {
 		delay 45000;
 		println("Sonar2: robot rilevato");
 		
-		//coperto il requisiti R-End
-		emit roomSonarEvent : roomSonarEvent("ROOM_S2", 5)
+		emit roomSonar2Event : roomSonar2Event(5)
 	]
 }
 
@@ -227,6 +262,42 @@ QActor robotsonar context ctxRobot -pubsub {
 		
 		//emissione evento "ostacolo rilevato"
 		emit robotSonarEvent : robotSonarEvent ( 13 )
+	]
+}
+
+QActor led context ctxRobot -pubsub { 
+	Plan init normal [  
+		println("Inizializzazione led")
+	] 
+	switchTo waitForBlink
+	
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledCmd -> handleLedCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedCmd resumeLastPlan[
+  		onEvent ledCmd : ledCmd('blink') -> println("Blink led...");
+  		onEvent ledCmd : ledCmd('off') -> println("Led off...")
+	]
+}
+
+QActor ledhuelamp context ctxRobot -pubsub { 
+	Plan init normal [  
+		println("Inizializzazione led hue lamp")
+	] 
+	switchTo waitForBlink 
+	 
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledHueLampCmd -> handleLedHueLampCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedHueLampCmd resumeLastPlan[
+  		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
+  		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
 	]
 }
 

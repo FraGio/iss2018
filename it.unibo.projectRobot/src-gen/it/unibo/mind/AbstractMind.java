@@ -57,6 +57,7 @@ public abstract class AbstractMind extends QActor {
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
 	    	stateTab.put("initTempTime",initTempTime);
+	    	stateTab.put("waitForSonar1",waitForSonar1);
 	    	stateTab.put("doWork",doWork);
 	    	stateTab.put("updateValues",updateValues);
 	    	stateTab.put("robotCmdHandler",robotCmdHandler);
@@ -117,7 +118,7 @@ public abstract class AbstractMind extends QActor {
 	    	String myselfName = "initTempTime";  
 	    	//bbb
 	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
-	          new StateFun[]{stateTab.get("updateValues") }, 
+	          new StateFun[]{stateTab.get("waitForSonar1") }, 
 	          new String[]{"true","E","temperatureTimeRequest" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_initTempTime){  
@@ -125,6 +126,46 @@ public abstract class AbstractMind extends QActor {
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//initTempTime
+	    
+	    StateFun waitForSonar1 = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForSonar1",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "waitForSonar1";  
+	    	//onEvent 
+	    	setCurrentMsgFromStore(); 
+	    	curT = Term.createTerm("temperatureTimeRequest(V,T)");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("temperatureTimeRequest") && 
+	    		pengine.unify(curT, Term.createTerm("temperatureTimeRequest(V,T)")) && 
+	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
+	    			String parg="changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)";
+	    			/* PHead */
+	    			parg =  updateVars( Term.createTerm("temperatureTimeRequest(V,T)"), 
+	    			                    Term.createTerm("temperatureTimeRequest(V,T)"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    				if( parg != null ) {
+	    				    aar = QActorUtils.solveGoal(this,myCtx,pengine,parg,"",outEnvView,86400000);
+	    					//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    					if( aar.getInterrupted() ){
+	    						curPlanInExec   = "waitForSonar1";
+	    						if( aar.getTimeRemained() <= 0 ) addRule("tout(demo,"+getName()+")");
+	    						if( ! aar.getGoon() ) return ;
+	    					} 			
+	    					if( aar.getResult().equals("failure")){
+	    						if( ! aar.getGoon() ) return ;
+	    					}else if( ! aar.getGoon() ) return ;
+	    				}
+	    	}
+	    	//bbb
+	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
+	          new StateFun[]{stateTab.get("doWork") }, 
+	          new String[]{"true","E","roomSonar1Event" },
+	          3600000, "handleToutBuiltIn" );//msgTransition
+	    }catch(Exception e_waitForSonar1){  
+	    	 println( getName() + " plan=waitForSonar1 WARNING:" + e_waitForSonar1.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//waitForSonar1
 	    
 	    StateFun doWork = () -> {	
 	    try{	
@@ -134,7 +175,7 @@ public abstract class AbstractMind extends QActor {
 	    	//bbb
 	     msgTransition( pr,myselfName,"mind_"+myselfName,false,
 	          new StateFun[]{stateTab.get("robotCmdHandler"), stateTab.get("updateValues"), stateTab.get("handleRobotSonarEvent"), stateTab.get("handleRoomSonarEvent") }, 
-	          new String[]{"true","E","userCmd", "true","E","temperatureTimeRequest", "true","E","robotSonarEvent", "true","E","roomSonarEvent" },
+	          new String[]{"true","E","userCmd", "true","E","temperatureTimeRequest", "true","E","robotSonarEvent", "true","E","roomSonar2Event" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_doWork){  
 	    	 println( getName() + " plan=doWork WARNING:" + e_doWork.getMessage() );
@@ -302,9 +343,9 @@ public abstract class AbstractMind extends QActor {
 	    	String myselfName = "handleRoomSonarEvent";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("roomSonarEvent(\"sonar2\",3)");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonarEvent") && 
-	    		pengine.unify(curT, Term.createTerm("roomSonarEvent(NAME,DISTANCE)")) && 
+	    	curT = Term.createTerm("roomSonar2Event(\"-3\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonar2Event") && 
+	    		pengine.unify(curT, Term.createTerm("roomSonar2Event(DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
@@ -316,9 +357,9 @@ public abstract class AbstractMind extends QActor {
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("roomSonarEvent(\"sonar2\",DISTANCE)");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonarEvent") && 
-	    		pengine.unify(curT, Term.createTerm("roomSonarEvent(NAME,DISTANCE)")) && 
+	    	curT = Term.createTerm("roomSonar2Event(DISTANCE)");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("roomSonar2Event") && 
+	    		pengine.unify(curT, Term.createTerm("roomSonar2Event(DISTANCE)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
