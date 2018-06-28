@@ -20,10 +20,10 @@ pubSubServer "tcp://192.168.1.112:1883"
 
 Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
 
- 
-EventHandler evh for coreCmd -print {	//event-driven
+
+EventHandler evh for coreCmd {	//event-driven
  	forwardEvent movecorelogic -m coreCmd  	//from event to message
-}; 
+};
 
 QActor mind context ctxRobot -pubsub {   
 	
@@ -36,21 +36,21 @@ QActor mind context ctxRobot -pubsub {
 				limitTemperatureValue( MAX ), 
 	 		    eval( ge, V , MAX ), !,   
 	 		    output('[INFO] Temperatura sopra limite'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ),
+	 			emitevent( robotCmd,  robotCmd ('stop') ),
 	 			emitevent( coreCmd,  coreCmd ('STOP') ).
 	 		
 	 	changedModelAction(timer,timevalue, T ):-
 				limitTimeValueMin( MIN ),
 	 		    eval( le, T , MIN ), !,  
 	 		    output('[INFO] Tempo fuori range MIN'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ),
+	 			emitevent( robotCmd,  robotCmd ('stop') ),
 	 			emitevent( coreCmd,  coreCmd ('STOP') ).
 	 			
 	 	changedModelAction(timer,timevalue, T ):-
 				limitTimeValueMax( MAX ),
 	 		    eval( ge, T , MAX ), !,   
 	 		    output('[INFO] Tempo fuori range MAX'),
-	 			emitevent( robotCmd,  robotCmd ('STOP') ),
+	 			emitevent( robotCmd,  robotCmd ('stop') ),
 	 			emitevent( coreCmd,  coreCmd ('STOP') ).
 	 			
 	 	changedModelAction(leds,ledfisico, blink ):- 
@@ -171,17 +171,32 @@ QActor mind context ctxRobot -pubsub {
 	]switchTo doWork
 	
 	Plan handleRoomSonarEvent [
-		onEvent roomSonar2Event: roomSonar2Event('-3') 
-			-> emit userCmd : userCmd('SONAR2STOP');
-			
-		onEvent roomSonar2Event: roomSonar2Event(DISTANCE) 
+//		onEvent roomSonar2Event: roomSonar2Event('3') 
+//			-> {
+//					println("[INFO] Arrivato al sonar2 .. terminazione");
+//					emit coreCmd : coreCmd('SONAR2STOP');
+//					delay 1000;
+//					emit robotCmd : robotCmd ('stop');
+//			
+//					addRule alreadyStopped;
+//					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+//					[!? realRobot ]{
+//						demo changeModelItem(leds,ledfisico,off);
+//						demo changeModelItem(robot,realrobotstatus,off)
+//					};
+//					[!? virtualRobot ]{
+//						demo changeModelItem(leds,ledhuelamp,off);
+//						demo changeModelItem(robot,virtualrobotstatus,off)
+//			}
+//		};
+		onEvent roomSonar2Event: roomSonar2Event(X) 
 			-> emit coreCmd : coreCmd('SONAR2')
-	]switchTo doWork
+	] switchTo doWork
 }
 
 QActor movecorelogic context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("Inizializzazione del core della logica di movimento")
+		println("[INFO] Inizializzazione del core della logica di movimento")
 	]  
 	switchTo waitForStart 
 	 
@@ -191,67 +206,106 @@ QActor movecorelogic context ctxRobot -pubsub {
   		whenEvent coreCmd -> executionCoreCommand
   	finally repeatPlan 
   	
-  	//START - STOP - OSTACOLO - SONAR2 - SONAR2STOP
-  	
   	Plan executionCoreCommand [
-  			onEvent coreCmd : coreCmd('START') -> { 
-  				emit robotCmd : robotCmd('d');
-  				[ not !? robotCanMove ]
-  					addRule robotCanMove;
-  				delay 1000
+  			onEvent coreCmd : coreCmd('START') -> {
+  				[not !? forwardOn ] {
+  					addRule forwardOn;
+  					println('[INFO] START')
+  				}
   			};
   			onEvent coreCmd : coreCmd('STOP') -> { 
-  				removeRule robotCanMove;
-  				delay 1000
+  				[not !? forwardStop ] {
+  					addRule forwardStop;
+  					removeRule forwardOn;
+  					println('[INFO] STOP')
+  				}
   			};
-  			onEvent coreCmd : coreCmd('muroSonar2') -> {
-  				addRule sonar2Reached;
-  				removeRule robotCanMove;
-  				delay 500
+  			
+  			onEvent coreCmd : coreCmd('SONAR2') -> { 
+  				[not !? sonar2 ] {
+  					addRule sonar2;
+  					removeRule forwardOn;
+  					println('[INFO] SONAR2 (NO FINE!)')
+  				}
+  			};
+  			
+  			onEvent coreCmd : coreCmd('OSTACOLO') -> { 
+  				[not !? sonar2] {
+  					[not !? ostacolo ]{
+  						addRule ostacolo;
+  						removeRule forwardOn;
+  						println('[INFO] OSTACOLO')
+  						}
+  					}
+  			};
+  			
+  			onEvent coreCmd : coreCmd('SONAR2STOP') -> { 
+  				[not !? sonar2stop] {
+  					addRule sonar2stop;
+  					removeRule forwardOn;
+  					removeRule sonar2;
+  					println('[INFO] SONAR2STOP')
+  				}
   			}
-	] transition whenTime 2000 -> forwardPlan
+  			
+	] transition whenTime 1500 -> forwardPlan
 		whenEvent coreCmd -> executionCoreCommand
 	finally repeatPlan
-	
-	
-	//pianificatore prossima mossa
-	Plan forwardPlan resumeLastPlan[
 		
-		//mossa in avanti
-			[!? robotCanMove]
-				emit robotCmd : robotCmd('w'); 
-				
-		//svolta sinistra
-			[!? sonar2Reached]{
-				[!? goDown]{
-					emit robotCmd : robotCmd('a');
-					delay 500; 
-					emit robotCmd : robotCmd('w');
-					delay 500; 
-					emit robotCmd : robotCmd('a');
-					delay 500; 
-					removeRule sonar2Reached;
-					addRule robotCanMove;
-					removeRule goDown;
-					addRule goUp	
-				
-				}
+		
+	Plan forwardPlan [ 
+		
+		//primo step in avanti, da sonar 1
+		[!? forwardOn] {
+			[not !? firstRotation] {
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				addRule firstRotation
 			};
 			
-			//svolta a destra
-			[!? goUp]{
-				emit robotCmd : robotCmd('d');
-				delay 500; 
+			emit robotCmd : robotCmd('w')
+		};
+		
+		[!? forwardStop] {
+			emit robotCmd : robotCmd('stop');
+			removeRule forwardOn
+		};
+			
+		[!? sonar2] {
+				emit robotCmd : robotCmd('a');
+				delay 500;
 				emit robotCmd : robotCmd('w');
-				delay 500; 
+				delay 300;
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				addRule forwardOn;
+				removeRule sonar2
+		};
+		
+		[!? ostacolo] {
+			[not !? sonar2] {
 				emit robotCmd : robotCmd('d');
-				delay 500; 
-				addRule robotCanMove;
-				addRule goDown;
-				removeRule goUp
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 300;
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				addRule forwardOn;
+				removeRule ostacolo
 			}
-				
-	]
+		}
+		
+//		[!? sonar2stop] {
+////				addRule forwardOn;
+////				removeRule sonar2
+//		}
+		
+		
+	] transition whenTime 1500 -> executionCoreCommand
+		whenEvent coreCmd -> executionCoreCommand
+	finally repeatPlan
 }
 
 QActor led context ctxRobot -pubsub { 

@@ -10,14 +10,14 @@ digraph finite_state_machine {
 	size="8,5"
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
-	mockUserCmdHandler [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	waitForUserCommand [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	authenticateUser [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	userCmdHandler [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	
 	init -> authenticateUser [ label = "switch" ][ color = black ][ fontcolor = black ]
+	userCmdHandler -> waitForUserCommand [ label = "switch" ][ color = black ][ fontcolor = black ]
 	authenticateUser -> waitForUserCommand [ label = "switch" ][ color = black ][ fontcolor = black ]
 	waitForUserCommand -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	waitForUserCommand -> userCmdHandler [ label = "userCmd" ][ color = black ][ fontcolor = black ]
 	waitForUserCommand -> waitForUserCommand [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
-	mockUserCmdHandler -> waitForUserCommand [ label = "switch" ][ color = black ][ fontcolor = black ]
-	waitForUserCommand -> mockUserCmdHandler [ label = "mockUserCmd" ][ color = black ][ fontcolor = black ]
 }

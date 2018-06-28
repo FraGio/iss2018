@@ -75,15 +75,9 @@ public abstract class AbstractRealrobot extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	parg = "consult(\"./resourceModel.pl\")";
-	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
-	    	solveGoal( parg ); //sept2017
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    	temporaryStr = "\"Accensione del real robot completata!\"";
-	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    	println( temporaryStr );  
-	    	}
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "realrobot_"+myselfName, 
 	              "waitForCmd",false, false, null); 
@@ -115,68 +109,16 @@ public abstract class AbstractRealrobot extends QActor {
 	    	String myselfName = "executionRobotCmdHandler";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"w\")");
+	    	curT = Term.createTerm("robotCmd(X)");
 	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"forward", "0", "0"  );
-	    			}
-	    			};//actionseq
-	    	}
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"s\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"backward", "0", "0"  );
-	    			}
-	    			};//actionseq
-	    	}
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"a\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"left", "0", "0"  );
-	    			}
-	    			};//actionseq
-	    	}
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"d\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"right", "0", "0"  );
-	    			}
-	    			};//actionseq
-	    	}
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("robotCmd(\"stop\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("robotCmd") && 
-	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			//println("WARNING: variable substitution not yet fully implemented " ); 
-	    			{//actionseq
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    			it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar( myself ,"stop", "0", "0"  );
-	    			}
-	    			};//actionseq
+	    			String parg = "X";
+	    			/* Print */
+	    			parg =  updateVars( Term.createTerm("robotCmd(Y)"), 
+	    			                    Term.createTerm("robotCmd(X)"), 
+	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
+	    			if( parg != null ) println( parg );
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"realrobot_"+myselfName,false,true);
 	    }catch(Exception e_executionRobotCmdHandler){  

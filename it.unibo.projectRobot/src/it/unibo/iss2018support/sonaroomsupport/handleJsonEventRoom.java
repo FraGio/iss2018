@@ -15,11 +15,9 @@ import it.unibo.qactors.akka.QActor;
  */
 public class handleJsonEventRoom {
 	private static String hostName = "192.168.1.112";
-//	private static String hostName = "192.168.43.84";
+	// private static String hostName = "192.168.43.84";
 	private static int port = 8999;
 	private static String sep = ";";
-	private static int lastvaluesonar1;
-	private static int lastvaluesonar2;
 	protected static Socket clientSocket;
 	protected static PrintWriter outToServer;
 	protected static BufferedReader inFromServer;
@@ -33,7 +31,7 @@ public class handleJsonEventRoom {
 	public static void sendCmd(String msg) throws Exception {
 		if (outToServer == null)
 			return;
-		String jsonString = "{ 'type': '" + msg + "', 'arg': 1000 }";
+		String jsonString = "{ 'type': '" + msg + "', 'arg': 300 }";
 		JSONObject jsonObject = new JSONObject(jsonString);
 		msg = sep + jsonObject.toString() + sep;
 		System.out.println("sending msg=" + msg);
@@ -88,24 +86,26 @@ public class handleJsonEventRoom {
 	public static void retriveEventFromSonar1(QActor actor) {
 		String line = null;
 		String type = null;
+		String name = null;
 		int value;
-		lastvaluesonar1 = Integer.MAX_VALUE;
-
+		Socket clientSocket1 = null;
+		
 		try {
+			clientSocket1 = new Socket(hostName, port);
+			BufferedReader inFromServer1 = new BufferedReader(new InputStreamReader(clientSocket1.getInputStream()));
 			// System.out.println("retrieving data from sonar1... ");
 
-			while ((line = inFromServer.readLine()) != null) {
+			while ((line = inFromServer1.readLine()) != null) {
 				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
 				type = jsonObject.getString("type");
 				if (!type.equals("webpage-ready") && !type.equals("collision")) {
 					value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
+					name = jsonObject.getJSONObject("arg").getString("sonarName");
 
-					// System.out.println(name + "|" + value);
-					if (lastvaluesonar1 != value) {
-						lastvaluesonar1 = value;
+					if (name.equals("sonar1"))
 						mqttTools.publish(actor,
 								"msg(roomSonar1Event,event,java,none,roomSonar1Event(" + value + "),1)");
-					}
+
 				}
 			}
 		} catch (Exception e) {
@@ -116,31 +116,33 @@ public class handleJsonEventRoom {
 	public static void retriveEventFromSonar2(QActor actor) {
 		String line = null;
 		String type = null;
+		String name = null;
 		int value;
-		lastvaluesonar2 = Integer.MAX_VALUE;
+		Socket clientSocket2 = null;
 
 		try {
+			clientSocket2 = new Socket(hostName, port);
+			BufferedReader inFromServer2 = new BufferedReader(new InputStreamReader(clientSocket2.getInputStream()));
 			// System.out.println("retrieving data from sonar2... ");
 
-			while ((line = inFromServer.readLine()) != null) {
+			while ((line = inFromServer2.readLine()) != null) {
 				JSONObject jsonObject = new JSONObject(line.substring(1, line.length()));
 				type = jsonObject.getString("type");
 				if (!type.equals("webpage-ready") && !type.equals("collision")) {
 					value = Integer.valueOf(jsonObject.getJSONObject("arg").getInt("distance"));
+					name = jsonObject.getJSONObject("arg").getString("sonarName");
 
-					// System.out.println(name + "|" + value);
-					if (lastvaluesonar2 != value) {
-						lastvaluesonar2 = value;
+					if (name.equals("sonar2"))
 						mqttTools.publish(actor,
-								"msg(roomSonar2Event,event,java,none,roomSona2Event(" + value + "),1)");
-					}
+								"msg(roomSonar2Event,event,java,none,roomSonar2Event(" + value + "),1)");
+
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void retriveEventFromSonarRobotVirtual(QActor actor) {
 		String line = null;
 		String type = null;
@@ -155,10 +157,9 @@ public class handleJsonEventRoom {
 				if (type.equals("collision")) {
 					collision = jsonObject.getJSONObject("arg").getString("objectName");
 
-//					 System.out.println("-->" + collision);
-						mqttTools.publish(actor,
-								"msg(robotSonarEvent,event,java,none,robotSonarEvent(" + collision + "),1)");
-					
+					mqttTools.publish(actor,
+							"msg(robotSonarEvent,event,java,none,robotSonarEvent(" + collision + "),1)");
+
 				}
 			}
 		} catch (Exception e) {
