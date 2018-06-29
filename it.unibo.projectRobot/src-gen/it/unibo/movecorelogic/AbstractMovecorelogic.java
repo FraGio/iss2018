@@ -97,7 +97,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"[INFO] Inizializzazione del core della logica di movimento\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.1.108:1883");
 	    	//switchTo waitForStart
 	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
 	              "waitForStart",false, false, null); 
@@ -147,13 +147,22 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    
 	    StateFun handleRealSonarEvent = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("handleRealSonarEvent",-1);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_handleRealSonarEvent",0);
+	     pr.incNumIter(); 	
 	    	String myselfName = "handleRealSonarEvent";  
-	    	temporaryStr = "\"trovato un ostacolo dal sonar\"";
+	    	temporaryStr = "\"[INFO] trovato un ostacolo dal sonar reale\"";
 	    	println( temporaryStr );  
-	    	//switchTo forwardOn
-	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
-	              "forwardOn",false, false, null); 
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(4000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEvent";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//bbb
+	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
+	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("handleRealSonarEvent") }, 
+	          new String[]{"true","E","coreCmdStop", "true","E","realRobotSonarEvent" },
+	          5000, "forwardOn" );//msgTransition
 	    }catch(Exception e_handleRealSonarEvent){  
 	    	 println( getName() + " plan=handleRealSonarEvent WARNING:" + e_handleRealSonarEvent.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

@@ -21,12 +21,12 @@ Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
 Event ledCmdBlink : ledCmdBlink
 Event ledCmdStop : ledCmdStop
 
-//pubSubServer "tcp://192.168.1.112:1883"
+pubSubServer "tcp://192.168.1.108:1883"
 //pubSubServer "tcp://192.168.43.84:1883"
-pubSubServer "tcp://192.168.1.112:1883" 
+//pubSubServer "tcp://192.168.1.112:1883" 
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
-Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
+Context ctxRobot ip [ host="192.168.1.108"   port=8021 ] 
 
 QActor mind context ctxRobot -pubsub {   
 	
@@ -210,32 +210,19 @@ QActor movecorelogic context ctxRobot -pubsub{
 	finally repeatPlan
 	
 	Plan handleRealSonarEvent [
-		println("trovato un ostacolo dal sonar")
+		println("[INFO] trovato un ostacolo dal sonar reale");
 		
-//		//prima attesa 
-//		[not !? firstWait]
-//			addRule firstWait;
-//			
-//		[not !? secondWait]{
-//			[!? firstWait] {
-//				emit robotCmd : robotCmd('d');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 100
-//			};
-//			addRule secondWait
-//		};
-//		
-//		[not !? impossibleToAvoid ]{
-//			[!? firstWait] {
-//				[!? secondWait] {
-//					addRule impossibleToAvoid;
-//					emit coreCmdStop : coreCmdStop
-//				}
-//			}
-//		}
+		//attesa per consentire al robot di retrocedere e all'ostacolo mobile di scomparire
+		delay 4000;
 		
-	] switchTo forwardOn
+		//riprovo a andare avanti
+		emit robotCmd : robotCmd('w')
+		
+		
+	] transition whenTime 5000 -> forwardOn  	//1h 
+		whenEvent coreCmdStop -> stopPlan,
+		whenEvent realRobotSonarEvent -> handleRealSonarEvent
+	finally repeatPlan
 		
 	Plan handleVirtualSonarEvent [
 			[not !? justTurnedUpBottom ] {

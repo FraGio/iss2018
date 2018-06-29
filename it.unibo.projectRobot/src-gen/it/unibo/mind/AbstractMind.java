@@ -106,7 +106,7 @@ public abstract class AbstractMind extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestNotifier","requestNotifier", guardVars ).toString();
 	    	emit( "requestNotifier", temporaryStr );
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.1.108:1883");
 	    	//switchTo initTempTime
 	        switchToPlanAsNextState(pr, myselfName, "mind_"+myselfName, 
 	              "initTempTime",false, false, null); 
