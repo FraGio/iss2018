@@ -149,52 +149,8 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("handleRealSonarEvent",-1);
 	    	String myselfName = "handleRealSonarEvent";  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?firstWait" )) != null )
-	    	{
-	    	temporaryStr = "firstWait";
-	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    	addRule( temporaryStr );  
-	    	}
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?secondWait" )) != null )
-	    	{
-	    	{//actionseq
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?firstWait" )) != null ){
-	    	{//actionseq
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(500,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEvent";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(100,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEvent";
-	    	if( ! aar.getGoon() ) return ;
-	    	};//actionseq
-	    	}
-	    	temporaryStr = "secondWait";
-	    	addRule( temporaryStr );  
-	    	};//actionseq
-	    	}
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?impossibleToAvoid" )) != null )
-	    	{
-	    	{//actionseq
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?firstWait" )) != null ){
-	    	{//actionseq
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?secondWait" )) != null ){
-	    	{//actionseq
-	    	temporaryStr = "impossibleToAvoid";
-	    	addRule( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmdStop","coreCmdStop", guardVars ).toString();
-	    	emit( "coreCmdStop", temporaryStr );
-	    	};//actionseq
-	    	}
-	    	};//actionseq
-	    	}
-	    	};//actionseq
-	    	}
+	    	temporaryStr = "\"trovato un ostacolo dal sonar\"";
+	    	println( temporaryStr );  
 	    	//bbb
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
 	          new StateFun[]{}, 

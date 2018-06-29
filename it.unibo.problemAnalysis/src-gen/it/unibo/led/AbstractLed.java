@@ -57,7 +57,9 @@ public abstract class AbstractLed extends QActor {
 	    	stateTab.put("handleToutBuiltIn",handleToutBuiltIn);
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForBlink",waitForBlink);
-	    	stateTab.put("handleLedCmd",handleLedCmd);
+	    	stateTab.put("ledOnPlan",ledOnPlan);
+	    	stateTab.put("ledOffPlan",ledOffPlan);
+	    	stateTab.put("stopLed",stopLed);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -75,7 +77,7 @@ public abstract class AbstractLed extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Inizializzazione led\"";
+	    	temporaryStr = "\"Inizializzazione led hue lamp\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo waitForBlink
@@ -94,8 +96,8 @@ public abstract class AbstractLed extends QActor {
 	    	String myselfName = "waitForBlink";  
 	    	//bbb
 	     msgTransition( pr,myselfName,"led_"+myselfName,false,
-	          new StateFun[]{stateTab.get("handleLedCmd") }, 
-	          new String[]{"true","E","ledCmd" },
+	          new StateFun[]{stateTab.get("ledOnPlan") }, 
+	          new String[]{"true","E","ledCmdBlink" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_waitForBlink){  
 	    	 println( getName() + " plan=waitForBlink WARNING:" + e_waitForBlink.getMessage() );
@@ -103,42 +105,53 @@ public abstract class AbstractLed extends QActor {
 	    }
 	    };//waitForBlink
 	    
-	    StateFun handleLedCmd = () -> {	
+	    StateFun ledOnPlan = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("handleLedCmd",-1);
-	    	String myselfName = "handleLedCmd";  
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("ledCmd(\"blink\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("ledCmd") && 
-	    		pengine.unify(curT, Term.createTerm("ledCmd(X)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Blink led...\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("ledCmd(X)"), 
-	    			                    Term.createTerm("ledCmd(\"blink\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
-	    	}
-	    	//onEvent 
-	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("ledCmd(\"off\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("ledCmd") && 
-	    		pengine.unify(curT, Term.createTerm("ledCmd(X)")) && 
-	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
-	    			String parg = "\"Led off...\"";
-	    			/* Print */
-	    			parg =  updateVars( Term.createTerm("ledCmd(X)"), 
-	    			                    Term.createTerm("ledCmd(\"off\")"), 
-	    				    		  	Term.createTerm(currentEvent.getMsg()), parg);
-	    			if( parg != null ) println( parg );
-	    	}
-	    	repeatPlanNoTransition(pr,myselfName,"led_"+myselfName,false,true);
-	    }catch(Exception e_handleLedCmd){  
-	    	 println( getName() + " plan=handleLedCmd WARNING:" + e_handleLedCmd.getMessage() );
+	     PlanRepeat pr = PlanRepeat.setUp("ledOnPlan",-1);
+	    	String myselfName = "ledOnPlan";  
+	    	temporaryStr = "\"[INFO] Led ON\"";
+	    	println( temporaryStr );  
+	    	//bbb
+	     msgTransition( pr,myselfName,"led_"+myselfName,true,
+	          new StateFun[]{}, 
+	          new String[]{},
+	          500, "ledOffPlan" );//msgTransition
+	    }catch(Exception e_ledOnPlan){  
+	    	 println( getName() + " plan=ledOnPlan WARNING:" + e_ledOnPlan.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//handleLedCmd
+	    };//ledOnPlan
+	    
+	    StateFun ledOffPlan = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_ledOffPlan",0);
+	     pr.incNumIter(); 	
+	    	String myselfName = "ledOffPlan";  
+	    	temporaryStr = "\"[INFO] Led OFF\"";
+	    	println( temporaryStr );  
+	    	//bbb
+	     msgTransition( pr,myselfName,"led_"+myselfName,true,
+	          new StateFun[]{stateTab.get("stopLed") }, 
+	          new String[]{"true","E","ledCmdStop" },
+	          500, "ledOnPlan" );//msgTransition
+	    }catch(Exception e_ledOffPlan){  
+	    	 println( getName() + " plan=ledOffPlan WARNING:" + e_ledOffPlan.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//ledOffPlan
+	    
+	    StateFun stopLed = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp("stopLed",-1);
+	    	String myselfName = "stopLed";  
+	    	temporaryStr = "\"[INFO] Led finisce fase di blink\"";
+	    	println( temporaryStr );  
+	    	repeatPlanNoTransition(pr,myselfName,"led_"+myselfName,false,false);
+	    }catch(Exception e_stopLed){  
+	    	 println( getName() + " plan=stopLed WARNING:" + e_stopLed.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//stopLed
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

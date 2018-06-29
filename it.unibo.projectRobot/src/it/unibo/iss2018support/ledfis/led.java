@@ -16,17 +16,17 @@ public class led {
 		led.status = status;
 	}
 
-	public static void blinkLed(QActor actor) {
+	public static void ledOn(QActor actor) {
 		Runtime rut = Runtime.getRuntime();
 		try {
 			led.setStatus(1);
-			rut.exec(new String[] { "./Blink.sh", "blink" }, null, new File("/home/pi"));
+			rut.exec(new String[] { "./Blink.sh", "on" }, null, new File("/home/pi"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void stopLed(QActor actor) {
+	public static void ledOff(QActor actor) {
 		Runtime rut = Runtime.getRuntime();
 		try {
 			led.setStatus(0);

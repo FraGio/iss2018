@@ -148,10 +148,10 @@ limitTimeValueMax( 10).
 changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "temperatura sopra limite!!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")).
 changedModelAction( timer,timevalue,T):-limitTimeValueMin( MIN),eval( le,T,MIN), ! ,output( "tempo fuori range MIN!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")).
 changedModelAction( timer,timevalue,T):-limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "tempo fuori range MAX!!!!!!"),emitevent( robotCmd,robotCmd( "STOP")).
-changedModelAction( leds,ledfisico,blink):-emitevent( ledCmd,ledCmd( "blink")).
-changedModelAction( leds,ledfisico,off):-emitevent( ledCmd,ledCmd( "off")).
-changedModelAction( leds,ledhuelamp,blink):-emitevent( ledHueLampCmd,ledHueLampCmd( "blink")).
-changedModelAction( leds,ledhuelamp,off):-emitevent( ledHueLampCmd,ledHueLampCmd( "off")).
+changedModelAction( leds,ledfisico,blink):-emitevent( ledCmdBlink,ledCmdBlink).
+changedModelAction( leds,ledfisico,off):-emitevent( ledCmdStop,ledCmdStop).
+changedModelAction( leds,ledhuelamp,blink):-emitevent( ledCmdBlink,ledCmdBlink).
+changedModelAction( leds,ledhuelamp,off):-emitevent( ledCmdStop,ledCmdStop).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

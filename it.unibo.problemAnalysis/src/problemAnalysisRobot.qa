@@ -10,8 +10,10 @@ Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
-Event ledCmd : ledCmd ( X ) // X=blink/off
-Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
+
+Event ledCmdBlink : ledCmdBlink
+Event ledCmdStop : ledCmdStop
+
 
 pubSubServer "tcp://localhost:1883"
 //pubSubServer "tcp://broker.hivemq.com:1883"
@@ -44,19 +46,19 @@ QActor mind context ctxRobot -pubsub {
 	 			
 	 	changedModelAction(leds,ledfisico, blink ):- 
 	 		    //output('led fisico blink...'),
-	 			emitevent( ledCmd,  ledCmd ('blink') ).
+	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledfisico, off ):- 
 	 		    //output('led fisico off...'),
-	 			emitevent( ledCmd,  ledCmd ('off') ).
+	 			emitevent( ledCmdStop,  ledCmdStop).
 	 			
 	 	changedModelAction(leds,ledhuelamp, blink ):- 
 	 		    //output('ledhuelamp blink...'),
-	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('blink') ).
+	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledhuelamp, off ):- 
 	 		    //output('ledhuelamp off...'),
-	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('off') ).
+	 			emitevent( ledCmdStop,  ledCmdStop ).
 	}
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
@@ -273,21 +275,30 @@ QActor robotsonar context ctxRobot -pubsub {
 }
 
 QActor led context ctxRobot -pubsub { 
-	Plan init normal [  
-		println("Inizializzazione led")
+		Plan init normal [  
+		println("Inizializzazione led hue lamp")
 	] 
-	switchTo waitForBlink
-	
+	switchTo waitForBlink 
+	 
 	Plan waitForBlink[
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent ledCmd -> handleLedCmd
+  		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan handleLedCmd resumeLastPlan[
-  		onEvent ledCmd : ledCmd('blink') -> println("Blink led...");
-  		onEvent ledCmd : ledCmd('off') -> println("Led off...")
-	]
+  	Plan ledOnPlan resumeLastPlan[
+  		println("[INFO] Led ON")
+	] transition whenTime 500 -> ledOffPlan
+	
+	Plan ledOffPlan resumeLastPlan[
+  		println("[INFO] Led OFF")
+	] transition whenTime 500 -> ledOnPlan
+		whenEvent ledCmdStop -> stopLed
+	finally repeatPlan
+	
+	Plan stopLed[
+  		println("[INFO] Led finisce fase di blink")
+	] 
 }
 
 QActor ledhuelamp context ctxRobot -pubsub { 
@@ -299,13 +310,22 @@ QActor ledhuelamp context ctxRobot -pubsub {
 	Plan waitForBlink[
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent ledHueLampCmd -> handleLedHueLampCmd
+  		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan handleLedHueLampCmd resumeLastPlan[
-  		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
-  		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
-	]
+  	Plan ledOnPlan resumeLastPlan[
+  		println("[INFO] Led hue lamp ON")
+	] transition whenTime 500 -> ledOffPlan
+	
+	Plan ledOffPlan resumeLastPlan[
+  		println("[INFO] Led hue lamp OFF")
+	] transition whenTime 500 -> ledOnPlan
+		whenEvent ledCmdStop -> stopLed
+	finally repeatPlan
+	
+	Plan stopLed[
+  		println("[INFO] Led heu lamp finisce fase di blink")
+	] 
 }
 
 QActor notifier context ctxRobot -pubsub {   

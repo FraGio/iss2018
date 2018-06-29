@@ -17,8 +17,9 @@ Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
-Event ledCmd : ledCmd ( X ) // X=blink/off
-Event ledHueLampCmd : ledHueLampCmd ( X ) //X=blink/off
+
+Event ledCmdBlink : ledCmdBlink
+Event ledCmdStop : ledCmdStop
 
 //pubSubServer "tcp://192.168.1.112:1883"
 //pubSubServer "tcp://192.168.43.84:1883"
@@ -56,16 +57,16 @@ QActor mind context ctxRobot -pubsub {
 	 			emitevent( coreCmdStop,  coreCmdStop ).
 	 			
 	 	changedModelAction(leds,ledfisico, blink ):- 
-	 			emitevent( ledCmd,  ledCmd ('blink') ).
+	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledfisico, off ):- 
-	 			emitevent( ledCmd,  ledCmd ('off') ).
+	 			emitevent( ledCmdStop,  ledCmdStop ).
 	 			
 	 	changedModelAction(leds,ledhuelamp, blink ):- 
-	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('blink') ).
+	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledhuelamp, off ):- 
-	 			emitevent( ledHueLampCmd,  ledHueLampCmd ('off') ).
+	 			emitevent( ledCmdStop,  ledCmdStop ).
 	}
 	Plan init normal [
 		javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn();
@@ -209,28 +210,30 @@ QActor movecorelogic context ctxRobot -pubsub{
 	finally repeatPlan
 	
 	Plan handleRealSonarEvent [
-		//prima attesa 
-		[not !? firstWait]
-			addRule firstWait;
-			
-		[not !? secondWait]{
-			[!? firstWait] {
-				emit robotCmd : robotCmd('d');
-				delay 500;
-				emit robotCmd : robotCmd('w');
-				delay 100
-			};
-			addRule secondWait
-		};
+		println("trovato un ostacolo dal sonar")
 		
-		[not !? impossibleToAvoid ]{
-			[!? firstWait] {
-				[!? secondWait] {
-					addRule impossibleToAvoid;
-					emit coreCmdStop : coreCmdStop
-				}
-			}
-		}
+//		//prima attesa 
+//		[not !? firstWait]
+//			addRule firstWait;
+//			
+//		[not !? secondWait]{
+//			[!? firstWait] {
+//				emit robotCmd : robotCmd('d');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 100
+//			};
+//			addRule secondWait
+//		};
+//		
+//		[not !? impossibleToAvoid ]{
+//			[!? firstWait] {
+//				[!? secondWait] {
+//					addRule impossibleToAvoid;
+//					emit coreCmdStop : coreCmdStop
+//				}
+//			}
+//		}
 		
 	] transition whenTime 3000 -> forwardOn
 		
@@ -279,21 +282,30 @@ QActor movecorelogic context ctxRobot -pubsub{
 }
 
 QActor led context ctxRobot -pubsub { 
-	Plan init normal [  
-		println("Inizializzazione led")
+		Plan init normal [  
+		println("Inizializzazione led hue lamp")
 	] 
-	switchTo waitForBlink
-	
+	switchTo waitForBlink 
+	 
 	Plan waitForBlink[
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent ledCmd -> handleLedCmd
+  		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan handleLedCmd resumeLastPlan[
-  		onEvent ledCmd : ledCmd('blink') -> javaRun it.unibo.iss2018support.ledfis.led.blinkLed();
-  		onEvent ledCmd : ledCmd('off') -> javaRun it.unibo.iss2018support.ledfis.led.stopLed()
-	]
+  	Plan ledOnPlan resumeLastPlan[
+  		javaRun it.unibo.iss2018support.ledfis.led.ledOn()
+	] transition whenTime 500 -> ledOffPlan
+	
+	Plan ledOffPlan resumeLastPlan[
+  		javaRun it.unibo.iss2018support.ledfis.led.ledOff()
+	] transition whenTime 500 -> ledOnPlan
+		whenEvent ledCmdStop -> stopLed
+	finally repeatPlan
+	
+	Plan stopLed[
+  		println("[INFO] Led finisce fase di blink")
+	] 
 }
 
 QActor ledhuelamp context ctxRobot -pubsub { 
@@ -305,13 +317,22 @@ QActor ledhuelamp context ctxRobot -pubsub {
 	Plan waitForBlink[
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent ledHueLampCmd -> handleLedHueLampCmd
+  		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan handleLedHueLampCmd resumeLastPlan[
-  		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
-  		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
-	]
+  	Plan ledOnPlan resumeLastPlan[
+  		println("[INFO] Led hue lamp ON")
+	] transition whenTime 500 -> ledOffPlan
+	
+	Plan ledOffPlan resumeLastPlan[
+  		println("[INFO] Led hue lamp OFF")
+	] transition whenTime 500 -> ledOnPlan
+		whenEvent ledCmdStop -> stopLed
+	finally repeatPlan
+	
+	Plan stopLed[
+  		println("[INFO] Led heu lamp finisce fase di blink")
+	] 
 }
 
 QActor realrobot context ctxRobot -pubsub {   
