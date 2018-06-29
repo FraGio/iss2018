@@ -136,7 +136,7 @@ QActor mind context ctxRobot -pubsub {
 		
 		[not !? alreadyStarted]{
 			onEvent userCmd : userCmd('START') -> {
-				println("Ricevuto da utente comando di avvio");
+				println("[INFO] Ricevuto da utente comando di avvio");
 			
 				addRule alreadyStarted;
 				//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
@@ -159,7 +159,7 @@ QActor mind context ctxRobot -pubsub {
 			//posso fermarlo SOLO SE E' STATO AVVIATO!
 			[!? alreadyStarted] {
 				onEvent userCmd : userCmd('STOP') -> {
-					println("Ricevuto da utente comando di stop");
+					println("[INFO] Ricevuto da utente comando di stop");
 					emit coreCmdStop : coreCmdStop;
 					delay 1000;
 			
@@ -412,7 +412,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 QActor led context ctxRobot -pubsub { 
 		Plan init normal [  
 		demo consult("./resourceModel.pl");
-		println("Inizializzazione led")
+		println("[INFO] Inizializzazione led")
 	] 
 	switchTo waitForBlink 
 	 
