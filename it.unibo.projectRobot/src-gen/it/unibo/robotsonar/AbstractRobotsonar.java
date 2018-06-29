@@ -77,7 +77,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	    	temporaryStr = "\"sonar robot START\"";
+	    	temporaryStr = "\"[INFO] sonar robot START\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo emitSonarRobotEvent

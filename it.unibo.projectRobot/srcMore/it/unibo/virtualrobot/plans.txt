@@ -1,4 +1,4 @@
-plan(1,init, sentence(true,move(print("Accensione del virtual robot completata!")),'','' ))
+plan(1,init, sentence(true,move(print("[INFO] Accensione del virtual robot completata!")),'','' ))
 plan(1,executionRobotCmdHandler, sentence(true,eventswitch(robotCmd, »robotCmd( "w"), not here StateMoveNormal ),'','' ))
 plan(2,executionRobotCmdHandler, sentence(true,eventswitch(robotCmd, »robotCmd( "s"), not here StateMoveNormal ),'','' ))
 plan(3,executionRobotCmdHandler, sentence(true,eventswitch(robotCmd, »robotCmd( "a"), not here StateMoveNormal ),'','' ))

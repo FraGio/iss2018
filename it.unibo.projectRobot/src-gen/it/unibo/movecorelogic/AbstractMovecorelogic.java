@@ -151,11 +151,9 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	String myselfName = "handleRealSonarEvent";  
 	    	temporaryStr = "\"trovato un ostacolo dal sonar\"";
 	    	println( temporaryStr );  
-	    	//bbb
-	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{}, 
-	          new String[]{},
-	          3000, "forwardOn" );//msgTransition
+	    	//switchTo forwardOn
+	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
+	              "forwardOn",false, false, null); 
 	    }catch(Exception e_handleRealSonarEvent){  
 	    	 println( getName() + " plan=handleRealSonarEvent WARNING:" + e_handleRealSonarEvent.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

@@ -75,7 +75,7 @@ public abstract class AbstractNotifier extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Notifier START\"";
+	    	temporaryStr = "\"[INFO] Notifier START\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForFirstRequest

@@ -235,7 +235,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 //			}
 //		}
 		
-	] transition whenTime 3000 -> forwardOn
+	] switchTo forwardOn
 		
 	Plan handleVirtualSonarEvent [
 			[not !? justTurnedUpBottom ] {
@@ -283,7 +283,8 @@ QActor movecorelogic context ctxRobot -pubsub{
 
 QActor led context ctxRobot -pubsub { 
 		Plan init normal [  
-		println("Inizializzazione led hue lamp")
+		demo consult("./resourceModel.pl");
+		println("Inizializzazione led")
 	] 
 	switchTo waitForBlink 
 	 
@@ -294,11 +295,13 @@ QActor led context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan ledOnPlan resumeLastPlan[
-  		javaRun it.unibo.iss2018support.ledfis.led.ledOn()
+  		[!? realRobot]
+  			javaRun it.unibo.iss2018support.ledfis.led.ledOn()
 	] transition whenTime 500 -> ledOffPlan
 	
 	Plan ledOffPlan resumeLastPlan[
-  		javaRun it.unibo.iss2018support.ledfis.led.ledOff()
+		[!? realRobot]
+  			javaRun it.unibo.iss2018support.ledfis.led.ledOff()
 	] transition whenTime 500 -> ledOnPlan
 		whenEvent ledCmdStop -> stopLed
 	finally repeatPlan
@@ -310,7 +313,7 @@ QActor led context ctxRobot -pubsub {
 
 QActor ledhuelamp context ctxRobot -pubsub { 
 	Plan init normal [  
-		println("Inizializzazione led hue lamp")
+		println("[INFO] Inizializzazione led hue lamp")
 	] 
 	switchTo waitForBlink 
 	 
@@ -340,7 +343,7 @@ QActor realrobot context ctxRobot -pubsub {
 		demo consult("./resourceModel.pl"); 
 		
 		[!? realRobot]
-			println("Accensione del real robot completata!")
+			println("[INFO] Accensione del real robot completata!")
 	]  
 	switchTo waitForCmd 
 	 
@@ -376,7 +379,7 @@ QActor realrobot context ctxRobot -pubsub {
 
 QActor virtualrobot context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("Accensione del virtual robot completata!")
+		println("[INFO] Accensione del virtual robot completata!")
 	]  
 	switchTo waitForCmd 
 	 
@@ -398,7 +401,7 @@ QActor sonar1 context ctxRobot -pubsub {
 	  
 	Plan init normal [ 
 		demo consult("./resourceModel.pl"); 
-		println("sonar 1 START")
+		println("[INFO] sonar 1 START")
 	]  switchTo emitSonarEvent 
   	
   	//emissione eventi sonar1 (iniziale)
@@ -414,7 +417,7 @@ QActor sonar2 context ctxRobot -pubsub {
 	  
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
-		println("sonar 2 START")
+		println("[INFO] sonar 2 START")
 	] switchTo emitSonarEvent
   	
   	//emissione eventi sonar2 (finale)
@@ -429,12 +432,12 @@ QActor sonar2 context ctxRobot -pubsub {
 QActor robotsonar context ctxRobot -pubsub {   
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
-		println("sonar robot START")
+		println("[INFO] sonar robot START")
 	] switchTo emitSonarRobotEvent 
   	
 	Plan emitSonarRobotEvent[	
 			[!? virtualRobot ]
-			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
+				javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }
@@ -442,7 +445,7 @@ QActor robotsonar context ctxRobot -pubsub {
 QActor notifier context ctxRobot -pubsub {   
 	  
 	Plan init normal [  
-		println("Notifier START")   
+		println("[INFO] Notifier START")   
 	]switchTo waitForFirstRequest
 	 
 	Plan waitForFirstRequest[]transition stopAfter 3600000   	//1h 

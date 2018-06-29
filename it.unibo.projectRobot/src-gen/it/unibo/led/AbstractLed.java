@@ -77,7 +77,10 @@ public abstract class AbstractLed extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Inizializzazione led hue lamp\"";
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
+	    	temporaryStr = "\"Inizializzazione led\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForBlink
@@ -109,7 +112,9 @@ public abstract class AbstractLed extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("ledOnPlan",-1);
 	    	String myselfName = "ledOnPlan";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    	it.unibo.iss2018support.ledfis.led.ledOn( myself  );
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"led_"+myselfName,true,
 	          new StateFun[]{}, 
@@ -126,7 +131,9 @@ public abstract class AbstractLed extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_ledOffPlan",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "ledOffPlan";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
 	    	it.unibo.iss2018support.ledfis.led.ledOff( myself  );
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"led_"+myselfName,true,
 	          new StateFun[]{stateTab.get("stopLed") }, 

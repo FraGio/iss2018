@@ -20,7 +20,7 @@ public class led {
 		Runtime rut = Runtime.getRuntime();
 		try {
 			led.setStatus(1);
-			rut.exec(new String[] { "./Blink.sh", "on" }, null, new File("/home/pi"));
+			rut.exec(new String[] { "/home/pi/Blink.sh"});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -30,7 +30,7 @@ public class led {
 		Runtime rut = Runtime.getRuntime();
 		try {
 			led.setStatus(0);
-			rut.exec(new String[] { "./BlinkStop.sh", "" }, null, new File("/home/pi"));
+			rut.exec(new String[] { "/home/pi/BlinkStop.sh", "" });
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

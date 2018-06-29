@@ -79,7 +79,7 @@ public abstract class AbstractRealrobot extends QActor {
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
 	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?realRobot" )) != null ){
-	    	temporaryStr = "\"Accensione del real robot completata!\"";
+	    	temporaryStr = "\"[INFO] Accensione del real robot completata!\"";
 	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    	println( temporaryStr );  
 	    	}

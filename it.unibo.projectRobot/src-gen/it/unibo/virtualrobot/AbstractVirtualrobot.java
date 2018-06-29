@@ -75,7 +75,7 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Accensione del virtual robot completata!\"";
+	    	temporaryStr = "\"[INFO] Accensione del virtual robot completata!\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForCmd
