@@ -22,7 +22,7 @@ import org.apache.http.NameValuePair;
 public class restClientHttp {
 //private static String hostAddr = "localhost";
 //private static String hostAddr = "192.168.43.18";
-private static String hostAddr = "192.168.137.2";
+private static String hostAddr = "192.168.1.112";
 
 
 

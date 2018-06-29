@@ -14,7 +14,7 @@ import it.unibo.qactors.akka.QActor;
  * su mqtt broker, in modo che la mind possa riceverli
  */
 public class handleJsonEventRoom {
-	private static String hostName = "192.168.1.108";
+	private static String hostName = "192.168.1.112";
 	// private static String hostName = "192.168.43.84";
 	private static int port = 8999;
 	private static String sep = ";";
@@ -41,7 +41,7 @@ public class handleJsonEventRoom {
 
 		JSONObject jsonObject = new JSONObject(jsonString);
 		msg = sep + jsonObject.toString() + sep;
-		System.out.println("sending msg=" + msg);
+		//System.out.println("sending msg=" + msg);
 		outToServer.println(msg);
 		outToServer.flush();
 	}

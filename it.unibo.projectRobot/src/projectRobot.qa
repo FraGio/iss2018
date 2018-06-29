@@ -21,12 +21,28 @@ Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
 Event ledCmdBlink : ledCmdBlink
 Event ledCmdStop : ledCmdStop
 
-pubSubServer "tcp://192.168.1.108:1883"
+pubSubServer "tcp://192.168.1.112:1883"
 //pubSubServer "tcp://192.168.43.84:1883"
 //pubSubServer "tcp://192.168.1.112:1883" 
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
-Context ctxRobot ip [ host="192.168.1.108"   port=8021 ] 
+Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
+
+EventHandler evh for coreCmdStop {	//event-driven ; no Mqtt support yet
+ 	forwardEvent movecorelogic -m coreCmdStop
+};
+
+EventHandler evh2 for realRobotSonarEvent {	//event-driven ; no Mqtt support yet
+ 	forwardEvent movecorelogic -m realRobotSonarEvent
+};
+
+EventHandler evh3 for robotCmd {	//event-driven ; no Mqtt support yet
+ 	forwardEvent virtualrobot -m robotCmd
+};
+
+EventHandler evh4 for robotCmd {	//event-driven ; no Mqtt support yet
+ 	forwardEvent realrobot -m robotCmd
+};
 
 QActor mind context ctxRobot -pubsub {   
 	
@@ -181,14 +197,18 @@ QActor mind context ctxRobot -pubsub {
 	]
 }
 
-QActor movecorelogic context ctxRobot -pubsub{   
+QActor movecorelogic context ctxRobot -pubsub{  
+	 
 	Plan init normal [  
+		
+		addRule directionUpToDown;
+		addRule FirstColumn;
+		
 		delay 2000;
 		emit robotCmd : robotCmd('d');
-		delay 1000;
+		delay 500;
 		emit robotCmd : robotCmd('d');
-		delay 1000;
-		
+		delay 500;
 		println("[INFO] Inizializzazione del core della logica di movimento")
 	]  
 	switchTo waitForStart 
@@ -200,6 +220,7 @@ QActor movecorelogic context ctxRobot -pubsub{
   	finally repeatPlan 
   	
   	Plan forwardOn [
+  		println("[INFO] Piano ForwardON ...");
   			delay 500;
   			emit robotCmd : robotCmd('w')
 	] transition stopAfter 3600000   	//1h 
@@ -210,16 +231,122 @@ QActor movecorelogic context ctxRobot -pubsub{
 	finally repeatPlan
 	
 	Plan handleRealSonarEvent [
-		println("[INFO] trovato un ostacolo dal sonar reale");
+		println("[INFO] Trovato un ostacolo dal sonar reale, valutazione se mobile ...");
 		
 		//attesa per consentire al robot di retrocedere e all'ostacolo mobile di scomparire
-		delay 4000;
-		
-		//riprovo a andare avanti
+		emit robotCmd : robotCmd('stop');
+		delay 2000;
 		emit robotCmd : robotCmd('w')
 		
+	] transition  whenTime 5000 -> forwardOn	//gestione ostacolo mobile 
+		whenEvent coreCmdStop -> stopPlan,
+		whenEvent realRobotSonarEvent -> handleRealSonarEventFix,
+		whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
+		whenEvent roomSonar2Event -> sonar2Detected
+	finally repeatPlan
+	
+	Plan handleRealSonarEventFix [
+		println("[INFO] Trovato ancora l'ostacolo, suppongo sia fisso");
 		
-	] transition whenTime 5000 -> forwardOn  	//1h 
+		emit robotCmd : robotCmd('stop');
+		
+		delay 2000;
+		
+		println("[INFO] Sonar virtuale ha ostacolo fisso!");
+		emit robotCmd : robotCmd('d');
+		delay 500;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('a');
+		delay 500;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('a');
+		delay 500;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('d');
+		delay 500
+		
+//			//Direzione dall'ALTO al BASSO
+//			[!? directionUpToDown ] {
+//				//caso NON prima colonna
+//				[not !? FirstColumn]{
+//				println("[INFO] Sonar virtuale ha trovato muro!");
+//				emit robotCmd : robotCmd('d');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('a');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('a');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('d');
+//				delay 500
+//				};
+//				
+//				//caso prima colonna
+//				[!? FirstColumn]{
+//				println("[INFO] Sonar virtuale ha trovato ostacolo nel primo tratto!");
+//				println("[INFO] SINISTRA!");
+//				emit robotCmd : robotCmd('a');
+//				delay 500;
+//				println("[INFO] AVANTI!");
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				println("[INFO] DESTRA!");
+//				emit robotCmd : robotCmd('d');
+//				delay 500;
+//				println("[INFO] AVANTI!");
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				println("[INFO] AVANTI!");
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				println("[INFO] AVANTI!");
+//				emit robotCmd : robotCmd('d');
+//				delay 500;
+//				println("[INFO] AVANTI!");
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				println("[INFO] AVANTI!");
+//				emit robotCmd : robotCmd('a');
+//				delay 500
+//				}
+//		
+//			};
+//				
+//			//Direzione dal BASSO all'ALTO
+//			[!? directionDownToUp ] {
+//				println("[INFO] Sonar virtuale ha trovato muro!");
+//				emit robotCmd : robotCmd('a');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('d');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('d');
+//				delay 500;
+//				emit robotCmd : robotCmd('w');
+//				delay 900;
+//				emit robotCmd : robotCmd('a');
+//				delay 500
+//				}
+			
+		
+	] transition whenTime 8000 -> forwardOn  	//1h 
 		whenEvent coreCmdStop -> stopPlan,
 		whenEvent realRobotSonarEvent -> handleRealSonarEvent
 	finally repeatPlan
@@ -230,11 +357,16 @@ QActor movecorelogic context ctxRobot -pubsub{
 				emit robotCmd : robotCmd('d');
 				delay 500;
 				emit robotCmd : robotCmd('w');
-				delay 100;
+				delay 800;
 				emit robotCmd : robotCmd('d');
 				delay 500;
 				addRule justTurnedUpBottom;
 				removeRule justTurnedBottomUp;
+				
+				
+				//inversione direzione
+				removeRule directionDownToUp;
+				addRule directionUpToDown;
 				
 				removeRule firstWait;
 				removeRule secondWait
@@ -252,6 +384,15 @@ QActor movecorelogic context ctxRobot -pubsub{
 				delay 500;
 				addRule justTurnedBottomUp;
 				removeRule justTurnedUpBottom;
+				
+				
+				//se prima colonna gia' superata eliminiamo da base conoscenza
+				[!? FirstColumn]
+					removeRule FirstColumn;
+					
+				//inversione direzione
+				removeRule directionUpToDown;
+				addRule directionDownToUp;
 				
 				removeRule firstWait;
 				removeRule secondWait
@@ -311,11 +452,11 @@ QActor ledhuelamp context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan ledOnPlan resumeLastPlan[
-  		println("[INFO] Led hue lamp ON")
+  		//println("[INFO] Led hue lamp ON")
 	] transition whenTime 500 -> ledOffPlan
 	
 	Plan ledOffPlan resumeLastPlan[
-  		println("[INFO] Led hue lamp OFF")
+  		//println("[INFO] Led hue lamp OFF")
 	] transition whenTime 500 -> ledOnPlan
 		whenEvent ledCmdStop -> stopLed
 	finally repeatPlan

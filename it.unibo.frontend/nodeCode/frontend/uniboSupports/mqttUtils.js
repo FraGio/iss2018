@@ -6,7 +6,7 @@
 const mqtt   = require ('mqtt');
 const topic  = "unibo/qasys";
 //var client = mqtt.connect('mqtt://iot.eclipse.org');
-var client   = mqtt.connect('mqtt://192.168.1.108');
+var client   = mqtt.connect('mqtt://192.168.1.112');
 //var client   = mqtt.connect('tcp://192.168.43.229:1883');
 
 console.log("mqtt client= " + client );

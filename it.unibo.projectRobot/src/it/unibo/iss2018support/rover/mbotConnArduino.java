@@ -1,4 +1,6 @@
 package it.unibo.iss2018support.rover;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import it.unibo.iss2018support.mbot.serial.JSSCSerialComm;
 import it.unibo.iss2018support.mbot.serial.SerialPortConnSupport;
 import it.unibo.iss2018support.mqttUtils.mqttTools;
@@ -45,24 +47,36 @@ private static QActor curActor ;
 	private static  void getDataFromArduino() {
 		new Thread() {
 			public void run() {
+				
 				try {
+					double lastValue = 0D;
 					System.out.println("MbotConnArduino getDataFromArduino STARTED"  );
 					while(true) {
 						try {
 							curDataFromArduino = conn.receiveALine();
-// 	 						System.out.println("MbotConnArduino received:" + curDataFromArduino );
- 							double v = Double.parseDouble(curDataFromArduino);
-							//handle too fast change
- 							double delta =  Math.abs( v - dataSonar);
- 							if( delta < 7 && delta > 0.5 ) {
-								dataSonar = v;
-//								System.out.println("MbotConnArduino sonar:" + dataSonar);
+ 	 						//System.out.println("MbotConnArduino received:" + curDataFromArduino );
+							if(NumberUtils.isNumber(curDataFromArduino.trim())) {
 								
-								// PUBLISH ON MQTT BROKER 
-								mqttTools.publish(null,"msg(realRobotSonarEvent,event,java,none,realRobotSonarEvent("+dataSonar+"),1)");
-//								QActorUtils.raiseEvent(curActor, curActor.getName(), "realSonar", 
-//										"sonar( DISTANCE )".replace("DISTANCE", ""+dataSonar ));
- 							}
+	 							double v = Double.parseDouble(curDataFromArduino.trim());
+//	 							System.out.println("MbotConnArduino222 sonar:" + v);
+								//handle too fast change
+	 							double delta =  Math.abs( v - dataSonar);
+	 							if( delta < 25 && delta > 0.5 ) {
+	 								if(dataSonar != lastValue) {
+	 								
+										dataSonar = v;
+										//System.out.println("MbotConnArduino sonar:" + dataSonar);
+										
+										// PUBLISH ON MQTT BROKER 
+										mqttTools.publish(null,"msg(realRobotSonarEvent,event,java,none,realRobotSonarEvent("+dataSonar+"),1)");
+		//								QActorUtils.raiseEvent(curActor, curActor.getName(), "realSonar", 
+		//										"sonar( DISTANCE )".replace("DISTANCE", ""+dataSonar ));
+										lastValue = dataSonar;
+	 								}
+	 							}
+							}
+						}catch (NumberFormatException e1) {
+							System.out.println("MbotConnArduino ERROR NUMBERFORMAT:" + e1.getMessage());
 						} catch (Exception e) {
  							System.out.println("MbotConnArduino ERROR:" + e.getMessage());
 						}
