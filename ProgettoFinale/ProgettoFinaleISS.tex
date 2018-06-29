@@ -223,6 +223,7 @@ In base ai requisiti dati emergono alcune considerazioni e osservazioni.\\
 \item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il requisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
 Per pulire il pavimento della stanza s'intende che il robot deve coprire tutta l'area del pavimento.\\
 Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. Non ci sono coordinate specifiche per nessuno dei due sonar.\\
+Il robot deve essere nella posizione iniziale per poter iniziare la propria attività di pulizia della stanza.\\
 In base al colloquio col committente abbiamo appreso che, in mancanza di sonar fisici, è possibile utilizzare i sonar presenti nell'ambiente virtuale per far lavorare il robot fisico (e quindi avere punti di inizio e fine).\\
 \item R-Start: questo requisito implica che nel sistema è presente una seconda entità, rappresentata dal PC/smartphone, che si affianca all'entità robot. Deduciamo anche che il robot possa assumere uno stato di "working" dove esso sta lavorando.\\
 Ci deve essere una GUI (console) e deve essere messa a disposizione dal PC/smartphone. Questa sarà utilizzata dall'utente autorizzato per inviare comandi di START.\\
@@ -371,6 +372,7 @@ Da analisi dei requisiti sappiamo che la GUI deve essere in esecuzione (running)
 Analisi movimento/planning ostacoli:\\
 Si ipotizza di lavorare con un robot capace di muoversi in quattro direzioni (destra, sinistra, avanti, indietro).\\
 L'attività del robot inizia con il comando START, che impartisce ad una logica di controllo l'ordine di avviarsi. Questa, a sua volta, pilota il robot fisico avvalendosi delle quattro direzioni (destra, sinistra, avanti, indietro) al fine di portarlo all'altezza del sonar finale, coprendo tutta la superficie a sua disposizione ed evitando ostacoli presenti sul suo cammino.\\
+Il robot deve essere nella posizione iniziale, cioè vicino al sonar1, per poter iniziare la propria attività.\\
 Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\ \\
 
 Analisi contesto e tipologia collegamento: \\
@@ -412,7 +414,9 @@ Ci occupiamo di scegliere l'opportuno processo produttivo, in cui ci sono due sc
 Agile development consiste in lavorare in gruppi auto organizzati, multifunzionali e orientati allo stretto contatto con il cliente finale, al fine di ottenere prodotti utilizzabili in tempo rapido, di migliorare costantemente i prodotti stessi e di rimanere flessibili a ipotetici cambiamenti resisi necessari nel tempo.\\
 Model based development impone che,prima di trattare il codice, sia necessario occuparsi della fase di modellazione. Solo in un secondo momento si passerà alla fase di sviluppo vero e proprio, tenendo opportunamente aggiornata la parte di modello.\\
 In base alle nostre esigenze riteniamo sia più opportuno lavorare tramite modello Agile, in particolare Scrum. Questo ci permette di focalizzarci sulle richieste del committente, affrontando quelle più prioritarie per prime, e assicurandoci un ciclo di lavoro flessibile e costantemente monitorato.\\
-Lavoreremo quindi tramite "sprint" periodici di breve durata, dove ci suddivideremo le attività da svolgere, proponendoci meeting brevi e costanti per valutare e controllare il flusso di lavoro.
+Lavoreremo quindi tramite "sprint" periodici di breve durata, dove ci suddivideremo le attività da svolgere, proponendoci meeting brevi e costanti per valutare e controllare il flusso di lavoro.\\
+Al fine di agevolare l'utilizzo della metodologia Scrum useremo uno strumento del tutto gratuito, Meistertask, che permette di tracciare le attività da svolgere, di valutarle in termini di priorità e di assegnarle ai componenti del team. Ogni task avrà diversi stati, personalizzabili, come ad esempio "open" nel caso sia ancora da prendere in carico, "in progress" nel caso qualcuno lo stia affrontando, e "done" quando il task sia stato completato.\\
+Utilizzeremo anche il sistema di versionamento Git, con una repository comune nel quale saranno presenti codice, modelli e documentazione. Tramite l'utilizzo di branch ottimizzeremo il flusso di lavoro e la parallelizzazione delle attività da svolgere.
 %===========================================================================
 
 %===========================================================================
@@ -445,7 +449,7 @@ Decidiamo di effettuare la pulizia della stanza facendo l'ipotesi che i sonar pe
 L'operazione di pulizia verrà eseguita partendo dal sonar iniziale, muovendosi in linea retta fino ad intercettare il segnale del sonar finale. In tal caso si conoscono larghezza e lunghezza della stanza, e si può riconoscere la presenza dei muri in maniera automatica e invertire la direzione del robot una volta che questi vegono trovati.\\
 Nel caso, prima di arrivare al segnale del sonar finale, e quindi al primo muro, si incontri un ostacolo sarà necessario effettuare una procedura di aggiramento che porti il robot in corrispondenza del segnale del segnale del sonar finale, dandogli modo di conoscere la dimensione della stanza.\\
 Conoscendo la dimensione della stanza è possibile costruire una mappa dell'area da pulire, e suddividerla in caselle della stessa dimensione del robot (larghezza e lunghezza). In questo modo si tiene traccia del percorso eseguito e di quello da completare.\\
-Nell'operazione di svolta, da eseguire quando si incontra un muro, è necessario spostarsi di una casella verso il sonar finale e in seguito invertire la direzione e riprendere il movimento rettilineo.
+Nell'operazione di svolta, da eseguire quando si incontra un muro, è necessario spostarsi di una casella verso il sonar finale, in seguito invertire la direzione e riprendere il movimento rettilineo fino al muro successivo.
 
 Rilevazione e aggiramento ostacoli:\\
 Per quanto la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà tre tentativi di rilevazione per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
@@ -535,11 +539,19 @@ Possibile parlare di testing manuale o automatico. Nel primo caso occorrerà dare
 %===========================================================================
 \section{Deployment}
 \labelsec{Deployment}
+Nel nostro sistema necessitiamo di due pacchetti di deploy, per due diversi sotto-sistemi:
+\begin{enumerate}
+	\item frontend server: il pacchetto generato conterrà il codice che realizza il frontend server, il quale sarà poi da avviare in una qualsiasi macchina (ad esempio server su Amazon AWS) accessibile tramite rete internet dal browser di pc/smartphone (GUI). 
+	\item controllo del robot: pacchetto contenente il software di controllo del robot (fisico o virtuale), generato tramite routine Gradle. Il deploy verrà effettuato sul middleware di controllo (Raspberry) nel caso del robot fisico, oppure su un sistema che comunica con l'ambiente nel quale è presente il robot virtuale.
+\end{enumerate}
 %===========================================================================
 
 %===========================================================================
 \section{Maintenance}
 \labelsec{Maintenance}
+Per mantenere il codice è opportuno avvalersi di tecniche di integrazione continua e di monitoraggio costante del processo produttivo e del codice prodotto.\\
+Un esempio molto diffuso in tal senso è DevOps, una pratica che punta a unificare il flusso di lavoro di sviluppo software e operazioni legate al software prodotto. Il punto focale è automatizzare e monitorare i passaggi che portano al software finale, come l'analisi, la progettazione, l'integrazione, il testing e il deployment del prodotto finale. Il tutto è pensato per ridurre i tempi entro i quali una modifica si ripercuote sul prodotto finale, facendo sempre attenzione a mantenere alti standard qualitativi.\\
+Alcuni strumenti che possono aiutare a mettere in pratica questi principi sono Jenkins e JetBrains TeamCity. E' possibile delegare a questi strumenti numerosi compiti, in modo che, una volta configurati, il processo produttivo sia del tutto automatizzato ed efficiente. In questo modo lo sviluppatore si occupa quasi solo dello sviluppo del codice, dopodiché sarà compito degli strumenti di reperire le modifiche che sono state effettuate e applicare le dovute operazioni, come ad esempio compilare il codice, validare il codice tramite suite di test, produrre report sui risultati dei test e sui tempi di produzione, effettuare operazioni di manutenibilità, produrre i pacchetti in uscita, completare il deploy.
 %===========================================================================
 \newpage
 See \cite{natMol09} until page 11 (\texttt{CMM}) and pages 96-105.
