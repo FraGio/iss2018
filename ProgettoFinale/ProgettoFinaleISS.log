@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  30 JUN 2018 16:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.3.13)  30 JUN 2018 16:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -715,31 +715,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 554--557
  []
 
 [18]
-Underfull \hbox (badness 10000) in paragraph at lines 574--575
+Underfull \hbox (badness 10000) in paragraph at lines 575--576
 
  []
 
 [19]
 
-LaTeX Warning: Citation `natMol09' on page 20 undefined on input line 586.
+LaTeX Warning: Citation `natMol09' on page 20 undefined on input line 587.
+
+<iss2018.jpeg, id=72, 1204.5pt x 1606.0pt>
+File: iss2018.jpeg Graphic file (type jpg)
+ <use iss2018.jpeg>
+Package pdftex.def Info: iss2018.jpeg used on input line 602.
+(pdftex.def)             Requested size: 120.45705pt x 160.6094pt.
 
 (./ProgettoFinaleISS.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [20] (./ProgettoFinaleISS.aux)
+) [20 <./iss2018.jpeg>] (./ProgettoFinaleISS.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 2719 strings out of 494910
- 35812 string characters out of 6179836
+ 2725 strings out of 494910
+ 35895 string characters out of 6179836
  106568 words of memory out of 5000000
- 5980 multiletter control sequences out of 15000+600000
+ 5984 multiletter control sequences out of 15000+600000
  9653 words of font info for 23 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 37i,6n,23p,860b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,11n,23p,860b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/giova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> </home/g
 iova/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/giova/.texmf
 -var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/giova/.texmf-var/fonts/
@@ -749,10 +755,10 @@ ecbx1440.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 mi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on ProgettoFinaleISS.pdf (20 pages, 140642 bytes).
+Output written on ProgettoFinaleISS.pdf (20 pages, 266594 bytes).
 PDF statistics:
- 337 PDF objects out of 1000 (max. 8388607)
+ 338 PDF objects out of 1000 (max. 8388607)
  82 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
