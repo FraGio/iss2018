@@ -121,7 +121,7 @@ public abstract class AbstractRobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Robot attivia'� avviata\"";
+	    			temporaryStr = "\"Robot attivita' avviata\"";
 	    			println( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledCmd(X)","ledCmd(\"blink\")", guardVars ).toString();
@@ -135,6 +135,8 @@ public abstract class AbstractRobot extends QActor {
 	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = "\"Trovato ostacolo fisso, cerco di evitarlo\"";
 	    			println( temporaryStr );  
+	    			temporaryStr = "\"Aggiungo l'ostacolo fisso alla posizione x in mappa\"";
+	    			println( temporaryStr );  
 	    			//delay  ( no more reactive within a plan)
 	    			aar = delayReactive(5000,"" , "");
 	    			if( aar.getInterrupted() ) curPlanInExec   = "userCmdHandler";
@@ -146,6 +148,8 @@ public abstract class AbstractRobot extends QActor {
 	    			if( aar.getInterrupted() ) curPlanInExec   = "userCmdHandler";
 	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = "\"Trovato ostacolo inevitabile, mi arresto\"";
+	    			println( temporaryStr );  
+	    			temporaryStr = "\"Aggiungo l'ostacolo fisso alla posizione y in mappa\"";
 	    			println( temporaryStr );  
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
 	    			emit( "userCmd", temporaryStr );
@@ -165,7 +169,7 @@ public abstract class AbstractRobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Robot attivia'� arrestata\"";
+	    			temporaryStr = "\"Robot attivita' arrestata\"";
 	    			println( temporaryStr );  
 	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledCmd(X)","ledCmd(\"off\")", guardVars ).toString();

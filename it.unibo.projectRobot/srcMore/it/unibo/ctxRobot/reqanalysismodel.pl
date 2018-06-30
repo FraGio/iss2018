@@ -25,6 +25,8 @@ qactor( robotsonar , ctxrobot, "it.unibo.robotsonar.MsgHandle_Robotsonar"   ). %
 qactor( robotsonar_ctrl , ctxrobot, "it.unibo.robotsonar.Robotsonar"   ). %%control-driven 
 qactor( notifier , ctxrobot, "it.unibo.notifier.MsgHandle_Notifier"   ). %%store msgs 
 qactor( notifier_ctrl , ctxrobot, "it.unibo.notifier.Notifier"   ). %%control-driven 
+qactor( mapper , ctxrobot, "it.unibo.mapper.MsgHandle_Mapper"   ). %%store msgs 
+qactor( mapper_ctrl , ctxrobot, "it.unibo.mapper.Mapper"   ). %%control-driven 
 %%% -------------------------------------------
 eventhandler(evh,ctxrobot,"it.unibo.ctxRobot.Evh","coreCmdStop").  
 eventhandler(evh1,ctxrobot,"it.unibo.ctxRobot.Evh1","robotCmd").  

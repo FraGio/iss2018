@@ -169,7 +169,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?firstCheck" )) != null )
 	    	{
 	    	{//actionseq
-	    	temporaryStr = "\"[INFO] waitForMobileObstacle - 1° controllo ...\"";
+	    	temporaryStr = "\"[INFO] waitForMobileObstacle - 1ï¿½ controllo ...\"";
 	    	println( temporaryStr );  
 	    	temporaryStr = "firstCheck";
 	    	addRule( temporaryStr );  
@@ -180,6 +180,8 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	removeRule( temporaryStr );  
 	    	temporaryStr = "fixedObstacleFound";
 	    	addRule( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "fixObstacleFound(X,Y)","fixObstacleFound(X,Y)", guardVars ).toString();
+	    	emit( "fixObstacleFound", temporaryStr );
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "fixedObstacleFoundEvent","fixedObstacleFoundEvent", guardVars ).toString();
 	    	emit( "fixedObstacleFoundEvent", temporaryStr );
 	    	};//actionseq

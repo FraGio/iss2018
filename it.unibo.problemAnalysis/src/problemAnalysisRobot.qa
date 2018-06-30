@@ -10,6 +10,7 @@ Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
+Event obstacleFound : obstacleFound ( X, Y )
 
 Event ledCmdBlink : ledCmdBlink
 Event ledCmdStop : ledCmdStop
@@ -45,19 +46,15 @@ QActor mind context ctxRobot -pubsub {
 	 			emitevent( robotCmd,  robotCmd ('STOP') ).
 	 			
 	 	changedModelAction(leds,ledfisico, blink ):- 
-	 		    //output('led fisico blink...'),
 	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledfisico, off ):- 
-	 		    //output('led fisico off...'),
 	 			emitevent( ledCmdStop,  ledCmdStop).
 	 			
 	 	changedModelAction(leds,ledhuelamp, blink ):- 
-	 		    //output('ledhuelamp blink...'),
 	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledhuelamp, off ):- 
-	 		    //output('ledhuelamp off...'),
 	 			emitevent( ledCmdStop,  ledCmdStop ).
 	}
 	Plan init normal [  
@@ -81,9 +78,7 @@ QActor mind context ctxRobot -pubsub {
 		whenEvent roomSonar1Event -> doWork
 	finally repeatPlan
 	 
-	Plan doWork[
-		//println("Robot in attesa...")
-	]
+	Plan doWork[]
 	transition stopAfter 3600000   	//1h 
 		whenEvent userCmd -> robotCmdHandler,
 		whenEvent temperatureTimeRequest -> updateValues,
@@ -144,7 +139,12 @@ QActor mind context ctxRobot -pubsub {
 	//gestione degli eventi che provengono dal sonar posto sul robot
 	Plan handleRobotSonarEvent [
 		onEvent robotSonarEvent : robotSonarEvent(DISTANCE) 
-			-> println("Ostacolo rilevato, iniziata routine per evitarlo...")
+			-> {
+				println("Ostacolo rilevato, iniziata routine per evitarlo...");
+				
+				//assumiamo sia stato valutato un ostacolo fisso, quindi da mappare
+				emit obstacleFound : obstacleFound( X, Y )
+			}
 	]switchTo doWork
 	
 	//gestione degli eventi che provengono dai sonar presenti nella stanza
@@ -160,6 +160,23 @@ QActor mind context ctxRobot -pubsub {
 				println("Robot rilevato da sonar stanza n.2...inversione robot")
 			}
 	]switchTo doWork
+}
+
+QActor mapper context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Inizializzazione mapper...")
+	]  
+	switchTo waitForObstacle
+	 
+	Plan waitForObstacle[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent obstacleFound -> updateMap
+  	finally repeatPlan 
+  	
+  	Plan updateMap resumeLastPlan[
+  		println("Aggiornamento mappa con ostacolo fisso")
+	] 
 }
 
 QActor movecorelogic context ctxRobot -pubsub {   

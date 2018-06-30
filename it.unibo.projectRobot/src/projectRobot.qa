@@ -20,6 +20,7 @@ Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
+Event fixObstacleFound : fixObstacleFound ( X, Y )//segnalazione trovato ostacolo fisso per update map
 
 Event ledCmdBlink : ledCmdBlink
 Event ledCmdStop : ledCmdStop
@@ -242,13 +243,14 @@ QActor movecorelogic context ctxRobot -pubsub{
 			
 			//se e' il primo controllo aggiungo "flag"
 			[not !? firstCheck]{
-				println("[INFO] waitForMobileObstacle - 1° controllo ...");
+				println("[INFO] waitForMobileObstacle - 1ï¿½ controllo ...");
 				addRule firstCheck
 			}
 			else{
 				//e' il secondo controllo -> emetto evento per gestione ostacolo fisso
 				removeRule firstCheck;
 				addRule fixedObstacleFound;
+				emit fixObstacleFound : fixObstacleFound( X, Y ); //mock per mappa
 				emit fixedObstacleFoundEvent : fixedObstacleFoundEvent
 			}
 		}
@@ -596,4 +598,21 @@ QActor notifier context ctxRobot -pubsub {
 	]
 	finally repeatPlan
 	
+}
+
+QActor mapper context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("[INFO] Inizializzazione mapper...")
+	]  
+	switchTo waitForObstacle
+	 
+	Plan waitForObstacle[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent fixObstacleFound -> updateMap
+  	finally repeatPlan 
+  	
+  	Plan updateMap resumeLastPlan[
+  		println("[INFO] Aggiornamento mappa con ostacolo fisso")
+	] 
 }

@@ -51,12 +51,11 @@ QActor robot context ctxRobot {
 	}
 	  
 	Plan init normal [  
-		demo consult("./resourceModel.pl");  //contains the models and related rules 
+		demo consult("./resourceModel.pl"); 
 		println("robot START")
 	]  
 	switchTo waitForCmd 
 	 
-	//Robot attende comandi
 	Plan waitForCmd[
 		println("Robot in attesa di comandi")
 	]
@@ -71,7 +70,7 @@ QActor robot context ctxRobot {
 		
 		//coperto il requisito R-FloorClean
 		onEvent userCmd : userCmd ("START") -> { 
-			println("Robot attivia'� avviata"); 
+			println("Robot attivita' avviata"); 
 			
 			//coperto il requisito R-BlinkLed e R-BlinkHue
 			[ !? isRealRobot ] emit ledCmd : ledCmd('blink')
@@ -79,18 +78,24 @@ QActor robot context ctxRobot {
 					
 			delay 5000;
 			
-			//coperto il requisiti R-AvoidFix
+			//coperto il requisito R-AvoidFix
 			println("Trovato ostacolo fisso, cerco di evitarlo");
+			
+			//coperto il requisito R-Map
+			println("Aggiungo l'ostacolo fisso alla posizione x in mappa");
 			
 			delay 5000;
 			
-			//coperto il requisiti R-AvoidMobile
+			//coperto il requisito R-AvoidMobile
 			println("Trovato ostacolo mobile, cerco di evitarlo");
 			 
 			delay 5000;
 			
-			//coperto il requisiti R-Obstacle
+			//coperto il requisito R-Obstacle
 			println("Trovato ostacolo inevitabile, mi arresto");
+			
+			//coperto il requisito R-Map
+			println("Aggiungo l'ostacolo fisso alla posizione y in mappa");
 			emit userCmd : userCmd("STOP");
 			
 			[ !? isRealRobot ] emit ledCmd : ledCmd('off')
@@ -99,7 +104,7 @@ QActor robot context ctxRobot {
 		
 		//coperto il requisito R-Stop
 		onEvent userCmd : userCmd ("STOP") -> { 
-			println("Robot attivia'� arrestata"); 
+			println("Robot attivita' arrestata"); 
 			
 			//coperto il requisito R-BlinkLed e R-BlinkHue
 			[ !? isRealRobot ] emit ledCmd : ledCmd('off')
