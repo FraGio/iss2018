@@ -61,8 +61,7 @@ private static QActor curActor ;
 //	 							System.out.println("MbotConnArduino222 sonar:" + v);
 								//handle too fast change
 	 							double delta =  Math.abs( v - dataSonar);
-	 							if( delta < 25 && delta > 0.5 ) {
-	 								if(dataSonar != lastValue) {
+	 							if( delta < 15 && delta > 0.5 ) {
 	 								
 										dataSonar = v;
 										//System.out.println("MbotConnArduino sonar:" + dataSonar);
@@ -72,7 +71,7 @@ private static QActor curActor ;
 		//								QActorUtils.raiseEvent(curActor, curActor.getName(), "realSonar", 
 		//										"sonar( DISTANCE )".replace("DISTANCE", ""+dataSonar ));
 										lastValue = dataSonar;
-	 								}
+	 								
 	 							}
 							}
 						}catch (NumberFormatException e1) {

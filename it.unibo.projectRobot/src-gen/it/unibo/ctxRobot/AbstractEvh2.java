@@ -20,10 +20,10 @@ protected IEventItem event;
 		if( event == null ) return;
 		{
 		Term msgt       = Term.createTerm(event.getMsg());
-		Term msgPattern = Term.createTerm("realRobotSonarEvent(DISTANCE)");
+		Term msgPattern = Term.createTerm("robotCmd(Y)");
 				boolean b = this.pengine.unify(msgt, msgPattern);
 				if( b ) {
-			  		sendMsg("realRobotSonarEvent","movecorelogic", QActorContext.dispatch, msgt.toString() ); 
+			  		sendMsg("robotCmd","realrobot", QActorContext.dispatch, msgt.toString() ); 
 				}else{
 					println("non unifiable");
 				}

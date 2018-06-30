@@ -58,8 +58,8 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForStart",waitForStart);
 	    	stateTab.put("forwardOn",forwardOn);
-	    	stateTab.put("handleRealSonarEvent",handleRealSonarEvent);
-	    	stateTab.put("handleRealSonarEventFix",handleRealSonarEventFix);
+	    	stateTab.put("waitForMobileObstacle",waitForMobileObstacle);
+	    	stateTab.put("restartForwardOn",restartForwardOn);
 	    	stateTab.put("handleVirtualSonarEvent",handleVirtualSonarEvent);
 	    	stateTab.put("sonar2Detected",sonar2Detected);
 	    	stateTab.put("stopPlan",stopPlan);
@@ -133,18 +133,22 @@ public abstract class AbstractMovecorelogic extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_forwardOn",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "forwardOn";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?fixedObstacleFound" )) != null )
+	    	{
+	    	{//actionseq
 	    	temporaryStr = "\"[INFO] Piano ForwardON ...\"";
 	    	println( temporaryStr );  
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(500,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "forwardOn";
-	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
+	    	};//actionseq
+	    	}
+	    	else{ temporaryStr = "\"[INFO] Piano ForwardON : bloccato perche' trovato ostacolo fisso!\"";
+	    	println( temporaryStr );  
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("sonar2Detected"), stateTab.get("handleVirtualSonarEvent"), stateTab.get("handleRealSonarEvent") }, 
-	          new String[]{"true","E","coreCmdStop", "true","E","roomSonar2Event", "true","E","virtualRobotSonarEvent", "true","E","realRobotSonarEvent" },
+	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("waitForMobileObstacle"), stateTab.get("restartForwardOn") }, 
+	          new String[]{"true","E","coreCmdStop", "true","E","realRobotSonarEvent", "true","E","endRoutineAvoidObstacle" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_forwardOn){  
 	    	 println( getName() + " plan=forwardOn WARNING:" + e_forwardOn.getMessage() );
@@ -152,105 +156,67 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    }
 	    };//forwardOn
 	    
-	    StateFun handleRealSonarEvent = () -> {	
+	    StateFun waitForMobileObstacle = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_handleRealSonarEvent",0);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForMobileObstacle",0);
 	     pr.incNumIter(); 	
-	    	String myselfName = "handleRealSonarEvent";  
+	    	String myselfName = "waitForMobileObstacle";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?fixedObstacleFound" )) != null )
+	    	{
+	    	{//actionseq
 	    	temporaryStr = "\"[INFO] Trovato un ostacolo dal sonar reale, valutazione se mobile ...\"";
 	    	println( temporaryStr );  
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(2000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEvent";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?firstCheck" )) != null )
+	    	{
+	    	{//actionseq
+	    	temporaryStr = "\"[INFO] waitForMobileObstacle - 1° controllo ...\"";
+	    	println( temporaryStr );  
+	    	temporaryStr = "firstCheck";
+	    	addRule( temporaryStr );  
+	    	};//actionseq
+	    	}
+	    	else{ {//actionseq
+	    	temporaryStr = "firstCheck";
+	    	removeRule( temporaryStr );  
+	    	temporaryStr = "fixedObstacleFound";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "fixedObstacleFoundEvent","fixedObstacleFoundEvent", guardVars ).toString();
+	    	emit( "fixedObstacleFoundEvent", temporaryStr );
+	    	};//actionseq
+	    	}};//actionseq
+	    	}
+	    	else{ {//actionseq
+	    	temporaryStr = "\"[INFO] waitForMobileObstacle : bloccato perche' attiva routine aggiramento!\"";
+	    	println( temporaryStr );  
+	    	};//actionseq
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("handleRealSonarEventFix"), stateTab.get("handleVirtualSonarEvent"), stateTab.get("sonar2Detected") }, 
-	          new String[]{"true","E","coreCmdStop", "true","E","realRobotSonarEvent", "true","E","virtualRobotSonarEvent", "true","E","roomSonar2Event" },
-	          5000, "forwardOn" );//msgTransition
-	    }catch(Exception e_handleRealSonarEvent){  
-	    	 println( getName() + " plan=handleRealSonarEvent WARNING:" + e_handleRealSonarEvent.getMessage() );
+	          new StateFun[]{stateTab.get("restartForwardOn") }, 
+	          new String[]{"true","E","endRoutineAvoidObstacle" },
+	          2000, "forwardOn" );//msgTransition
+	    }catch(Exception e_waitForMobileObstacle){  
+	    	 println( getName() + " plan=waitForMobileObstacle WARNING:" + e_waitForMobileObstacle.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//handleRealSonarEvent
+	    };//waitForMobileObstacle
 	    
-	    StateFun handleRealSonarEventFix = () -> {	
+	    StateFun restartForwardOn = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_handleRealSonarEventFix",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "handleRealSonarEventFix";  
-	    	temporaryStr = "\"[INFO] Trovato ancora l'ostacolo, suppongo sia fisso\"";
+	     PlanRepeat pr = PlanRepeat.setUp("restartForwardOn",-1);
+	    	String myselfName = "restartForwardOn";  
+	    	temporaryStr = "\"[INFO] restartForwardOn - sblocco!\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(2000,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"[INFO] Sonar virtuale ha ostacolo fisso!\"";
-	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(500,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(800,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(500,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(800,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(800,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(500,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(800,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
-	    	emit( "robotCmd", temporaryStr );
-	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(500,"" , "");
-	    	if( aar.getInterrupted() ) curPlanInExec   = "handleRealSonarEventFix";
-	    	if( ! aar.getGoon() ) return ;
-	    	//bbb
-	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("handleRealSonarEvent") }, 
-	          new String[]{"true","E","coreCmdStop", "true","E","realRobotSonarEvent" },
-	          8000, "forwardOn" );//msgTransition
-	    }catch(Exception e_handleRealSonarEventFix){  
-	    	 println( getName() + " plan=handleRealSonarEventFix WARNING:" + e_handleRealSonarEventFix.getMessage() );
+	    	temporaryStr = "fixedObstacleFound";
+	    	removeRule( temporaryStr );  
+	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,true);
+	    }catch(Exception e_restartForwardOn){  
+	    	 println( getName() + " plan=restartForwardOn WARNING:" + e_restartForwardOn.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//handleRealSonarEventFix
+	    };//restartForwardOn
 	    
 	    StateFun handleVirtualSonarEvent = () -> {	
 	    try{	

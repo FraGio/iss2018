@@ -11,6 +11,9 @@ Event realRobotSonarEvent : realRobotSonarEvent  ( DISTANCE )
 Event roomSonar1Event : roomSonar1Event ( DISTANCE ) 
 Event roomSonar2Event : roomSonar2Event ( DISTANCE ) 
 Event coreHasFinished : coreHasFinished
+Event fixedObstacleFoundEvent : fixedObstacleFoundEvent
+Event endRoutineAvoidObstacle : endRoutineAvoidObstacle
+Event restartForwardOn : restartForwardOn
 // =========== end core ===========
 
 Event requestNotifier : requestNotifier //le richiede entrambe
@@ -32,15 +35,11 @@ EventHandler evh for coreCmdStop {	//event-driven ; no Mqtt support yet
  	forwardEvent movecorelogic -m coreCmdStop
 };
 
-EventHandler evh2 for realRobotSonarEvent {	//event-driven ; no Mqtt support yet
- 	forwardEvent movecorelogic -m realRobotSonarEvent
-};
-
-EventHandler evh3 for robotCmd {	//event-driven ; no Mqtt support yet
+EventHandler evh1 for robotCmd {	//event-driven ; no Mqtt support yet
  	forwardEvent virtualrobot -m robotCmd
 };
 
-EventHandler evh4 for robotCmd {	//event-driven ; no Mqtt support yet
+EventHandler evh2 for robotCmd {	//event-driven ; no Mqtt support yet
  	forwardEvent realrobot -m robotCmd
 };
 
@@ -220,136 +219,54 @@ QActor movecorelogic context ctxRobot -pubsub{
   	finally repeatPlan 
   	
   	Plan forwardOn [
-  		println("[INFO] Piano ForwardON ...");
-  			delay 500;
+		[not !?  fixedObstacleFound]{
+			println("[INFO] Piano ForwardON ...");
+  			//movimento step-by-step in avanti
   			emit robotCmd : robotCmd('w')
+		}
+		else
+			println("[INFO] Piano ForwardON : bloccato perche' trovato ostacolo fisso!")
 	] transition stopAfter 3600000   	//1h 
 		whenEvent coreCmdStop -> stopPlan,
-		whenEvent roomSonar2Event -> sonar2Detected,
-		whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
-		whenEvent realRobotSonarEvent -> handleRealSonarEvent
+		//whenEvent roomSonar2Event -> sonar2Detected,
+		//whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
+		whenEvent realRobotSonarEvent -> waitForMobileObstacle,
+		whenEvent endRoutineAvoidObstacle -> restartForwardOn
 	finally repeatPlan
 	
-	Plan handleRealSonarEvent [
-		println("[INFO] Trovato un ostacolo dal sonar reale, valutazione se mobile ...");
-		
-		//attesa per consentire al robot di retrocedere e all'ostacolo mobile di scomparire
-		emit robotCmd : robotCmd('stop');
-		delay 2000;
-		emit robotCmd : robotCmd('w')
-		
-	] transition  whenTime 5000 -> forwardOn	//gestione ostacolo mobile 
-		whenEvent coreCmdStop -> stopPlan,
-		whenEvent realRobotSonarEvent -> handleRealSonarEventFix,
-		whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
-		whenEvent roomSonar2Event -> sonar2Detected
-	finally repeatPlan
-	
-	Plan handleRealSonarEventFix [
-		println("[INFO] Trovato ancora l'ostacolo, suppongo sia fisso");
-		
-		emit robotCmd : robotCmd('stop');
-		
-		delay 2000;
-		
-		println("[INFO] Sonar virtuale ha ostacolo fisso!");
-		emit robotCmd : robotCmd('d');
-		delay 500;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('a');
-		delay 500;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('a');
-		delay 500;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('d');
-		delay 500
-		
-//			//Direzione dall'ALTO al BASSO
-//			[!? directionUpToDown ] {
-//				//caso NON prima colonna
-//				[not !? FirstColumn]{
-//				println("[INFO] Sonar virtuale ha trovato muro!");
-//				emit robotCmd : robotCmd('d');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('a');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('a');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('d');
-//				delay 500
-//				};
-//				
-//				//caso prima colonna
-//				[!? FirstColumn]{
-//				println("[INFO] Sonar virtuale ha trovato ostacolo nel primo tratto!");
-//				println("[INFO] SINISTRA!");
-//				emit robotCmd : robotCmd('a');
-//				delay 500;
-//				println("[INFO] AVANTI!");
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				println("[INFO] DESTRA!");
-//				emit robotCmd : robotCmd('d');
-//				delay 500;
-//				println("[INFO] AVANTI!");
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				println("[INFO] AVANTI!");
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				println("[INFO] AVANTI!");
-//				emit robotCmd : robotCmd('d');
-//				delay 500;
-//				println("[INFO] AVANTI!");
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				println("[INFO] AVANTI!");
-//				emit robotCmd : robotCmd('a');
-//				delay 500
-//				}
-//		
-//			};
-//				
-//			//Direzione dal BASSO all'ALTO
-//			[!? directionDownToUp ] {
-//				println("[INFO] Sonar virtuale ha trovato muro!");
-//				emit robotCmd : robotCmd('a');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('d');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('d');
-//				delay 500;
-//				emit robotCmd : robotCmd('w');
-//				delay 900;
-//				emit robotCmd : robotCmd('a');
-//				delay 500
-//				}
+	Plan waitForMobileObstacle [
+		//fai valutazione ostacolo fisso/mobile solo se NON si e' nella routine di aggiramento ostacoli
+		[not !? fixedObstacleFound]{
+			println("[INFO] Trovato un ostacolo dal sonar reale, valutazione se mobile ...");
 			
+			emit robotCmd : robotCmd('stop');
+			
+			//se e' il primo controllo aggiungo "flag"
+			[not !? firstCheck]{
+				println("[INFO] waitForMobileObstacle - 1° controllo ...");
+				addRule firstCheck
+			}
+			else{
+				//e' il secondo controllo -> emetto evento per gestione ostacolo fisso
+				removeRule firstCheck;
+				addRule fixedObstacleFound;
+				emit fixedObstacleFoundEvent : fixedObstacleFoundEvent
+			}
+		}
+		else{
+			println("[INFO] waitForMobileObstacle : bloccato perche' attiva routine aggiramento!")
+		}
 		
-	] transition whenTime 8000 -> forwardOn  	//1h 
-		whenEvent coreCmdStop -> stopPlan,
-		whenEvent realRobotSonarEvent -> handleRealSonarEvent
+	] transition whenTime 2000 -> forwardOn	//attesa passaggio dell'ostacolo mobile
+		whenEvent endRoutineAvoidObstacle -> restartForwardOn
 	finally repeatPlan
+	
+	//sblocco regola logica che blocca forwardOn
+	Plan restartForwardOn resumeLastPlan[
+		println("[INFO] restartForwardOn - sblocco!");
+		removeRule fixedObstacleFound
+	]
+
 		
 	Plan handleVirtualSonarEvent [
 			[not !? justTurnedUpBottom ] {
@@ -406,6 +323,51 @@ QActor movecorelogic context ctxRobot -pubsub{
 		println("[INFO] Corelogic fermata")
 	] transition stopAfter 3600000   	//1h 
 	
+	
+}
+
+
+//gestisce ostacoli fissi ed immutabili
+QActor fixedobstaclemanager context ctxRobot -pubsub { 
+	Plan init normal [  
+		println("[INFO] Inizializzazione fixedObstacleManager")
+	] 
+	switchTo waitForFixedObstacle 
+	 
+	Plan waitForFixedObstacle [
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent fixedObstacleFoundEvent -> handleFixedObstacle
+  	finally repeatPlan 
+	
+	//piano di gestione ostacoli fissi o immutabili
+	Plan handleFixedObstacle resumeLastPlan[
+	println("[INFO] handleFixedObstacle - Aggiro l'ostacolo fisso!");
+		
+		emit robotCmd : robotCmd('stop');
+		delay 500;
+		emit robotCmd : robotCmd('d');
+		delay 500;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('a');
+		delay 500;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('a');
+		delay 500;
+		emit robotCmd : robotCmd('w');
+		delay 800;
+		emit robotCmd : robotCmd('d');
+		delay 500;
+		
+		//segnalazione corretto superamento dell'ostacolo
+		emit endRoutineAvoidObstacle : endRoutineAvoidObstacle;
+		println("[INFO] handleFixedObstacle - Fine aggiramento!")
+		
+	]
 	
 }
 
