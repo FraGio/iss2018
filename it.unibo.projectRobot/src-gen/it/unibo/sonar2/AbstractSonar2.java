@@ -79,7 +79,7 @@ public abstract class AbstractSonar2 extends QActor {
 	    	solveGoal( parg ); //sept2017
 	    	temporaryStr = "\"[INFO] sonar 2 START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.108:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo emitSonarEvent
 	        switchToPlanAsNextState(pr, myselfName, "sonar2_"+myselfName, 
 	              "emitSonarEvent",false, false, null); 

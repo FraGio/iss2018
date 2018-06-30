@@ -1,7 +1,7 @@
 %====================================================================================
 % Context ctxRobot  SYSTEM-configuration: file it.unibo.ctxRobot.reqAnalysisModel.pl 
 %====================================================================================
-context(ctxrobot, "192.168.1.108",  "TCP", "8021" ).  		 
+context(ctxrobot, "192.168.1.112",  "TCP", "8021" ).  		 
 %%% -------------------------------------------
 qactor( mind , ctxrobot, "it.unibo.mind.MsgHandle_Mind"   ). %%store msgs 
 qactor( mind_ctrl , ctxrobot, "it.unibo.mind.Mind"   ). %%control-driven 
@@ -24,5 +24,9 @@ qactor( robotsonar_ctrl , ctxrobot, "it.unibo.robotsonar.Robotsonar"   ). %%cont
 qactor( notifier , ctxrobot, "it.unibo.notifier.MsgHandle_Notifier"   ). %%store msgs 
 qactor( notifier_ctrl , ctxrobot, "it.unibo.notifier.Notifier"   ). %%control-driven 
 %%% -------------------------------------------
+eventhandler(evh,ctxrobot,"it.unibo.ctxRobot.Evh","coreCmdStop").  
+eventhandler(evh2,ctxrobot,"it.unibo.ctxRobot.Evh2","realRobotSonarEvent").  
+eventhandler(evh3,ctxrobot,"it.unibo.ctxRobot.Evh3","robotCmd").  
+eventhandler(evh4,ctxrobot,"it.unibo.ctxRobot.Evh4","robotCmd").  
 %%% -------------------------------------------
 

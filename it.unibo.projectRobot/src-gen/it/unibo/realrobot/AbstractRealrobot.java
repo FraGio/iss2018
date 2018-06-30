@@ -83,7 +83,7 @@ public abstract class AbstractRealrobot extends QActor {
 	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    	println( temporaryStr );  
 	    	}
-	     connectToMqttServer("tcp://192.168.1.108:1883");
+	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "realrobot_"+myselfName, 
 	              "waitForCmd",false, false, null); 

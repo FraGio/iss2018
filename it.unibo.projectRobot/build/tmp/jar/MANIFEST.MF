@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Class-Path: .  lib/uniboInterfaces.jar lib/unibonoawtsupports.jar lib/
  uniboEnvBaseAwt.jar lib/2p301.jar lib/qa18Akka.jar lib/nanoHTTPD.jar 
- lib/owm-japis-2.5.2.1.jar lib/owm-japis-2.5.2.1-javadoc.jar lib/kotli
- n-stdlib-common-1.2.50.jar lib/kotlin-maven-sam-with-receiver-1.2.50.
- jar lib/owm-japis-2.5.2.1-sources.jar lib/annotations-13.0.jar lib/js
- sc-2.8.0.jar lib/it.unibo.mbot-1.0.jar lib/org.eclipse.paho.client.mq
- ttv3-1.1.0.jar lib/converter-gson-2.1.0.jar lib/okio-1.8.0.jar lib/ok
- http-3.3.0.jar lib/kotlin-stdlib-1.2.50.jar lib/gson-2.7.jar lib/retr
+ lib/annotations-13.0.jar lib/converter-gson-2.1.0.jar lib/gson-2.7.ja
+ r lib/it.unibo.mbot-1.0.jar lib/jssc-2.8.0.jar lib/kotlin-maven-sam-w
+ ith-receiver-1.2.50.jar lib/kotlin-stdlib-1.2.50.jar lib/kotlin-stdli
+ b-common-1.2.50.jar lib/okhttp-3.3.0.jar lib/okio-1.8.0.jar lib/org.e
+ clipse.paho.client.mqttv3-1.1.0.jar lib/owm-japis-2.5.2.1-javadoc.jar
+  lib/owm-japis-2.5.2.1-sources.jar lib/owm-japis-2.5.2.1.jar lib/retr
  ofit-2.4.0.jar lib/akka-remote_2.11-2.5.1.jar lib/akka-stream_2.11-2.
  5.1.jar lib/akka-actor_2.11-2.5.2.jar lib/json-20160810.jar lib/org.e
  clipse.paho.client.mqttv3-1.1.0.jar lib/akka-protobuf_2.11-2.5.1.jar 
