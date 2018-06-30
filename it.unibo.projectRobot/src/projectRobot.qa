@@ -337,12 +337,12 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 	Plan waitForFixedObstacle [
 	]
 	transition stopAfter 3600000   	//1h 
-  		whenEvent fixedObstacleFoundEvent -> handleFixedObstacle
+  		whenEvent fixedObstacleFoundEvent -> handleFixedObstacle1
   	finally repeatPlan 
 	
 	//piano di gestione ostacoli fissi o immutabili
-	Plan handleFixedObstacle resumeLastPlan[
-	println("[INFO] handleFixedObstacle - Aggiro l'ostacolo fisso!");
+	Plan handleFixedObstacle1 [
+		println("[INFO] handleFixedObstacle1 - Aggiro l'ostacolo fisso!");
 		
 		emit robotCmd : robotCmd('stop');
 		delay 500;
@@ -350,8 +350,27 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 		delay 500;
 		emit robotCmd : robotCmd('w');
 		delay 800;
-		emit robotCmd : robotCmd('a');
-		delay 500;
+		emit robotCmd : robotCmd('a')
+		
+	]
+	transition whenTime 2000 ->  handleFixedObstacle2	//1h 
+		whenEvent virtualRobotSonarEvent -> impossibleToAvoidObstacle
+	finally repeatPlan
+	
+	//piano di gestione ostacoli fissi o immutabili
+	Plan handleFixedObstacle2 [
+		println("[INFO] handleFixedObstacle2 - Valuto se ostacolo fisso e' ancora presente...");
+		emit robotCmd : robotCmd('w');
+		delay 500
+	]
+	transition whenTime 1000 ->  completeHandleFixedObstacle	//1h 
+		whenEvent realRobotSonarEvent -> handleFixedObstacle1
+	finally repeatPlan
+	
+	//ultimo step in piano di gestione ostacoli fissi o immutabili
+	Plan completeHandleFixedObstacle [
+	println("[INFO] completeHandleFixedObstacle - Finisco aggiramento dell'ostacolo fisso!");
+		
 		emit robotCmd : robotCmd('w');
 		delay 800;
 		emit robotCmd : robotCmd('w');
@@ -363,11 +382,18 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 		emit robotCmd : robotCmd('d');
 		delay 500;
 		
+		
 		//segnalazione corretto superamento dell'ostacolo
 		emit endRoutineAvoidObstacle : endRoutineAvoidObstacle;
 		println("[INFO] handleFixedObstacle - Fine aggiramento!")
-		
 	]
+	
+	//stop robot perche' trovato ostacolo insormontabile
+	Plan impossibleToAvoidObstacle [
+		println("[INFO] Trovato ostacolo INSORMONTABILE, fermo!");
+		emit coreCmdStop : coreCmdStop
+	]
+	
 	
 }
 
