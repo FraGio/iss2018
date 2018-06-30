@@ -452,7 +452,7 @@ Conoscendo la dimensione della stanza è possibile costruire una mappa dell'area 
 Nell'operazione di svolta, da eseguire quando si incontra un muro, è necessario spostarsi di una casella verso il sonar finale, in seguito invertire la direzione e riprendere il movimento rettilineo fino al muro successivo.
 
 Rilevazione e aggiramento ostacoli:\\
-Per quanto la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà tre tentativi di rilevazione per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
+Per quanto riguarda la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà un secondo tentativo dopo alcuni secondi, per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
 In caso di ostacolo fisso il robot deve cercare di tornare su percorsi già esplorati, con l'obiettivo di raggiungere la casella più vicina (nella traiettoria assunta prima del ritrovamento dell'ostacolo) a quella che avrebbe dovuto esplorare in assenza di ostacolo.\\
 In caso di ostacolo mobile prosegue il suo moto nella stessa direzione.
 
