@@ -75,7 +75,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Inizializzazione del core della logica di movimento\"";
+	    	temporaryStr = "\"[INFO] Inizializzazione del core della logica di movimento\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo waitForStart
@@ -127,7 +127,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"logica di movimento mette in movimento il robot\"";
+	    			temporaryStr = "\"[INFO] Logica di movimento mette in movimento il robot ed evita gli ostacoli\"";
 	    			println( temporaryStr );  
 	    			};//actionseq
 	    	}

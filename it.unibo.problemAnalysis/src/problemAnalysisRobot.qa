@@ -3,9 +3,9 @@ System reqAnalysisModel
 Event userCmd : userCmd ( X ) //START - STOP
 Event robotCmd : robotCmd ( Y ) // h-d-r-l-stop
 Event coreCmd : coreCmd ( Z ) //START - STOP
-Event robotSonarEvent : robotSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
-Event roomSonar1Event : roomSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
-Event roomSonar2Event : roomSonarEvent ( DISTANCE ) //NAME: NOME SONAR, DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event robotSonarEvent : robotSonarEvent
+Event roomSonar1Event : roomSonar1Event ( DISTANCE ) //DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
+Event roomSonar2Event : roomSonar2Event ( DISTANCE ) //DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
 Event requestNotifier : requestNotifier //le richiede entrambe
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
@@ -69,7 +69,6 @@ QActor mind context ctxRobot -pubsub {
 		whenEvent temperatureTimeRequest -> waitForSonar1
 	finally repeatPlan
 	
-	//attesa segnale da sonar 1
 	Plan waitForSonar1[
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
@@ -78,9 +77,12 @@ QActor mind context ctxRobot -pubsub {
 		whenEvent roomSonar1Event -> doWork
 	finally repeatPlan
 	 
-	Plan doWork[]
+	Plan doWork[
+		onEvent roomSonar1Event : roomSonar1Event(X) 
+			-> println("[INFO] Robot rilevato da sonar1, tutto pronto per ricevere comando di AVVIO")
+	]
 	transition stopAfter 3600000   	//1h 
-		whenEvent userCmd -> robotCmdHandler,
+		whenEvent userCmd -> userCmdHandler,
 		whenEvent temperatureTimeRequest -> updateValues,
 		whenEvent robotSonarEvent -> handleRobotSonarEvent,
 		whenEvent roomSonar2Event -> handleRoomSonarEvent
@@ -92,24 +94,22 @@ QActor mind context ctxRobot -pubsub {
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
 	]switchTo doWork
 	
-	Plan robotCmdHandler resumeLastPlan[
-		//se il robot è già partito il robot non deve sentire altri START
+	Plan userCmdHandler resumeLastPlan[
 		[not !? alreadyStarted]{
 			onEvent userCmd : userCmd('START') -> {
-				println("Ricevuto da utente comando di avvio");
-				emit coreCmd : coreCmd('START');
+				println("[INFO] Ricevuto da utente comando di avvio");
 				
-				addRule alreadyStarted;
-				
-				//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
 				[!? realrobot ]{
 					demo changeModelItem(leds,ledfisico,blink);
-					demo changeModelItem(robot,realRobotStatus,on)
+					demo changeModelItem(robot,realrobotstatus,on)
 				};
 				[!? virtualrobot ] {
 					demo changeModelItem(leds,ledhuelamp,blink);
-					demo changeModelItem(robot,virtualRobotStatus,on)
-				}
+					demo changeModelItem(robot,virtualrobotstatus,on)
+				};
+				delay 1000;
+				emit coreCmd : coreCmd('START');
+				addRule alreadyStarted
 			}
 		};
 		
@@ -117,30 +117,31 @@ QActor mind context ctxRobot -pubsub {
 			//posso fermarlo SOLO SE E' STATO AVVIATO!
 			[!? alreadyStarted] {
 					onEvent userCmd : userCmd('STOP') -> {
-					println("Ricevuto da utente comando di stop");
-					emit robotCmd : robotCmd ('stop');
-					emit coreCmd : coreCmd('STOP');
-			
-					addRule alreadyStopped;
-					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+					println("[INFO] Ricevuto da utente comando di stop");
+					
+					
 					[!? realrobot ]{
 						demo changeModelItem(leds,ledfisico,off);
-						demo changeModelItem(robot,realRobotStatus,off)
+						demo changeModelItem(robot,realrobotstatus,off)
 					};
 					[!? virtualrobot ]{
 						demo changeModelItem(leds,ledhuelamp,off);
-						demo changeModelItem(robot,virtualRobotStatus,off)
-					}
+						demo changeModelItem(robot,virtualrobotstatus,off)
+					};
+					delay 1000;
+					emit robotCmd : robotCmd ('stop');
+					emit coreCmd : coreCmd('STOP');
+			
+					addRule alreadyStopped
 				}
 			}
 		}
 	]
 	
-	//gestione degli eventi che provengono dal sonar posto sul robot
 	Plan handleRobotSonarEvent [
 		onEvent robotSonarEvent : robotSonarEvent(DISTANCE) 
 			-> {
-				println("Ostacolo rilevato, iniziata routine per evitarlo...");
+				println("[INFO] Ostacolo rilevato, iniziata routine per evitarlo...");
 				
 				//assumiamo sia stato valutato un ostacolo fisso, quindi da mappare
 				emit obstacleFound : obstacleFound( X, Y )
@@ -151,20 +152,19 @@ QActor mind context ctxRobot -pubsub {
 	Plan handleRoomSonarEvent [
 		onEvent roomSonar2Event: roomSonar2Event('-3') 
 			-> {
-				println("Robot rilevato da sonar stanza n.2...fermo il robot");
+				println("[INFO] Robot vicinissimo al sonar2 ...fermo il robot");
 				emit robotCmd : robotCmd ('stop');
 				emit coreCmd : coreCmd('STOP')
 			};
 		onEvent roomSonar2Event: roomSonar2Event(DISTANCE) 
-			-> {
-				println("Robot rilevato da sonar stanza n.2...inversione robot")
-			}
+			-> println("[INFO] Robot rilevato da sonar2, muro sul fondo ...inversione robot")
+			
 	]switchTo doWork
 }
 
 QActor mapper context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("Inizializzazione mapper...")
+		println("[INFO] Inizializzazione mapper...")
 	]  
 	switchTo waitForObstacle
 	 
@@ -175,13 +175,13 @@ QActor mapper context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan updateMap resumeLastPlan[
-  		println("Aggiornamento mappa con ostacolo fisso")
+  		println("[INFO] Aggiornamento mappa con ostacolo fisso")
 	] 
 }
 
 QActor movecorelogic context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("Inizializzazione del core della logica di movimento")
+		println("[INFO] Inizializzazione del core della logica di movimento")
 	]  
 	switchTo waitForStart 
 	 
@@ -195,7 +195,7 @@ QActor movecorelogic context ctxRobot -pubsub {
 		onEvent coreCmd : coreCmd ('STOP') -> emit robotCmd : robotCmd ('stop');
 		
 		onEvent coreCmd : coreCmd ('START') -> {
-			println("logica di movimento mette in movimento il robot")
+			println("[INFO] Logica di movimento mette in movimento il robot ed evita gli ostacoli")
 //			emit robotCmd : robotCmd ('h');
 //			emit robotCmd : robotCmd ('r');
 //			emit robotCmd : robotCmd ('l');
@@ -207,7 +207,7 @@ QActor movecorelogic context ctxRobot -pubsub {
 
 QActor realrobot context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("Accensione del real robot completata!")
+		println("[INFO] Accensione del real robot completata!")
 	]  
 	switchTo waitForCmd 
 	 
@@ -224,7 +224,7 @@ QActor realrobot context ctxRobot -pubsub {
 
 QActor virtualrobot context ctxRobot -pubsub {   
 	Plan init normal [  
-		println("Accensione del virtual robot completata!")
+		println("[INFO] Accensione del virtual robot completata!")
 	]  
 	switchTo waitForCmd 
 	 
@@ -241,13 +241,13 @@ QActor virtualrobot context ctxRobot -pubsub {
 QActor sonar1 context ctxRobot -pubsub {   
 	  
 	Plan init normal [  
-		println("sonar 1 START")
-	]  switchTo emitRobotCmd 
+		println("[INFO] sonar 1 START")
+	]  switchTo emitEvent 
   	
-  	//simulazione comandi START/STOP
-	Plan emitRobotCmd [	
-		delay 2000;
-		println("Sonar1: robot rilevato");
+  	//simulazione del sonar1
+	Plan emitEvent [	
+		delay 10000;
+		println("[INFO] Sonar1: robot rilevato");
 		
 		emit roomSonar1Event : roomSonar1Event(X)
 	]
@@ -256,13 +256,13 @@ QActor sonar1 context ctxRobot -pubsub {
 QActor sonar2 context ctxRobot -pubsub {   
 	  
 	Plan init normal [  
-		println("sonar 2 START")
-	] switchTo emitRobotCmd 
+		println("[INFO] sonar 2 START")
+	] switchTo emitEvent 
   	
-  	//simulazione comandi START/STOP
-	Plan emitRobotCmd [	
-		delay 45000;
-		println("Sonar2: robot rilevato");
+  	//simulazione del sonar2
+	Plan emitEvent [	
+		delay 60000;
+		println("[INFO] Sonar2: robot rilevato");
 		
 		emit roomSonar2Event : roomSonar2Event(5)
 	]
@@ -272,28 +272,30 @@ QActor sonar2 context ctxRobot -pubsub {
 QActor robotsonar context ctxRobot -pubsub {   
 	  
 	Plan init normal [  
-		println("sonar robot START")
+		println("[INFO] sonar robot START")
 	] switchTo emitRobotCmd 
   	
-  	//simulazione comandi START/STOP
+  	//simulazione del sonar
 	Plan emitRobotCmd [	
-		delay 17000;
-		println("Sonar robot: rilevato ostacolo");
+		delay 50000;
+		println("[INFO] Sonar robot: rilevato ostacolo");
 		
 		//emissione evento "ostacolo rilevato"
-		emit robotSonarEvent : robotSonarEvent ( 10 );
+		emit robotSonarEvent : robotSonarEvent;
 		
-		delay 14000;
-		println("Sonar robot: rilevato ostacolo");
+		delay 55000;
+		println("[INFO] Sonar robot: rilevato ostacolo");
 		
 		//emissione evento "ostacolo rilevato"
-		emit robotSonarEvent : robotSonarEvent ( 13 )
+		emit robotSonarEvent : robotSonarEvent
 	]
 }
 
 QActor led context ctxRobot -pubsub { 
 		Plan init normal [  
-		println("Inizializzazione led hue lamp")
+		demo consult("./resourceModel.pl");
+		delay 1000;
+		println("[INFO] Inizializzazione led")
 	] 
 	switchTo waitForBlink 
 	 
@@ -304,11 +306,13 @@ QActor led context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan ledOnPlan resumeLastPlan[
-  		println("[INFO] Led ON")
+  		[!? realrobot]
+  			println("[INFO] Led ON")
 	] transition whenTime 500 -> ledOffPlan
 	
 	Plan ledOffPlan resumeLastPlan[
-  		println("[INFO] Led OFF")
+		[!? realrobot]
+  			println("[INFO] Led OFF")
 	] transition whenTime 500 -> ledOnPlan
 		whenEvent ledCmdStop -> stopLed
 	finally repeatPlan
@@ -319,8 +323,10 @@ QActor led context ctxRobot -pubsub {
 }
 
 QActor ledhuelamp context ctxRobot -pubsub { 
-	Plan init normal [  
-		println("Inizializzazione led hue lamp")
+	Plan init normal [
+		demo consult("./resourceModel.pl");
+		delay 1000;  
+		println("[INFO] Inizializzazione led hue lamp")
 	] 
 	switchTo waitForBlink 
 	 
@@ -331,24 +337,26 @@ QActor ledhuelamp context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan ledOnPlan resumeLastPlan[
-  		println("[INFO] Led hue lamp ON")
+  		[!? virtualrobot]
+  			println("[INFO] Led hue lamp ON")
 	] transition whenTime 500 -> ledOffPlan
 	
 	Plan ledOffPlan resumeLastPlan[
-  		println("[INFO] Led hue lamp OFF")
+		[!? virtualrobot]
+  			println("[INFO] Led hue lamp OFF")
 	] transition whenTime 500 -> ledOnPlan
 		whenEvent ledCmdStop -> stopLed
 	finally repeatPlan
 	
 	Plan stopLed[
-  		println("[INFO] Led heu lamp finisce fase di blink")
+  		println("[INFO] Led hue lamp finisce fase di blink")
 	] 
 }
 
 QActor notifier context ctxRobot -pubsub {   
 	  
 	Plan init normal [  
-		println("Notifier START")   
+		println("[INFO] Notifier START")   
 	]switchTo waitForFirstRequest
 	 
 	Plan waitForFirstRequest[]transition stopAfter 3600000   	//1h 
@@ -356,14 +364,12 @@ QActor notifier context ctxRobot -pubsub {
   	finally repeatPlan   
   	
   	Plan startPolling [
-  		delay 3000; //tempo di pausa
-		emit requestExternalProvider : requestExternalProvider
-	] switchTo waitForResponse
-	
-	Plan waitForResponse[]transition stopAfter 3600000   	//1h 
-  		whenEvent  temperatureTimeProviderResponse -> handleRequestTimeAndTemperature
-  	finally repeatPlan 
-  	
+  		delay 6000;
+  		emit requestExternalProvider : requestExternalProvider
+	] transition stopAfter 3600000   	//1
+		whenEvent  temperatureTimeProviderResponse -> handleRequestTimeAndTemperature
+	finally repeatPlan 
+
   	Plan handleRequestTimeAndTemperature [
 		onEvent temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) 
 		-> emit temperatureTimeRequest : temperatureTimeRequest(V,T)

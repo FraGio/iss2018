@@ -74,7 +74,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"sonar robot START\"";
+	    	temporaryStr = "\"[INFO] sonar robot START\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo emitRobotCmd
@@ -91,20 +91,20 @@ public abstract class AbstractRobotsonar extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp("emitRobotCmd",-1);
 	    	String myselfName = "emitRobotCmd";  
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(17000,"" , "");
+	    	aar = delayReactive(50000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
+	    	temporaryStr = "\"[INFO] Sonar robot: rilevato ostacolo\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(10)", guardVars ).toString();
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent","robotSonarEvent", guardVars ).toString();
 	    	emit( "robotSonarEvent", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(14000,"" , "");
+	    	aar = delayReactive(55000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "emitRobotCmd";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"Sonar robot: rilevato ostacolo\"";
+	    	temporaryStr = "\"[INFO] Sonar robot: rilevato ostacolo\"";
 	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent(DISTANCE)","robotSonarEvent(13)", guardVars ).toString();
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotSonarEvent","robotSonarEvent", guardVars ).toString();
 	    	emit( "robotSonarEvent", temporaryStr );
 	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,false,false);
 	    }catch(Exception e_emitRobotCmd){  

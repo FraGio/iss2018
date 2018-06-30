@@ -58,7 +58,6 @@ public abstract class AbstractNotifier extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForFirstRequest",waitForFirstRequest);
 	    	stateTab.put("startPolling",startPolling);
-	    	stateTab.put("waitForResponse",waitForResponse);
 	    	stateTab.put("handleRequestTimeAndTemperature",handleRequestTimeAndTemperature);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
@@ -77,7 +76,7 @@ public abstract class AbstractNotifier extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Notifier START\"";
+	    	temporaryStr = "\"[INFO] Notifier START\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo waitForFirstRequest
@@ -107,38 +106,25 @@ public abstract class AbstractNotifier extends QActor {
 	    
 	    StateFun startPolling = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("startPolling",-1);
+	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_startPolling",0);
+	     pr.incNumIter(); 	
 	    	String myselfName = "startPolling";  
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(3000,"" , "");
+	    	aar = delayReactive(6000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "startPolling";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "requestExternalProvider","requestExternalProvider", guardVars ).toString();
 	    	emit( "requestExternalProvider", temporaryStr );
-	    	//switchTo waitForResponse
-	        switchToPlanAsNextState(pr, myselfName, "notifier_"+myselfName, 
-	              "waitForResponse",false, false, null); 
-	    }catch(Exception e_startPolling){  
-	    	 println( getName() + " plan=startPolling WARNING:" + e_startPolling.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//startPolling
-	    
-	    StateFun waitForResponse = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_waitForResponse",0);
-	     pr.incNumIter(); 	
-	    	String myselfName = "waitForResponse";  
 	    	//bbb
 	     msgTransition( pr,myselfName,"notifier_"+myselfName,false,
 	          new StateFun[]{stateTab.get("handleRequestTimeAndTemperature") }, 
 	          new String[]{"true","E","temperatureTimeProviderResponse" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
-	    }catch(Exception e_waitForResponse){  
-	    	 println( getName() + " plan=waitForResponse WARNING:" + e_waitForResponse.getMessage() );
+	    }catch(Exception e_startPolling){  
+	    	 println( getName() + " plan=startPolling WARNING:" + e_startPolling.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//waitForResponse
+	    };//startPolling
 	    
 	    StateFun handleRequestTimeAndTemperature = () -> {	
 	    try{	

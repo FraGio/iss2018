@@ -2,7 +2,7 @@ package it.unibo.iss2018support.robot;
 
 import java.util.Random;
 
-import it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom;
+import it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv;
 import it.unibo.qactors.akka.QActor;
 
 public class robot {
@@ -15,15 +15,15 @@ public class robot {
 		
 		switch(x) {
 			case 0:
-				handleJsonEventRoom.mbotRight(qactor);
+				supportVirtualEnv.mbotRight(qactor);
 			case 1:
-				handleJsonEventRoom.mbotForward(qactor);
+				supportVirtualEnv.mbotForward(qactor);
 			case 2:
-				handleJsonEventRoom.mbotForward(qactor);
+				supportVirtualEnv.mbotForward(qactor);
 			case 3: 
-				handleJsonEventRoom.mbotForward(qactor);
+				supportVirtualEnv.mbotForward(qactor);
 			case 4:
-				handleJsonEventRoom.mbotRight(qactor);
+				supportVirtualEnv.mbotRight(qactor);
 		}
 		
 	}
@@ -47,7 +47,7 @@ public class robot {
 	
 	public synchronized static void stopActivity(QActor qactor) {
 		setStatus(false);
-		handleJsonEventRoom.mbotStop(qactor);
+		supportVirtualEnv.mbotStop(qactor);
 	}
 
 	public static boolean isStatus() {

@@ -77,7 +77,14 @@ public abstract class AbstractLedhuelamp extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Inizializzazione led hue lamp\"";
+	    	parg = "consult(\"./resourceModel.pl\")";
+	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
+	    	solveGoal( parg ); //sept2017
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(1000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = "\"[INFO] Inizializzazione led hue lamp\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo waitForBlink
@@ -109,8 +116,11 @@ public abstract class AbstractLedhuelamp extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("ledOnPlan",-1);
 	    	String myselfName = "ledOnPlan";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
 	    	temporaryStr = "\"[INFO] Led hue lamp ON\"";
+	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    	println( temporaryStr );  
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"ledhuelamp_"+myselfName,true,
 	          new StateFun[]{}, 
@@ -127,8 +137,11 @@ public abstract class AbstractLedhuelamp extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_ledOffPlan",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "ledOffPlan";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualrobot" )) != null ){
 	    	temporaryStr = "\"[INFO] Led hue lamp OFF\"";
+	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    	println( temporaryStr );  
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"ledhuelamp_"+myselfName,true,
 	          new StateFun[]{stateTab.get("stopLed") }, 
@@ -144,7 +157,7 @@ public abstract class AbstractLedhuelamp extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("stopLed",-1);
 	    	String myselfName = "stopLed";  
-	    	temporaryStr = "\"[INFO] Led heu lamp finisce fase di blink\"";
+	    	temporaryStr = "\"[INFO] Led hue lamp finisce fase di blink\"";
 	    	println( temporaryStr );  
 	    	repeatPlanNoTransition(pr,myselfName,"ledhuelamp_"+myselfName,false,false);
 	    }catch(Exception e_stopLed){  

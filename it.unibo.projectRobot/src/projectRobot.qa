@@ -32,15 +32,15 @@ pubSubServer "tcp://192.168.1.112:1883"
 
 Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
 
-EventHandler evh for coreCmdStop {	//event-driven ; no Mqtt support yet
+EventHandler evh for coreCmdStop {	
  	forwardEvent movecorelogic -m coreCmdStop
 };
 
-EventHandler evh1 for robotCmd {	//event-driven ; no Mqtt support yet
+EventHandler evh1 for robotCmd {	
  	forwardEvent virtualrobot -m robotCmd
 };
 
-EventHandler evh2 for robotCmd {	//event-driven ; no Mqtt support yet
+EventHandler evh2 for robotCmd {	
  	forwardEvent realrobot -m robotCmd
 };
 
@@ -85,7 +85,7 @@ QActor mind context ctxRobot -pubsub {
 	 			emitevent( ledCmdStop,  ledCmdStop ).
 	}
 	Plan init normal [
-		javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn();
+		javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.initClientConn();
 		delay 500;
 		javaRun it.unibo.iss2018support.mqttUtils.mqttTools.init();
 		delay 500;
@@ -107,7 +107,6 @@ QActor mind context ctxRobot -pubsub {
 		whenEvent temperatureTimeRequest -> waitForSonar1
 	finally repeatPlan
 	
-	//attesa segnale da sonar 1 per entrare in stato di attesa per comandi utente
 	Plan waitForSonar1[
 		println("[INFO] Acquisiti valori iniziali di temperatura e tempo... attesa posizionamento su sonar1");
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
@@ -139,7 +138,7 @@ QActor mind context ctxRobot -pubsub {
 				println("[INFO] Ricevuto da utente comando di avvio");
 			
 				addRule alreadyStarted;
-				//avvio robot (fisico o virtuale) e inizio blink led o led hue lamp
+				
 				[!? realRobot ]{
 					demo changeModelItem(leds,ledfisico,blink);
 					demo changeModelItem(robot,realrobotstatus,on)
@@ -164,7 +163,7 @@ QActor mind context ctxRobot -pubsub {
 					delay 1000;
 			
 					addRule alreadyStopped;
-					//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+					
 					[!? realRobot ]{
 						demo changeModelItem(leds,ledfisico,off);
 						demo changeModelItem(robot,realrobotstatus,off)
@@ -185,7 +184,7 @@ QActor mind context ctxRobot -pubsub {
 			delay 1000;
 			
 			addRule alreadyStopped;
-			//spegnimento robot (fisico o virtuale) e stop blink led o led hue lamp
+			
 			[!? realRobot ]{
 				demo changeModelItem(leds,ledfisico,off);
 				demo changeModelItem(robot,realrobotstatus,off)
@@ -323,7 +322,6 @@ QActor movecorelogic context ctxRobot -pubsub{
 	
 	
 }
-
 
 //gestisce ostacoli fissi ed immutabili
 QActor fixedobstaclemanager context ctxRobot -pubsub { 
@@ -529,11 +527,11 @@ QActor virtualrobot context ctxRobot -pubsub {
   	finally repeatPlan 
   	
   	Plan executionRobotCmdHandler resumeLastPlan [
-		onEvent robotCmd : robotCmd('w') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotForward();
-		onEvent robotCmd : robotCmd('s') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotBackward();
-		onEvent robotCmd : robotCmd('a') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotLeft();
-		onEvent robotCmd : robotCmd('d') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotRight();
-		onEvent robotCmd : robotCmd('stop') -> javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotStop()
+		onEvent robotCmd : robotCmd('w') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotForward();
+		onEvent robotCmd : robotCmd('s') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotBackward();
+		onEvent robotCmd : robotCmd('a') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotLeft();
+		onEvent robotCmd : robotCmd('d') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotRight();
+		onEvent robotCmd : robotCmd('stop') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotStop()
 	]
 }
 
@@ -544,11 +542,10 @@ QActor sonar1 context ctxRobot -pubsub {
 		println("[INFO] sonar 1 START")
 	]  switchTo emitSonarEvent 
   	
-  	//emissione eventi sonar1 (iniziale)
 	Plan emitSonarEvent [	
 		delay 1000;
 		[!? virtualRobot ]
-			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
+			javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }
@@ -560,11 +557,11 @@ QActor sonar2 context ctxRobot -pubsub {
 		println("[INFO] sonar 2 START")
 	] switchTo emitSonarEvent
   	
-  	//emissione eventi sonar2 (finale)
+  
 	Plan emitSonarEvent [	
 		delay 1000;
 		[!? virtualRobot ]
-			javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
+			javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }
@@ -577,7 +574,7 @@ QActor robotsonar context ctxRobot -pubsub {
   	
 	Plan emitSonarRobotEvent[	
 			[!? virtualRobot ]
-				javaRun it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual()
+				javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual()
 	]
 	finally repeatPlan
 }

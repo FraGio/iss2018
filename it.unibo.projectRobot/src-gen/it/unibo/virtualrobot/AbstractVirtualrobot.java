@@ -114,7 +114,7 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			{/* JavaLikeMove */ 
-	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotForward(this );
+	    			it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotForward(this );
 	    			}
 	    	}
 	    	//onEvent 
@@ -124,7 +124,7 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			{/* JavaLikeMove */ 
-	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotBackward(this );
+	    			it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotBackward(this );
 	    			}
 	    	}
 	    	//onEvent 
@@ -134,7 +134,7 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			{/* JavaLikeMove */ 
-	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotLeft(this );
+	    			it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotLeft(this );
 	    			}
 	    	}
 	    	//onEvent 
@@ -144,7 +144,7 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			{/* JavaLikeMove */ 
-	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotRight(this );
+	    			it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotRight(this );
 	    			}
 	    	}
 	    	//onEvent 
@@ -154,7 +154,7 @@ public abstract class AbstractVirtualrobot extends QActor {
 	    		pengine.unify(curT, Term.createTerm("robotCmd(Y)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			{/* JavaLikeMove */ 
-	    			it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.mbotStop(this );
+	    			it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotStop(this );
 	    			}
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"virtualrobot_"+myselfName,false,true);

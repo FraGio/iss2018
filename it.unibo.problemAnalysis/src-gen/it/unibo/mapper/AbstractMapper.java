@@ -75,7 +75,7 @@ public abstract class AbstractMapper extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	temporaryStr = "\"Inizializzazione mapper...\"";
+	    	temporaryStr = "\"[INFO] Inizializzazione mapper...\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://localhost:1883");
 	    	//switchTo waitForObstacle
@@ -107,7 +107,7 @@ public abstract class AbstractMapper extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("updateMap",-1);
 	    	String myselfName = "updateMap";  
-	    	temporaryStr = "\"Aggiornamento mappa con ostacolo fisso\"";
+	    	temporaryStr = "\"[INFO] Aggiornamento mappa con ostacolo fisso\"";
 	    	println( temporaryStr );  
 	    	repeatPlanNoTransition(pr,myselfName,"mapper_"+myselfName,false,true);
 	    }catch(Exception e_updateMap){  

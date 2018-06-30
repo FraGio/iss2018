@@ -79,7 +79,7 @@ public abstract class AbstractMind extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.initClientConn( myself  );
+	    	it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.initClientConn( myself  );
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(500,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "init";

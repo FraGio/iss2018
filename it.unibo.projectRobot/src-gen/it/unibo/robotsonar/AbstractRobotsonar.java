@@ -95,7 +95,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	     pr.incNumIter(); 	
 	    	String myselfName = "emitSonarRobotEvent";  
 	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
-	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual( myself  );
+	    	it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual( myself  );
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"robotsonar_"+myselfName,true,false);
 	    }catch(Exception e_emitSonarRobotEvent){  

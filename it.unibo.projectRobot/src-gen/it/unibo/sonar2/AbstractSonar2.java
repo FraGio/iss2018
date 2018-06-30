@@ -99,7 +99,7 @@ public abstract class AbstractSonar2 extends QActor {
 	    	if( aar.getInterrupted() ) curPlanInExec   = "emitSonarEvent";
 	    	if( ! aar.getGoon() ) return ;
 	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?virtualRobot" )) != null ){
-	    	it.unibo.iss2018support.sonaroomsupport.handleJsonEventRoom.retriveEventFromVirtual( myself  );
+	    	it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual( myself  );
 	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"sonar2_"+myselfName,true,false);
 	    }catch(Exception e_emitSonarEvent){  
