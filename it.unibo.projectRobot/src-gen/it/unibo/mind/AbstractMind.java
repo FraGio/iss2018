@@ -255,7 +255,7 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Ricevuto da utente comando di avvio\"";
+	    			temporaryStr = "\"[INFO] Ricevuto da utente comando di avvio\"";
 	    			println( temporaryStr );  
 	    			temporaryStr = "alreadyStarted";
 	    			addRule( temporaryStr );  
@@ -302,7 +302,7 @@ public abstract class AbstractMind extends QActor {
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
-	    			temporaryStr = "\"Ricevuto da utente comando di stop\"";
+	    			temporaryStr = "\"[INFO] Ricevuto da utente comando di stop\"";
 	    			println( temporaryStr );  
 	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmdStop","coreCmdStop", guardVars ).toString();
 	    			emit( "coreCmdStop", temporaryStr );

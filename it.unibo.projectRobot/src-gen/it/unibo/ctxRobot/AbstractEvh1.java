@@ -7,9 +7,9 @@ import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.qactors.QActorContext;
 import it.unibo.qactors.QActorUtils;
 
-public abstract class AbstractEvh3 extends EventHandlerComponent { 
+public abstract class AbstractEvh1 extends EventHandlerComponent { 
 protected IEventItem event;
-	public AbstractEvh3(String name, QActorContext myCtx, IOutputEnvView outEnvView, String[] eventIds ) throws Exception {
+	public AbstractEvh1(String name, QActorContext myCtx, IOutputEnvView outEnvView, String[] eventIds ) throws Exception {
 		super(name, myCtx, eventIds, outEnvView);
   	}
 	@Override

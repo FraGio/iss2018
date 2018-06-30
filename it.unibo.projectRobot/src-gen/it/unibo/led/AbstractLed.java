@@ -80,7 +80,7 @@ public abstract class AbstractLed extends QActor {
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	    	temporaryStr = "\"Inizializzazione led\"";
+	    	temporaryStr = "\"[INFO] Inizializzazione led\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo waitForBlink

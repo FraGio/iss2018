@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor mind
+% WorldTheory.pl for actor fixedobstaclemanager
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qatumind).	%%old version (deprecated)
-actorobj(qatumind).	%% see registerActorInProlog18 in QActor
+myname(qatufixedobstaclemanager).	%%old version (deprecated)
+actorobj(qatufixedobstaclemanager).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -81,7 +81,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor mind
+%  TuProlo FEATURES of the QActor fixedobstaclemanager
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -89,7 +89,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of mind" ). 
+%% :- stdout <- println(  "hello from world theory of fixedobstaclemanager" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -140,18 +140,8 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about mind
+%  User static rules about fixedobstaclemanager
 %------------------------------------------------- 
-limitTemperatureValue( 40).
-limitTimeValueMin( 9).
-limitTimeValueMax( 23).
-changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "[INFO] Temperatura sopra limite"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).
-changedModelAction( timer,timevalue,T):-limitTimeValueMin( MIN),eval( le,T,MIN), ! ,output( "[INFO] Tempo fuori range MIN"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).
-changedModelAction( timer,timevalue,T):-limitTimeValueMax( MAX),eval( ge,T,MAX), ! ,output( "[INFO] Tempo fuori range MAX"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).
-changedModelAction( leds,ledfisico,blink):-emitevent( ledCmdBlink,ledCmdBlink).
-changedModelAction( leds,ledfisico,off):-emitevent( ledCmdStop,ledCmdStop).
-changedModelAction( leds,ledhuelamp,blink):-emitevent( ledCmdBlink,ledCmdBlink).
-changedModelAction( leds,ledhuelamp,off):-emitevent( ledCmdStop,ledCmdStop).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),
