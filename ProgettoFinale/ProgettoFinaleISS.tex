@@ -216,39 +216,56 @@ Dati i requisiti forniti dal committente, ci poniamo alcune domande:\\
 	\item cosa intende per robot virtuale?
 	\item possiamo avere un robot/ambiente virtuale a nostra disposizione (ad esempio dal committente)?
 	\item dove sono presenti i sonar? Solo nell'ambiente fisico, solo nel virtuale, in entrambi...?
+	\item cosa si intende per realizzare una mappa del pavimento? Cosa significa realizzare un percorso ottimo da start ad end point?
 \end{itemize}
 
 In base ai requisiti dati emergono alcune considerazioni e osservazioni.\\
 \begin{itemize}
+
 \item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il requisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
+
 Per pulire il pavimento della stanza s'intende che il robot deve coprire tutta l'area del pavimento.\\
 Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. Non ci sono coordinate specifiche per nessuno dei due sonar.\\
 Il robot deve essere nella posizione iniziale per poter iniziare la propria attività di pulizia della stanza.\\
 In base al colloquio col committente abbiamo appreso che, in mancanza di sonar fisici, è possibile utilizzare i sonar presenti nell'ambiente virtuale per far lavorare il robot fisico (e quindi avere punti di inizio e fine).\\
+
 \item R-Start: questo requisito implica che nel sistema è presente una seconda entità, rappresentata dal PC/smartphone, che si affianca all'entità robot. Deduciamo anche che il robot possa assumere uno stato di "working" dove esso sta lavorando.\\
 Ci deve essere una GUI (console) e deve essere messa a disposizione dal PC/smartphone. Questa sarà utilizzata dall'utente autorizzato per inviare comandi di START.\\
 L'utente autorizzato è un utente il quale ha effettuato un accesso sul sistema utilizzando le credenziali a sua disposizione.\\ 
 Dal requisito sappiamo, inoltre, che ci deve essere una fase di autenticazione, e che questa deve precedere la fase di invio del comando START. Non ci sono indicazioni sul tipo di autenticazione richesta e non ci sono vincoli su come e dove vadano mantenute le credenziali, queste saranno valutazioni affrontate in analisi del problema.\\
 Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere il robot e cambiarne lo stato.\\
+
 \item R-TempOk: ci dà un vincolo sulla temperature massima della città tollerata dal robot, sotto la quale può lavorare. Il valore di soglia, basandoci anche sull'interrogazione del committente, è a nostra discrezione.\\
 Il requisito non specifica come il robot ottiene il valore di temperatura, in più sappiamo, anche dall'interrogazione del committente, che il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi come ottenere la temperatura sarà una valutazione da affrontare nell'analisi del problema (fornita dal pc al robot? reperita dal robot tramite un'entità/servizio esterno/a?).\\
 Il vincolo sul valore della temperatura è relativo a quello della città in cui il robot opera, ciò significa che la temperatura media della città reperita da un servizio esterno o da un termometro soddisfa i requisiti, così come è valida la temperatura di una qualsiasi stanza di un edificio presente nei confini della città stessa.\\
+
 \item R-TimeOk: il robot può lavorare soltanto all'interno di un intervallo temporale (nell'arco delle 24 ore di una giornata) prefissato. L'intervallo non è specificato nei requisiti ed è quindi a nostra discrezione.\\
 Non è specificato cosa si intenda per "current clock time", potrebbe essere il tempo interno al robot (il committente ha dichiarato che il robot possa avere un suo clock interno), o il tempo relativo al fuso orario della città in cui si trova il robot, oppure il tempo relativo alla locazione dell'utilizzatore del robot. Sono valutazioni da fare in fase di analisi del problema.\\
+
 \item R-BlinkLed: apprendiamo che possa essere presente un robot reale, e, se è così, che il robot reale sia dotato di un led, non è specificato il modello. Il led deve lampeggiare qualora il robot si trovi in stato di "working". Non è specificato chi debba comandare il led.\\
+
 \item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp. Apprendiamo anche che possa essere presente un robot virtuale, e, se è così, che durante la sua attività debba lampeggiare la Led Hue Lamp presente nella stanza dell'abitazione.\\ 
 Non è specificato chi comandi la lampada.\\
+
 \item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, come ad esempio il mobilio. Non ci viene data una definizione esplicita o formale degli ostacoli fissi.\\ 
+
 Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\
 \item R-AvoidMobile: ci dice che nella stanza possono essere presenti ostacoli mobili, come ad esempio gatti o palle. Non c'è una definizione esplicita di ostacolo mobile.\\
 Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\
 In base ai due requisiti appena analizzati deduciamo che il robot debba poter percepire ostacoli esterni, non è espresso come.\\
+
 \item R-Stop: apprendiamo che tramite la GUI (console) fornita, l'utente autorizzato possa inviare anche comandi di STOP, i quali dovranno avere come effetto l'interruzione dell'attività del robot.\\
 Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere il robot e cambiarne lo stato.\\
+
 \item R-TempKo: da questo requisito deduciamo che sia necessario che il robot sia a conoscenza delle variazioni di temperatura, in modo che, superata una certa soglia, l'attività del robot si interrompa. Valgono le considerazioni fatte per l'R-TempOk sul modo in cui reperisce i dati di temperatura.\\
+
 \item R-TimeKo: apprendiamo che, se il valore temporale supera il valore massimo dell'intervallo di lavoro consentito, il robot deve cessare la sua attività. Valgono le considerazioni fatte per R-TimeOk sui valori dell'intervallo.\\
+
 \item R-Obstacle: ci dice che è possibile che sia presente un ostacolo inevitabile, ma non ci viene detto cosa s'intenda per "inevitabile". Questo verrà valutato in fase di analisi del problema. Ciò che sappiamo è che quando si verifica questa condizione il robot deve arrestarsi.\\
-\item R-End: ci viene detto che il robot deve fermarsi quando il suo lavoro è terminato, ma come si capisce che il robot ha completato il suo lavoro? In base R-FloorClean sappiamo che è il sonar finale a rilevare la presenza del robot quando questo è nella posizione finale, quindi una volta che il robot ha raggiunto il sonar finale deve arrestarsi
+
+\item R-End: ci viene detto che il robot deve fermarsi quando il suo lavoro è terminato, ma come si capisce che il robot ha completato il suo lavoro? In base R-FloorClean sappiamo che è il sonar finale a rilevare la presenza del robot quando questo è nella posizione finale, quindi una volta che il robot ha raggiunto il sonar finale deve arrestarsi\\
+
+\item R-Map: dobbiamo realizzare la mappa del pavimento della stanza. La mappa deve mostrare la posizione degli ostacoli fissi. La mappa può essere utilizzata per trovare il percorso ottimo dal sonar iniziale a quello finale. Cosa si intende per percorso ottimo? Valuteremo in analisi del problema.\\
 \end{itemize}
 
 %===========================================================================
@@ -312,6 +329,7 @@ Elenco dei problemi emersi/punti aperti di interesse per il problema:
 \item Led: chi comanda il led (robot, altro...)?
 \item Led Hue Lamp: chi comanda la lampada? In che modo?
 \item Ostacoli: discutere cosa si intende per ostacolo fisso e mobile, capire come si indentificano gli ostacoli, capire anche cosa si intende per "evitare" un ostacolo e capire cosa si intende per ostacolo inevitabile.
+\item Mappa: cosa si intende per percorso ottimo?
 \end{enumerate}
 
 Analisi autenticazione:\\
@@ -337,7 +355,6 @@ Si mettono in evidenza due strade principali per affrontare il problema di gesti
 Una seconda opzione può essere quella di far arrivare i valori al robot in maniera periodica (o di valori temporali fuori range), quindi il robot dovrà predisporsi per ricevere. L'invio dei dati, in questo caso, sarebbe a carico del pc/smartphone.\\
 Quest'ultimo approccio sposterebbe parte della logica applicativa sul pc/smartphone, in più, in caso di perdita di comunicazione tra GUI e robot, sarebbe compromessa la verifica del valore del tempo richiesta nei requisiti.\\
 La nostra scelta ricade sull'utilizzo dell'orario interno al robot, in modo da migliorare l'efficienza ed evitare di fare affidamento a servizi esterni, in quanto sappiamo che il robot dispone di un proprio orario locale. Si può pensare, in futuro, di integrare un meccanismo di modifica dell'orario interno del robot tramite interfaccia GUI.
-%%La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di fare in modo che sia il robot a procurarsi, periodicamente, le informazioni sul tempo da un servizio esterno, anche in relazione al fatto che facciamo già polling per reperire la temperatura, quindi si può pensare di rivolgersi ad un servizio metereologico che fornisca entrambe le informazioni. Anche in questo caso rimane la necessità di mantenere una connessione ad internet attiva. \\\\
 
 Nel caso di perdita di comunicazione con il servizio che fornisce orario (e temperatura) si decide che il robot non potrà avviare la propria attività.\\
 Per quanto riguarda la frequenza di aggiornamento dei suddetti valori, sebbene il committente non abbia espresso vincoli a riguardo decidiamo di considerare come intervallo massimo consentito quello di 10 minuti. In fase di progetto si concretizzerà il tempo specifico di intervallo di aggiornamento.\\
@@ -357,7 +374,7 @@ Per risolvere il problema di riconoscimento degli ostacoli lungo il cammino, pre
 Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce il raggiungimento, al robot, del sensore finale.\\
 
 Analisi GUI:\\
-Decidiamo di avere un meccanismo a scambio di messaggi tra pc e robot, in modo da disaccoppiare e rendere flessibile il sistema.\\
+Decidiamo di avere un meccanismo ad eventi tra pc e robot, in modo da disaccoppiare e rendere flessibile il sistema.\\
 In termini di applicazione GUI per pc prendiamo in considerazione l'utilizzo di un'interfaccia web, quindi basata su webserver e client che fa da browser, questo perchè si presta alla struttura della nostra architettura dove pc e robot comunicano via rete internet, in più ci permette di creare in maniera rapida un'interfaccia funzionale. \\
 Ci sono tre strade per realizzarla: 
 \begin{enumerate}
@@ -376,7 +393,11 @@ Il robot deve essere nella posizione iniziale, cioè vicino al sonar1, per poter 
 Il controllo che permette di coprire tutta la stanza ed evitare gli ostacoli verrà affrontato nella fase di progettazione.\\ \\
 
 Analisi contesto e tipologia collegamento: \\
-Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio a messaggi, per ragioni di estendibilità, flessibilità e comodità. Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. 
+Il nostro scenario si colloca all'interno di un sistema distribuito, nel quale varie entità e servizi sono distribuiti su nodi computazionali distinti, o per meglio dire, eterogenei. Si potrebbe optare per varie opzioni al fine di far comunicare le varie parti: scambio di messaggi, o eventi, utilizzando un infrastruttura di supporto alla comunicazione offerta dal linguaggio o più generale. Nel caso attuale, dopo valutazioni, si è deciso di adottare un approccio a eventi, per ragioni di estendibilità, flessibilità e comodità. Infatti sono disponibili servizi che offrono questo supporto gratuitamente, evitando di vincolarsi a strumenti del linguaggio per permettere la comunicazione di elementi eterogenei. Il vocabolario con la quale queste entità dovranno dialogare sarà definito formalmente nell'architettura logica. \\
+
+Analisi Mappa: \\
+Per percorso ottimo intendiamo individuare la sequenza di azioni con cui arrivare dal punto iniziale a quello finale considerando risparmio di energia. Questo vuol dire avere il minor consumo di energia possibile coprendo la maggior superficie possibile del pavimento.\\
+La mappa è una rappresentazione grafica/logica dell'ambiente in cui il robot si muove, composta da posizioni libere ed occupate. Per occupate si intendono posizioni i cui spazi sono occupati da un ostacolo fisso.\\
 
 Costi:\\
 E' necessario fare una valutazione delle spese e dei costi da affrontare.\\
@@ -436,6 +457,7 @@ Punti aperti dalla fase di analisi del problema:
 \item Con quale frequenza interrogare il provider di temperatura o controllare l'orario?
 \item Quale protocollo utilizzare per comunicazione tra server e robot?
 \item Come comunicano i sensori presenti nella stanza con il robot?
+\item Come realizzare la mappa della stanza?
 \end{itemize}
 
 Server:\\
@@ -452,31 +474,35 @@ Conoscendo la dimensione della stanza è possibile costruire una mappa dell'area 
 Nell'operazione di svolta, da eseguire quando si incontra un muro, è necessario spostarsi di una casella verso il sonar finale, in seguito invertire la direzione e riprendere il movimento rettilineo fino al muro successivo.
 
 Rilevazione e aggiramento ostacoli:\\
-Per quanto riguarda la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà un secondo tentativo dopo alcuni secondi, per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
-In caso di ostacolo fisso il robot deve cercare di tornare su percorsi già esplorati, con l'obiettivo di raggiungere la casella più vicina (nella traiettoria assunta prima del ritrovamento dell'ostacolo) a quella che avrebbe dovuto esplorare in assenza di ostacolo.\\
+Per quanto riguarda la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Il sensore ha una distanza di rilevazione di 4 metri, ma noi consideriamo solo gli ostacoli entro i 15 cm.\\
+ Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà un secondo tentativo dopo alcuni secondi, per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
+In caso di ostacolo fisso il robot deve cercare di evitarlo fintanto che non trova uno spazio per passare. Se durante la ricerca di uno spazio trova un muro, il robot invertirà la direzione di ricerca. Nel caso venga trovato un secondo muro, il robot dichiarerò l'ostacolo come insormontabile e si fermerà.\\
 In caso di ostacolo mobile prosegue il suo moto nella stessa direzione.
 
 Comunicazione con led e led hue lamp:\\
 Per comunicare con il led posto sul robot fisico utilizzeremo degli script bash che permettono di cambiare stato del pin (GPIO del raspberry, montato su mbot).\\
 Per quanto riguarda la led hue lamp, sappiamo che è possibile comunicare con essa tramite rete internet (Wifi) e con metodologie RESTful (https://www2.meethue.com/en-us/about-hue#about_the_system).
 
-Comunicazione con provider meteo/orario:\\
-Come servizio per reperire informazioni su meteo ed orario si utilizza OpenWeatherMap, che è un servizio web che offre API per acquisire le informazioni di nostro interesse. \\
+Comunicazione con provider meteo:\\
+Come servizio per reperire informazioni su meteo si utilizza OpenWeatherMap, che è un servizio web che offre API per acquisire le informazioni di nostro interesse. \\
 Per richiedere i dati occorre formulare richieste in un determinato formato (https://www.openweathermap.org/current). \\
-La struttura dei dati ricevuta è in formato JSON, a noi interessano i campi "dt", cioè il tempo espresso in Unix Epoch Clock che occorrerà convertire, e il campo "main"."temp" che identifica la temperatura attuale. Occorre specificare, tramite parametro dell'API, se ricevere dati in formato Celsius o Fahrenheit.
+La struttura dei dati ricevuta è in formato JSON, a noi interessa il campo "temp" che identifica la temperatura attuale. Occorre specificare, tramite parametro dell'API, se ricevere dati in formato Celsius o Fahrenheit.
 
 Frequenza di interrogazione provider meteo / controllo orario:\\
 Dall'analisi del problema sappiamo di avere un vincolo di massimo 10 minuti di attesa tra una richiesta e la seguente. Di conseguenza decidiamo di effettuare almeno una richiesta ogni minuto, fino ad un massimo di una richiesta al secondo, in modo da tenere opportunamente aggiornate le informazioni del modello logico.\\
 Applicheremo gli stessi vincoli di frequenza anche al controllo sull'orario.\\
 
-Protocollo per comunicazione frontend server - robot:\\
-In base all'analisi del problema sappiamo che è necessario utilizzare un sistema a scambio di messaggi. La nostra scelta ricade sul protocollo Mqtt, in quanto si può sfruttare un'infrastruttura locale di supporto (Mosquitto Broker) oppure un'infrastruttura esterna (https://www.hivemq.com/blog/mqtt-essentials-part-3-client-broker-connection-establishment).
+Protocollo per comunicazione:\\
+L'infrastruttura QActor lavorerà ad eventi, mentre il protocollo sottostante sarà a scambio di messaggi.\\
+La nostra scelta ricade sul protocollo Mqtt, in quanto si può sfruttare un'infrastruttura locale di supporto (Mosquitto Broker) oppure un'infrastruttura esterna (https://www.hivemq.com/blog/mqtt-essentials-part-3-client-broker-connection-establishment).
 
 Comunicazione tra sensori e robot:\\
-Consideriamo l'ambiente virtuale, dotato di sensori di ambiente virtuali (sonar1 e sonar2), in quanto non disponiamo di sensori da applicare al mondo fisico. La comunicazione tra sensori virtuali e software di controllo viene realizzata tramite scambio di messaggi, con struttura(basata su linguaggio JSON) stabilita da chi ha realizzato l'infrastruttura virtuale (https://github.com/PierfrancescoSoffritti/configurable-threejs-app). Ci dovrà essere una entità di intermezzo che interpreta questi messaggi e li rimappa su eventi comprensibili dalla "mente".\\
-Analizzando l'ambiente virtuale messo a nostra disposizione scopriamo che i sonar posti nella stanza emettono eventi con un'alta frequenza, per cui decidiamo di inoltrare messaggi alla mente del robot solo quando ci sono variazioni nelle rilevazioni dei sonar stessi.\\
-Per quanto riguarda il sensore presente su robot fisico, riusciamo ad intercettare le rilevazioni fisiche del sonar, cioè gli ostacoli rilevati, ma dobbiamo rimappare questi eventi in una struttura a messaggi (attraverso infrastruttura mqtt), ed inviare questi messaggi alla "mente" del sistema.
+Consideriamo l'ambiente virtuale, dotato di sensori di ambiente virtuali (sonar1 e sonar2), in quanto non disponiamo di sensori da applicare al mondo fisico. La comunicazione tra sensori virtuali e software di controllo viene realizzata tramite eventi, con struttura(basata su linguaggio JSON) stabilita da chi ha realizzato l'infrastruttura virtuale (https://github.com/PierfrancescoSoffritti/configurable-threejs-app). Ci dovrà essere una entità di intermezzo che interpreta questi messaggi e li rimappa su eventi comprensibili dalla "mente".\\
+Analizzando l'ambiente virtuale messo a nostra disposizione scopriamo che i sonar posti nella stanza emettono eventi con un'alta frequenza, per cui decidiamo di emettere eventi captati dalla mente del robot solo quando ci sono variazioni nelle rilevazioni dei sonar stessi.\\
+Per quanto riguarda il sensore presente su robot fisico, riusciamo ad intercettare le rilevazioni fisiche del sonar, cioè gli ostacoli rilevati, ma dobbiamo rimappare questi eventi in una struttura a messaggi (attraverso infrastruttura mqtt), ed inviarli alla "mente" del sistema.
 
+Realizzare la mappa:\\
+Per realizzare la mappa della stanza è opportuno suddividere l'area in caselle, aventi area identica a quella del robot. In questo modo, ipotizzando che ogni movimento del robot lo sposti di una casella alla volta, è possibile tenere traccia delle posizioni libere e di quelle occupate da ostacoli fissi. Gli ostacoli mobili vanno ignorati e non bisogna tenerne traccia, mentre gli ostacoli insormontabili, essendo fissi, sono riportati sulla mappa (occupando le caselle).
 %===========================================================================
 
 \subsection{System}
@@ -544,6 +570,9 @@ Nel nostro sistema necessitiamo di due pacchetti di deploy, per due diversi sott
 	\item frontend server: il pacchetto generato conterrà il codice che realizza il frontend server, il quale sarà poi da avviare in una qualsiasi macchina (ad esempio server su Amazon AWS) accessibile tramite rete internet dal browser di pc/smartphone (GUI). 
 	\item controllo del robot: pacchetto contenente il software di controllo del robot (fisico o virtuale), generato tramite routine Gradle. Il deploy verrà effettuato sul middleware di controllo (Raspberry) nel caso del robot fisico, oppure su un sistema che comunica con l'ambiente nel quale è presente il robot virtuale.
 \end{enumerate}
+
+Nel nostro caso abbiamo bisogno dell'ambiente virtuale (con relativo robot virtuale) per poter simulare i sonar1, sonar2 ed i muri. Quindi occorrerà avviare anche l'environment virtuale (software di Soffritti).\\
+
 %===========================================================================
 
 %===========================================================================
