@@ -82,8 +82,6 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "directionUpToDown";
 	    	addRule( temporaryStr );  
-	    	temporaryStr = "FirstColumn";
-	    	addRule( temporaryStr );  
 	    	//delay  ( no more reactive within a plan)
 	    	aar = delayReactive(2000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "init";
@@ -147,8 +145,8 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"movecorelogic_"+myselfName,false,
-	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("waitForMobileObstacle"), stateTab.get("restartForwardOn") }, 
-	          new String[]{"true","E","coreCmdStop", "true","E","realRobotSonarEvent", "true","E","endRoutineAvoidObstacle" },
+	          new StateFun[]{stateTab.get("stopPlan"), stateTab.get("sonar2Detected"), stateTab.get("handleVirtualSonarEvent"), stateTab.get("waitForMobileObstacle"), stateTab.get("restartForwardOn") }, 
+	          new String[]{"true","E","coreCmdStop", "true","E","roomSonar2Event", "true","E","virtualRobotSonarEvent", "true","E","realRobotSonarEvent", "true","E","endRoutineAvoidObstacle" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_forwardOn){  
 	    	 println( getName() + " plan=forwardOn WARNING:" + e_forwardOn.getMessage() );
@@ -286,7 +284,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(100,"" , "");
+	    	aar = delayReactive(800,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "sonar2Detected";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
@@ -299,11 +297,6 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	addRule( temporaryStr );  
 	    	temporaryStr = "justTurnedUpBottom";
 	    	removeRule( temporaryStr );  
-	    	if( (guardVars = QActorUtils.evalTheGuard(this, " !?FirstColumn" )) != null ){
-	    	temporaryStr = "FirstColumn";
-	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    	removeRule( temporaryStr );  
-	    	}
 	    	temporaryStr = "directionUpToDown";
 	    	removeRule( temporaryStr );  
 	    	temporaryStr = "directionDownToUp";
@@ -327,8 +320,16 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("stopPlan",-1);
 	    	String myselfName = "stopPlan";  
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(1000,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "stopPlan";
+	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "stopPlan";
+	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreHasFinished","coreHasFinished", guardVars ).toString();
 	    	emit( "coreHasFinished", temporaryStr );
 	    	temporaryStr = "\"[INFO] Corelogic fermata\"";

@@ -29,8 +29,10 @@ digraph finite_state_machine {
 	forwardOn -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
 	waitForMobileObstacle -> waitForMobileObstacle [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	forwardOn -> stopPlan [ label = "coreCmdStop" ][ color = black ][ fontcolor = black ]
+	forwardOn -> handleVirtualSonarEvent [ label = "virtualRobotSonarEvent" ][ color = black ][ fontcolor = black ]
 	forwardOn -> waitForMobileObstacle [ label = "realRobotSonarEvent" ][ color = black ][ fontcolor = black ]
 	waitForStart -> waitForStart [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	forwardOn -> forwardOn [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	init -> waitForStart [ label = "switch" ][ color = black ][ fontcolor = black ]
+	forwardOn -> sonar2Detected [ label = "roomSonar2Event" ][ color = black ][ fontcolor = black ]
 }

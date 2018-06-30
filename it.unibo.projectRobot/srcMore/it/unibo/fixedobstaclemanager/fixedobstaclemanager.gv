@@ -10,14 +10,15 @@ digraph finite_state_machine {
 	size="8,5"
 	
 	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
+	wallFound [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	waitForFixedObstacle [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	handleFixedObstacle2 [ color = black ][ fontcolor = black ][ penwidth = 3 ]
 	handleFixedObstacle1 [ color = black ][ fontcolor = black ][ penwidth = 3 ]
-	impossibleToAvoidObstacle [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
 	completeHandleFixedObstacle [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
 	
 	handleFixedObstacle1 -> handleFixedObstacle2 [ label = "timeout(2000)" ][ color = green ][ fontcolor = green ]
-	handleFixedObstacle1 -> impossibleToAvoidObstacle [ label = "virtualRobotSonarEvent" ][ color = black ][ fontcolor = black ]
+	wallFound -> handleFixedObstacle1 [ label = "timeout(1000)" ][ color = green ][ fontcolor = green ]
+	handleFixedObstacle1 -> wallFound [ label = "virtualRobotSonarEvent" ][ color = black ][ fontcolor = black ]
 	handleFixedObstacle2 -> handleFixedObstacle1 [ label = "realRobotSonarEvent" ][ color = black ][ fontcolor = black ]
 	handleFixedObstacle1 -> handleFixedObstacle1 [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
 	waitForFixedObstacle -> handleFixedObstacle1 [ label = "fixedObstacleFoundEvent" ][ color = black ][ fontcolor = black ]

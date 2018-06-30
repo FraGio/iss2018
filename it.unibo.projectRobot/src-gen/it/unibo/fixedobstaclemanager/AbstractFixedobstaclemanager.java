@@ -58,9 +58,9 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("waitForFixedObstacle",waitForFixedObstacle);
 	    	stateTab.put("handleFixedObstacle1",handleFixedObstacle1);
+	    	stateTab.put("wallFound",wallFound);
 	    	stateTab.put("handleFixedObstacle2",handleFixedObstacle2);
 	    	stateTab.put("completeHandleFixedObstacle",completeHandleFixedObstacle);
-	    	stateTab.put("impossibleToAvoidObstacle",impossibleToAvoidObstacle);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -111,8 +111,14 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_handleFixedObstacle1",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "handleFixedObstacle1";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?stopMove" )) != null )
+	    	{
+	    	{//actionseq
 	    	temporaryStr = "\"[INFO] handleFixedObstacle1 - Aggiro l'ostacolo fisso!\"";
 	    	println( temporaryStr );  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?firstWallFound" )) != null )
+	    	{
+	    	{//actionseq
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
@@ -133,9 +139,49 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle1";
+	    	if( ! aar.getGoon() ) return ;
+	    	};//actionseq
+	    	}
+	    	else{ {//actionseq
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"stop\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle1";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle1";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(800,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle1";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle1";
+	    	if( ! aar.getGoon() ) return ;
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
+	    	emit( "robotCmd", temporaryStr );
+	    	//delay  ( no more reactive within a plan)
+	    	aar = delayReactive(500,"" , "");
+	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle1";
+	    	if( ! aar.getGoon() ) return ;
+	    	};//actionseq
+	    	}};//actionseq
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"fixedobstaclemanager_"+myselfName,false,
-	          new StateFun[]{stateTab.get("impossibleToAvoidObstacle") }, 
+	          new StateFun[]{stateTab.get("wallFound") }, 
 	          new String[]{"true","E","virtualRobotSonarEvent" },
 	          2000, "handleFixedObstacle2" );//msgTransition
 	    }catch(Exception e_handleFixedObstacle1){  
@@ -144,11 +190,46 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    }
 	    };//handleFixedObstacle1
 	    
+	    StateFun wallFound = () -> {	
+	    try{	
+	     PlanRepeat pr = PlanRepeat.setUp("wallFound",-1);
+	    	String myselfName = "wallFound";  
+	    	temporaryStr = "\"[INFO] Primo muro trovato!\"";
+	    	println( temporaryStr );  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?firstWallFound" )) != null )
+	    	{
+	    	temporaryStr = "firstWallFound";
+	    	temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    	addRule( temporaryStr );  
+	    	}
+	    	else{ {//actionseq
+	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmdStop","coreCmdStop", guardVars ).toString();
+	    	emit( "coreCmdStop", temporaryStr );
+	    	temporaryStr = "stopMove";
+	    	addRule( temporaryStr );  
+	    	temporaryStr = "\"[INFO] Ho ritrovato il muro, ostacolo insormontabile!\"";
+	    	println( temporaryStr );  
+	    	};//actionseq
+	    	}
+	    	//bbb
+	     msgTransition( pr,myselfName,"fixedobstaclemanager_"+myselfName,false,
+	          new StateFun[]{}, 
+	          new String[]{},
+	          1000, "handleFixedObstacle1" );//msgTransition
+	    }catch(Exception e_wallFound){  
+	    	 println( getName() + " plan=wallFound WARNING:" + e_wallFound.getMessage() );
+	    	 QActorContext.terminateQActorSystem(this); 
+	    }
+	    };//wallFound
+	    
 	    StateFun handleFixedObstacle2 = () -> {	
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp(getName()+"_handleFixedObstacle2",0);
 	     pr.incNumIter(); 	
 	    	String myselfName = "handleFixedObstacle2";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?stopMove" )) != null )
+	    	{
+	    	{//actionseq
 	    	temporaryStr = "\"[INFO] handleFixedObstacle2 - Valuto se ostacolo fisso e' ancora presente...\"";
 	    	println( temporaryStr );  
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
@@ -157,6 +238,8 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    	aar = delayReactive(500,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "handleFixedObstacle2";
 	    	if( ! aar.getGoon() ) return ;
+	    	};//actionseq
+	    	}
 	    	//bbb
 	     msgTransition( pr,myselfName,"fixedobstaclemanager_"+myselfName,false,
 	          new StateFun[]{stateTab.get("handleFixedObstacle1") }, 
@@ -172,6 +255,9 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("completeHandleFixedObstacle",-1);
 	    	String myselfName = "completeHandleFixedObstacle";  
+	    	if( (guardVars = QActorUtils.evalTheGuard(this, " not !?stopMove" )) != null )
+	    	{
+	    	{//actionseq
 	    	temporaryStr = "\"[INFO] completeHandleFixedObstacle - Finisco aggiramento dell'ostacolo fisso!\"";
 	    	println( temporaryStr );  
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
@@ -208,27 +294,14 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    	emit( "endRoutineAvoidObstacle", temporaryStr );
 	    	temporaryStr = "\"[INFO] handleFixedObstacle - Fine aggiramento!\"";
 	    	println( temporaryStr );  
+	    	};//actionseq
+	    	}
 	    	repeatPlanNoTransition(pr,myselfName,"fixedobstaclemanager_"+myselfName,false,false);
 	    }catch(Exception e_completeHandleFixedObstacle){  
 	    	 println( getName() + " plan=completeHandleFixedObstacle WARNING:" + e_completeHandleFixedObstacle.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
 	    };//completeHandleFixedObstacle
-	    
-	    StateFun impossibleToAvoidObstacle = () -> {	
-	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("impossibleToAvoidObstacle",-1);
-	    	String myselfName = "impossibleToAvoidObstacle";  
-	    	temporaryStr = "\"[INFO] Trovato ostacolo INSORMONTABILE, fermo!\"";
-	    	println( temporaryStr );  
-	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "coreCmdStop","coreCmdStop", guardVars ).toString();
-	    	emit( "coreCmdStop", temporaryStr );
-	    	repeatPlanNoTransition(pr,myselfName,"fixedobstaclemanager_"+myselfName,false,false);
-	    }catch(Exception e_impossibleToAvoidObstacle){  
-	    	 println( getName() + " plan=impossibleToAvoidObstacle WARNING:" + e_impossibleToAvoidObstacle.getMessage() );
-	    	 QActorContext.terminateQActorSystem(this); 
-	    }
-	    };//impossibleToAvoidObstacle
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

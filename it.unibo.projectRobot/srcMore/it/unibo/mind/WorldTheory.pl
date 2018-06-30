@@ -142,7 +142,7 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 %-------------------------------------------------
 %  User static rules about mind
 %------------------------------------------------- 
-limitTemperatureValue( 35).
+limitTemperatureValue( 40).
 limitTimeValueMin( 9).
 limitTimeValueMax( 23).
 changedModelAction( temperature,temperaturevalue,V):-limitTemperatureValue( MAX),eval( ge,V,MAX), ! ,output( "[INFO] Temperatura sopra limite"),emitevent( robotCmd,robotCmd( "stop")),emitevent( coreCmdStop,coreCmdStop).

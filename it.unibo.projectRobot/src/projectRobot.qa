@@ -46,7 +46,7 @@ EventHandler evh2 for robotCmd {	//event-driven ; no Mqtt support yet
 QActor mind context ctxRobot -pubsub {   
 	
 	Rules {
-		limitTemperatureValue( 35 ).
+		limitTemperatureValue( 40 ).
 		limitTimeValueMin( 9 ).
 		limitTimeValueMax( 23 ).
 		
@@ -201,7 +201,6 @@ QActor movecorelogic context ctxRobot -pubsub{
 	Plan init normal [  
 		
 		addRule directionUpToDown;
-		addRule FirstColumn;
 		
 		delay 2000;
 		emit robotCmd : robotCmd('d');
@@ -228,8 +227,8 @@ QActor movecorelogic context ctxRobot -pubsub{
 			println("[INFO] Piano ForwardON : bloccato perche' trovato ostacolo fisso!")
 	] transition stopAfter 3600000   	//1h 
 		whenEvent coreCmdStop -> stopPlan,
-		//whenEvent roomSonar2Event -> sonar2Detected,
-		//whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
+		whenEvent roomSonar2Event -> sonar2Detected,
+		whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
 		whenEvent realRobotSonarEvent -> waitForMobileObstacle,
 		whenEvent endRoutineAvoidObstacle -> restartForwardOn
 	finally repeatPlan
@@ -296,16 +295,11 @@ QActor movecorelogic context ctxRobot -pubsub{
 				emit robotCmd : robotCmd('a');
 				delay 500;
 				emit robotCmd : robotCmd('w');
-				delay 100;
+				delay 800;
 				emit robotCmd : robotCmd('a');
 				delay 500;
 				addRule justTurnedBottomUp;
 				removeRule justTurnedUpBottom;
-				
-				
-				//se prima colonna gia' superata eliminiamo da base conoscenza
-				[!? FirstColumn]
-					removeRule FirstColumn;
 					
 				//inversione direzione
 				removeRule directionUpToDown;
@@ -318,7 +312,9 @@ QActor movecorelogic context ctxRobot -pubsub{
 	
 	
 	Plan stopPlan [
+		delay 1000;
 		emit robotCmd : robotCmd('stop');
+		delay 500;
 		emit coreHasFinished : coreHasFinished;
 		println("[INFO] Corelogic fermata")
 	] transition stopAfter 3600000   	//1h 
@@ -342,26 +338,57 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 	
 	//piano di gestione ostacoli fissi o immutabili
 	Plan handleFixedObstacle1 [
-		println("[INFO] handleFixedObstacle1 - Aggiro l'ostacolo fisso!");
-		
-		emit robotCmd : robotCmd('stop');
-		delay 500;
-		emit robotCmd : robotCmd('d');
-		delay 500;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('a')
-		
+		[not !? stopMove] {
+			println("[INFO] handleFixedObstacle1 - Aggiro l'ostacolo fisso!");
+			
+			
+			[not !? firstWallFound]{
+				emit robotCmd : robotCmd('stop');
+				delay 500;
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 800;
+				emit robotCmd : robotCmd('a');
+				delay 500
+			}else {
+				emit robotCmd : robotCmd('stop');
+				delay 500;
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				emit robotCmd : robotCmd('a');
+				delay 800;
+				emit robotCmd : robotCmd('w');
+				delay 500;
+				emit robotCmd : robotCmd('d');
+				delay 500
+			}
+		}
 	]
 	transition whenTime 2000 ->  handleFixedObstacle2	//1h 
-		whenEvent virtualRobotSonarEvent -> impossibleToAvoidObstacle
+		whenEvent virtualRobotSonarEvent -> wallFound
 	finally repeatPlan
+	
+	Plan wallFound [
+		println("[INFO] Primo muro trovato!");
+		
+		[not !? firstWallFound]
+			addRule firstWallFound //inverto direzione, primo muro trovato (cerco un varco)
+		else {
+			emit coreCmdStop : coreCmdStop;
+			addRule stopMove;
+			println("[INFO] Ho ritrovato il muro, ostacolo insormontabile!")
+		}
+		
+	] transition whenTime 1000 ->  handleFixedObstacle1	
 	
 	//piano di gestione ostacoli fissi o immutabili
 	Plan handleFixedObstacle2 [
-		println("[INFO] handleFixedObstacle2 - Valuto se ostacolo fisso e' ancora presente...");
-		emit robotCmd : robotCmd('w');
-		delay 500
+		[not !? stopMove] {
+			println("[INFO] handleFixedObstacle2 - Valuto se ostacolo fisso e' ancora presente...");
+			emit robotCmd : robotCmd('w');
+			delay 500
+		}
 	]
 	transition whenTime 1000 ->  completeHandleFixedObstacle	//1h 
 		whenEvent realRobotSonarEvent -> handleFixedObstacle1
@@ -369,31 +396,26 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 	
 	//ultimo step in piano di gestione ostacoli fissi o immutabili
 	Plan completeHandleFixedObstacle [
-	println("[INFO] completeHandleFixedObstacle - Finisco aggiramento dell'ostacolo fisso!");
+		[not !? stopMove] {
+			println("[INFO] completeHandleFixedObstacle - Finisco aggiramento dell'ostacolo fisso!");
+			
+			emit robotCmd : robotCmd('w');
+			delay 800;
+			emit robotCmd : robotCmd('w');
+			delay 800;
+			emit robotCmd : robotCmd('a');
+			delay 500;
+			emit robotCmd : robotCmd('w');
+			delay 800;
+			emit robotCmd : robotCmd('d');
+			delay 500;
+			
+			//segnalazione corretto superamento dell'ostacolo
+			emit endRoutineAvoidObstacle : endRoutineAvoidObstacle;
+			println("[INFO] handleFixedObstacle - Fine aggiramento!")
 		
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('a');
-		delay 500;
-		emit robotCmd : robotCmd('w');
-		delay 800;
-		emit robotCmd : robotCmd('d');
-		delay 500;
-		
-		
-		//segnalazione corretto superamento dell'ostacolo
-		emit endRoutineAvoidObstacle : endRoutineAvoidObstacle;
-		println("[INFO] handleFixedObstacle - Fine aggiramento!")
+		}
 	]
-	
-	//stop robot perche' trovato ostacolo insormontabile
-	Plan impossibleToAvoidObstacle [
-		println("[INFO] Trovato ostacolo INSORMONTABILE, fermo!");
-		emit coreCmdStop : coreCmdStop
-	]
-	
 	
 }
 
