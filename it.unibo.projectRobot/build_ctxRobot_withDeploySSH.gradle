@@ -3,15 +3,16 @@
 build_ctxRobot.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-	gradle -b build_ctxRobot.gradle eclipse		//to set the dependency on the library
-	gradle -b build_ctxRobot.gradle build
-	gradle -b build_ctxRobot.gradle cleanDistDir	//to clean the src directory
+	gradle -b build_ctxRobot_withDeploySSH.gradle eclipse		//to set the dependency on the library
+	gradle -b build_ctxRobot_withDeploySSH.gradle build
+	gradle -b build_ctxRobot_withDeploySSH.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'java-library-distribution'
 apply plugin: 'jacoco'
+apply plugin: 'org.hidetake.ssh'
 
 /*
 --------------------------------------------------------------
@@ -47,8 +48,17 @@ DEPENDENCIES
 */
 repositories {
       mavenCentral()
-}
+	  jcenter()
+}dependencies {
+    
+  }
 dependencies {
+
+/*
+	SSH plugin
+*/
+	classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
+
 /*
 BASIC SUPPORT (test, akka)
 */	
@@ -119,13 +129,11 @@ TO BE ADDED by the application designer for :
 AFTER TEST
 --------------------------------------------------------------
 */
-
 test {
     afterTest { desc, result -> 
         println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
     }
 }
-
 /*
 ---------------------------------------------------------------------
 JAR: incldes src-gen code (excluding Java) in the executable jar
@@ -181,6 +189,24 @@ task cleanDistDir(type: Delete) {
 jar.dependsOn copyInfoForDist
 jar.finalizedBy cleanDistDir
 /*
+
+/*
+---------------------------------------------------------
+EXTRACT ZIP FILE
+---------------------------------------------------------
+*/
+task unzip(type: Copy) {
+
+  def zipPath = project.configurations.compile.find {it.name.startsWith("it.unibo.ctxRobot.MainCtxRobot-1.0.zip") }
+  println zipPath
+  def zipFile = file(zipPath)
+  def outputDir = file("${buildDir}/unpacked")
+
+  from zipTree(zipFile)
+  into outputDir
+}
+
+/*
 ---------------------------------------------------------
 TESTING
 ---------------------------------------------------------
@@ -209,4 +235,34 @@ jacocoTestReport {
         csv.enabled false
         html.destination "${buildDir}/jacocoHtml"
     }
+}
+
+/*
+---------------------------------------------------------
+SSH TO MIDDLEWARE
+---------------------------------------------------------
+*/
+
+remotes {
+  raspberry {
+    role 'middleware'
+    host = '192.168.137.2'
+    user = 'pi'
+	identity = file('id_rsa') //key for identification
+  }
+}
+
+task deploy {
+  doLast {
+    ssh.run {
+      session(remotes.role('middleware')) {
+		//pulizia deploy precedente
+        execute 'rm -r /home/pi/it.unibo.ctxRobot.MainCtxRobot-1.0'
+		//trasferimento nuovo pacchetto sw
+		put from: ${buildDir}/unpacked, into: '/home/pi'
+		//esecuzione della nuova versione
+		execute 'java -jar /home/pi/it.unibo.projectRobot/it.unibo.projectRobot-1.0.jar'
+      }
+    }
+  }
 }
