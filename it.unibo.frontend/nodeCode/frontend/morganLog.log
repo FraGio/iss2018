@@ -12254,3 +12254,7 @@
 ::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 7.653 ms
 ::1 - POST /robot/actions/commands/stop HTTP/1.1 200 2520 - 6.551 ms
 ::1 - GET /robot/actions/commands/QActorWebUI.js HTTP/1.1 200 - - 2.305 ms
+::1 - GET / HTTP/1.1 304 - - 49.601 ms
+::1 - GET /auth/google HTTP/1.1 302 0 - 8.825 ms
+::1 - GET /auth/google/callback?code=4/AABxfF-qisnfJ_BiazWVWxw0L_uOoJhlG2t9K0A7e-sWeAi6xrmYPXSI7Mv0pn706PlGB_Jg27cCex7PAOKUdUE HTTP/1.1 200 2520 - 3.626 ms
+::1 - GET /auth/google/QActorWebUI.js HTTP/1.1 200 - - 11.551 ms

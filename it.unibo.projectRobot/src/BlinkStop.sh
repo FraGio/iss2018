@@ -1,3 +1,3 @@
 #!/bin/bash
-
-kill -12 `ps -e|grep Blink | awk {'print $1'}`
+echo '0' > /sys/class/gpio/gpio15/value
+echo '15' > /sys/class/gpio/unexport
