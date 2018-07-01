@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(solve,consult( "./resourceModel.pl"),0,""),'','' ))
-plan(2,init, sentence(true,move(print("[INFO] sonar 2 START")),'','' ))
+plan(2,init, sentence(true,move(print("[INFO] Sonar 2 START")),'','' ))
 plan(1,emitSonarEvent, sentence(true,delay( 1000) ,'','' ))
 plan(2,emitSonarEvent, sentence( virtualRobot,not here StateMoveNormal,'','' ))

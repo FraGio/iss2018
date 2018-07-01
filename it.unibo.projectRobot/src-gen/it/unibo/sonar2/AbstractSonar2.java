@@ -77,7 +77,7 @@ public abstract class AbstractSonar2 extends QActor {
 	    	parg = "consult(\"./resourceModel.pl\")";
 	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
 	    	solveGoal( parg ); //sept2017
-	    	temporaryStr = "\"[INFO] sonar 2 START\"";
+	    	temporaryStr = "\"[INFO] Sonar 2 START\"";
 	    	println( temporaryStr );  
 	     connectToMqttServer("tcp://192.168.1.112:1883");
 	    	//switchTo emitSonarEvent

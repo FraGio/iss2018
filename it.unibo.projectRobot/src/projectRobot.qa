@@ -539,7 +539,7 @@ QActor sonar1 context ctxRobot -pubsub {
 	  
 	Plan init normal [ 
 		demo consult("./resourceModel.pl"); 
-		println("[INFO] sonar 1 START")
+		println("[INFO] Sonar 1 START")
 	]  switchTo emitSonarEvent 
   	
 	Plan emitSonarEvent [	
@@ -554,7 +554,7 @@ QActor sonar2 context ctxRobot -pubsub {
 	  
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
-		println("[INFO] sonar 2 START")
+		println("[INFO] Sonar 2 START")
 	] switchTo emitSonarEvent
   	
   
@@ -569,7 +569,7 @@ QActor sonar2 context ctxRobot -pubsub {
 QActor robotsonar context ctxRobot -pubsub {   
 	Plan init normal [  
 		demo consult("./resourceModel.pl");
-		println("[INFO] sonar robot START")
+		println("[INFO] Sonar robot START")
 	] switchTo emitSonarRobotEvent 
   	
 	Plan emitSonarRobotEvent[	
