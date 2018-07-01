@@ -305,15 +305,13 @@ Formalizziamo le entità espresse nei requisiti:
 
 La formalizzazione delle entità in gioco è la seguente: (vedi file).
 
-
-
 \subsection{Test plan}
 La fase di test plan è fondamentale per garantire solidità e affidabilità al nostro software, oltre ad assicurare un corretto metodo di lavoro in team in caso di parallelizzazione dei compiti.\\
 La fase di test plan può essere affrontata in maniera formale o informale.\\
 Per formale si intende che i test vengono fatti in maniera automatica (JUnit) o manuale (personale che esegue test manuali). In questo caso i test sono eseguibili su una macchina.\\
 Informale significa valutare empiricamente e fare un confronto tra risultato reale e risultato atteso. I test non sono strutturati per essere eseguiti da una macchina.\\
 In fase di analisi sono stati pensati e eseguiti test formali, ma di tipologia manuale. Sfruttando lo stesso linguaggio di modellazione abbiamo potuto verificare che il nostro sistema si comportasse in maniera corretta secondo i requisiti e le richieste del committente (ad esempio test comandi start/stop utente, test valori temperatura, ...).\\
-In una fase successiva (progettazione/sviluppo) verranno integrati test formali automatici che ci permetteranno di ridurre il tempo dedicato ai test manuali, oltre che a validare automamente il codice che viene prodotto.
+In una fase successiva (progettazione) verranno integrati test formali automatici che ci permetteranno di ridurre il tempo dedicato ai test manuali, oltre che a validare automamente il codice che viene prodotto (Junit).
 
 %===========================================================================
 \section{Problem analysis}
@@ -437,7 +435,8 @@ Model based development impone che,prima di trattare il codice, sia necessario o
 In base alle nostre esigenze riteniamo sia più opportuno lavorare tramite modello Agile, in particolare Scrum. Questo ci permette di focalizzarci sulle richieste del committente, affrontando quelle più prioritarie per prime, e assicurandoci un ciclo di lavoro flessibile e costantemente monitorato.\\
 Lavoreremo quindi tramite "sprint" periodici di breve durata, dove ci suddivideremo le attività da svolgere, proponendoci meeting brevi e costanti per valutare e controllare il flusso di lavoro.\\
 Al fine di agevolare l'utilizzo della metodologia Scrum useremo uno strumento del tutto gratuito, Meistertask, che permette di tracciare le attività da svolgere, di valutarle in termini di priorità e di assegnarle ai componenti del team. Ogni task avrà diversi stati, personalizzabili, come ad esempio "open" nel caso sia ancora da prendere in carico, "in progress" nel caso qualcuno lo stia affrontando, e "done" quando il task sia stato completato.\\
-Utilizzeremo anche il sistema di versionamento Git, con una repository comune nel quale saranno presenti codice, modelli e documentazione. Tramite l'utilizzo di branch ottimizzeremo il flusso di lavoro e la parallelizzazione delle attività da svolgere.
+Utilizzeremo anche il sistema di versionamento Git, con una repository comune nel quale saranno presenti codice, modelli e documentazione. Tramite l'utilizzo di branch ottimizzeremo il flusso di lavoro e la parallelizzazione delle attività da svolgere. \\
+Il team inoltre si avvale di lavoro cooperativo, svolto incontrandosi personalemente nella gran parte dei casi. Quando questo non è possibile si ricorre a strumenti come TeamViewer, il quale mette a disposizione una modalità "meeting", con la quale è possibile condividere schermi e lavorare in modo condiviso. Altro supporto utilizzato è Skype. 
 %===========================================================================
 
 %===========================================================================
@@ -481,7 +480,7 @@ In caso di ostacolo mobile prosegue il suo moto nella stessa direzione.
 
 Comunicazione con led e led hue lamp:\\
 Per comunicare con il led posto sul robot fisico utilizzeremo degli script bash che permettono di cambiare stato del pin (GPIO del raspberry, montato su mbot).\\
-Per quanto riguarda la led hue lamp, sappiamo che è possibile comunicare con essa tramite rete internet (Wifi) e con metodologie RESTful (https://www2.meethue.com/en-us/about-hue#about_the_system).
+Per quanto riguarda la led hue lamp, sappiamo che è possibile comunicare con essa tramite rete internet (Wifi) e con metodologie RESTful (https://www2.meethue.com/en-us/about-hue).
 
 Comunicazione con provider meteo:\\
 Come servizio per reperire informazioni su meteo si utilizza OpenWeatherMap, che è un servizio web che offre API per acquisire le informazioni di nostro interesse. \\
@@ -536,23 +535,27 @@ Led:\\
 Led ELEGOO, per riferimento https://www.elegoo.com/product/elegoo-electronic-fun-kit-bundle/.\\
 
 Led Hue Lamp:\\
-Lampada a led Philips, per riferimento https://www2.meethue.com/en-us/about-hue#about_the_system.\\
+Lampada a led Philips, per riferimento https://www2.meethue.com/en-us/about-hue.\\
 
 Sonar ambientali:\\
 Sonar per rilevazione entità nell'ambiente, il modello utilizzato è lo stesso montato sull'Mbot. (Me Ultrasonic Sensor v3.0)
-
-\subsection{Structure}
-%%modello QActor
-\subsection{Interaction}
-%%modello QActor
-\subsection{Behavior}
-%%modello QActor
 
 %===========================================================================
 \section{Implementation}
 \labelsec{Implementation}
 Nella fase di implementazione ci siamo suddivisi i compiti sfruttando servizi di tracking delle attività, in modo da bilanciare il carico in maniera equilibrata.\\
 Alcune delle attività principali sono quelle di implementazione del server e del client frontend con autenticazione, realizzazione del meccanismo di blink/spegnimento led e led hue lamp, realizzazione del movimento del robot fisico e virtuale, implementazione della logica di ritrovamento dati meteo ed orario.\\
+
+Precisamente, sono stati realizzati:
+\begin{itemize}
+	\item POJO per il led fisico e script per avviarlo
+	\item Modulo per recuperare data e temperatura
+	\item Modulo per collegare l'ambiente virtuale
+	\item Una serie di utils per vari scopi
+\end{itemize}
+
+Sono stati riutilizzati e riadattati moduli per pilotare il robot fisico. Adattato il frontend per far sì che supportasse l'autenticazione su un provider esterno.
+
 %===========================================================================
 
 %===========================================================================
@@ -560,6 +563,7 @@ Alcune delle attività principali sono quelle di implementazione del server e del
 \labelsec{testing}
 Molto importante la fase di testing in cui viene testato il prodotto ottenuto. Il tutto dovrebbe essere fatto il linea con la filosofia di testare tutto al fine di provare il sistema il prima possibile. \\
 Si può parlare di testing manuale o automatico. Nel primo caso occorrerà dare in pasto al sistema dei valori ed assicurarsi che l'output sia in linea con le aspettative. Nel secondo caso si possono utilizzare strumenti di testing automatico (e.g. JUNIT), i quali, una volta eseguiti, testano le componenti specificate, riportando in output eventuali problemi e dove essi si sono verificati. \\
+Abbiamo deciso di utilizzare il sistema di testing Junit (versione 5).
 I nostri test sono visibili nel file allegato.
 %===========================================================================
 
