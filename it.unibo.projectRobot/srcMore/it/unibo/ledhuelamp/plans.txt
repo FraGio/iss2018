@@ -1,4 +1,4 @@
 plan(1,init, sentence(true,move(print("[INFO] Inizializzazione led hue lamp")),'','' ))
-plan(1,ledOnPlan, sentence(true,move(resumeplan),'','' ))
-plan(1,ledOffPlan, sentence(true,move(resumeplan),'','' ))
-plan(1,stopLed, sentence(true,move(print("[INFO] Led heu lamp finisce fase di blink")),'','' ))
+plan(1,ledOnPlan, sentence(true,move(print("[INFO] Led hue lamp ON")),'','' ))
+plan(1,ledOffPlan, sentence(true,move(print("[INFO] Led hue lamp OFF")),'','' ))
+plan(1,stopLed, sentence(true,move(print("[INFO] Led hue lamp finisce fase di blink")),'','' ))

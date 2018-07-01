@@ -16,15 +16,10 @@ public class owmSupport {
 		owm = new OWM(API_KEY);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void acquireValues(QActor actor) {
         try {
         	
 			CurrentWeather cwd = owm.currentWeatherByCityName("Bologna");
-//	        System.out.println("City: " + cwd.getCityName());
-//	       	        
-//	        System.out.println("Temperature: " + (cwd.getMainData().getTempMax()-273.15)
-//                    + "\'C H:"+cwd.getDateTime().getHours());
 
 			mqttTools.publish(actor,"msg(temperatureTimeRequest,event,java,none,temperatureTimeRequest"
 	        		+ "("+(cwd.getMainData().getTempMax()-273.15) + "," + LocalDateTime.now().getHour() +"),1)");

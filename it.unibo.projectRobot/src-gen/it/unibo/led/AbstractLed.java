@@ -116,7 +116,7 @@ public abstract class AbstractLed extends QActor {
 	    	it.unibo.iss2018support.ledfis.led.ledOn( myself  );
 	    	}
 	    	//bbb
-	     msgTransition( pr,myselfName,"led_"+myselfName,true,
+	     msgTransition( pr,myselfName,"led_"+myselfName,false,
 	          new StateFun[]{}, 
 	          new String[]{},
 	          500, "ledOffPlan" );//msgTransition
@@ -135,7 +135,7 @@ public abstract class AbstractLed extends QActor {
 	    	it.unibo.iss2018support.ledfis.led.ledOff( myself  );
 	    	}
 	    	//bbb
-	     msgTransition( pr,myselfName,"led_"+myselfName,true,
+	     msgTransition( pr,myselfName,"led_"+myselfName,false,
 	          new StateFun[]{stateTab.get("stopLed") }, 
 	          new String[]{"true","E","ledCmdStop" },
 	          500, "ledOnPlan" );//msgTransition
@@ -151,7 +151,11 @@ public abstract class AbstractLed extends QActor {
 	    	String myselfName = "stopLed";  
 	    	temporaryStr = "\"[INFO] Led finisce fase di blink\"";
 	    	println( temporaryStr );  
-	    	repeatPlanNoTransition(pr,myselfName,"led_"+myselfName,false,false);
+	    	//bbb
+	     msgTransition( pr,myselfName,"led_"+myselfName,false,
+	          new StateFun[]{}, 
+	          new String[]{},
+	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_stopLed){  
 	    	 println( getName() + " plan=stopLed WARNING:" + e_stopLed.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 

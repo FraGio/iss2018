@@ -420,7 +420,7 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 }
 
 QActor led context ctxRobot -pubsub { 
-		Plan init normal [  
+	Plan init normal [  
 		demo consult("./resourceModel.pl");
 		println("[INFO] Inizializzazione led")
 	] 
@@ -432,12 +432,12 @@ QActor led context ctxRobot -pubsub {
   		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan ledOnPlan resumeLastPlan[
+  	Plan ledOnPlan [
   		[!? realRobot]
   			javaRun it.unibo.iss2018support.ledfis.led.ledOn()
 	] transition whenTime 500 -> ledOffPlan
 	
-	Plan ledOffPlan resumeLastPlan[
+	Plan ledOffPlan [
 		[!? realRobot]
   			javaRun it.unibo.iss2018support.ledfis.led.ledOff()
 	] transition whenTime 500 -> ledOnPlan
@@ -446,7 +446,7 @@ QActor led context ctxRobot -pubsub {
 	
 	Plan stopLed[
   		println("[INFO] Led finisce fase di blink")
-	] 
+	]  transition stopAfter 3600000
 }
 
 QActor ledhuelamp context ctxRobot -pubsub { 
@@ -461,19 +461,19 @@ QActor ledhuelamp context ctxRobot -pubsub {
   		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan ledOnPlan resumeLastPlan[
-  		//println("[INFO] Led hue lamp ON")
+  	Plan ledOnPlan [
+  		println("[INFO] Led hue lamp ON")
 	] transition whenTime 500 -> ledOffPlan
 	
-	Plan ledOffPlan resumeLastPlan[
-  		//println("[INFO] Led hue lamp OFF")
+	Plan ledOffPlan [
+  		println("[INFO] Led hue lamp OFF")
 	] transition whenTime 500 -> ledOnPlan
 		whenEvent ledCmdStop -> stopLed
 	finally repeatPlan
 	
 	Plan stopLed[
-  		println("[INFO] Led heu lamp finisce fase di blink")
-	] 
+  		println("[INFO] Led hue lamp finisce fase di blink")
+	] transition stopAfter 3600000
 }
 
 QActor realrobot context ctxRobot -pubsub {   
