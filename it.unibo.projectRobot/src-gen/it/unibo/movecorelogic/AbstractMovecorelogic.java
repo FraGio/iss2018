@@ -211,7 +211,9 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	println( temporaryStr );  
 	    	temporaryStr = "fixedObstacleFound";
 	    	removeRule( temporaryStr );  
-	    	repeatPlanNoTransition(pr,myselfName,"movecorelogic_"+myselfName,false,true);
+	    	//switchTo forwardOn
+	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
+	              "forwardOn",false, false, null); 
 	    }catch(Exception e_restartForwardOn){  
 	    	 println( getName() + " plan=restartForwardOn WARNING:" + e_restartForwardOn.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
@@ -236,7 +238,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(800,"" , "");
+	    	aar = delayReactive(250,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "handleVirtualSonarEvent";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"d\")", guardVars ).toString();
@@ -286,7 +288,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"w\")", guardVars ).toString();
 	    	emit( "robotCmd", temporaryStr );
 	    	//delay  ( no more reactive within a plan)
-	    	aar = delayReactive(800,"" , "");
+	    	aar = delayReactive(250,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "sonar2Detected";
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(Y)","robotCmd(\"a\")", guardVars ).toString();

@@ -262,10 +262,10 @@ QActor movecorelogic context ctxRobot -pubsub{
 	finally repeatPlan
 	
 	//sblocco regola logica che blocca forwardOn
-	Plan restartForwardOn resumeLastPlan[
+	Plan restartForwardOn [
 		println("[INFO] restartForwardOn - sblocco!");
 		removeRule fixedObstacleFound
-	]
+	] switchTo forwardOn
 
 		
 	Plan handleVirtualSonarEvent [
@@ -274,7 +274,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 				emit robotCmd : robotCmd('d');
 				delay 500;
 				emit robotCmd : robotCmd('w');
-				delay 800;
+				delay 250;
 				emit robotCmd : robotCmd('d');
 				delay 500;
 				addRule justTurnedUpBottom;
@@ -296,7 +296,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 				emit robotCmd : robotCmd('a');
 				delay 500;
 				emit robotCmd : robotCmd('w');
-				delay 800;
+				delay 250;
 				emit robotCmd : robotCmd('a');
 				delay 500;
 				addRule justTurnedBottomUp;

@@ -9,7 +9,6 @@ plan(1,forwardOn, sentence(not  fixedObstacleFound,not here StateMoveNormal,'','
 plan(1,waitForMobileObstacle, sentence(not  fixedObstacleFound,not here StateMoveNormal,'','' ))
 plan(1,restartForwardOn, sentence(true,move(print("[INFO] restartForwardOn - sblocco!")),'','' ))
 plan(2,restartForwardOn, sentence(true,removeRule( fixedObstacleFound ),'','' ))
-plan(3,restartForwardOn, sentence(true,move(resumeplan),'','' ))
 plan(1,handleVirtualSonarEvent, sentence(not  justTurnedUpBottom,not here StateMoveNormal,'','' ))
 plan(1,sonar2Detected, sentence(not  justTurnedBottomUp,not here StateMoveNormal,'','' ))
 plan(1,stopPlan, sentence(true,delay( 1000) ,'','' ))
