@@ -122,7 +122,7 @@ public abstract class AbstractLed extends QActor {
 	    	println( temporaryStr );  
 	    	}
 	    	//bbb
-	     msgTransition( pr,myselfName,"led_"+myselfName,true,
+	     msgTransition( pr,myselfName,"led_"+myselfName,false,
 	          new StateFun[]{}, 
 	          new String[]{},
 	          500, "ledOffPlan" );//msgTransition
@@ -143,7 +143,7 @@ public abstract class AbstractLed extends QActor {
 	    	println( temporaryStr );  
 	    	}
 	    	//bbb
-	     msgTransition( pr,myselfName,"led_"+myselfName,true,
+	     msgTransition( pr,myselfName,"led_"+myselfName,false,
 	          new StateFun[]{stateTab.get("stopLed") }, 
 	          new String[]{"true","E","ledCmdStop" },
 	          500, "ledOnPlan" );//msgTransition

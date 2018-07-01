@@ -305,12 +305,12 @@ QActor led context ctxRobot -pubsub {
   		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan ledOnPlan resumeLastPlan[
+  	Plan ledOnPlan [
   		[!? realrobot]
   			println("[INFO] Led ON")
 	] transition whenTime 500 -> ledOffPlan
 	
-	Plan ledOffPlan resumeLastPlan[
+	Plan ledOffPlan [
 		[!? realrobot]
   			println("[INFO] Led OFF")
 	] transition whenTime 500 -> ledOnPlan
@@ -336,12 +336,12 @@ QActor ledhuelamp context ctxRobot -pubsub {
   		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
-  	Plan ledOnPlan resumeLastPlan[
+  	Plan ledOnPlan [
   		[!? virtualrobot]
   			println("[INFO] Led hue lamp ON")
 	] transition whenTime 500 -> ledOffPlan
 	
-	Plan ledOffPlan resumeLastPlan[
+	Plan ledOffPlan [
 		[!? virtualrobot]
   			println("[INFO] Led hue lamp OFF")
 	] transition whenTime 500 -> ledOnPlan
