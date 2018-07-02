@@ -1,5 +1,0 @@
-﻿1) Il robot è dotato di sensore frontale per trovare i vari ostacoli anche se non espresso nei requisiti? 
-2) I sonar della stanza che raggio di azione hanno? Sono in grado di comunicare con il robot?
-3) formalizzazione entità va in domain model o nella parte analisi di problema?
-4) il robot virtuale è nella stanza della led hue lamp o può essere in una stanza diversa?
-5) cosa scrivere nel capitolo "implementazione"?
