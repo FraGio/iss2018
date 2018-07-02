@@ -4,10 +4,6 @@ resourceModel.pl
 ===============================================================
 */
 
-/*
-le risorse si dividono in due tipi, sensori ed attuatori
-*/
-
 model( type(actuator,leds), name(ledfisico), value(off) ).
 model( type(actuator,leds), name(ledhuelamp), value(off) ).
 model( type(data,timer), name(timevalue), value(10) ).
