@@ -452,6 +452,7 @@ QActor led context ctxRobot -pubsub {
   		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
+	//R-BlinkLed
   	Plan ledOnPlan [
   		[!? realRobot]
   			javaRun it.unibo.iss2018support.ledfis.led.ledOn()
@@ -481,6 +482,7 @@ QActor ledhuelamp context ctxRobot -pubsub {
   		whenEvent ledCmdBlink -> ledOnPlan
   	finally repeatPlan 
   	
+	//R-BlinkHue
   	Plan ledOnPlan [
   		println("[INFO] Led hue lamp ON")
 	] transition whenTime 500 -> ledOffPlan

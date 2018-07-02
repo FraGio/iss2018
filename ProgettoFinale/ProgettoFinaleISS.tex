@@ -132,7 +132,7 @@
 %===========================================================================
 \section{Introduction}
 \labelsec{intro}
-Questo modulo rappresenta una fotografia, in un questo istante, del processo di sviluppo del software. Avere una documentazione completa circa tutte le fasi (Analisi, Progettazione, Implementazione, Testing) è importante per far mantenere una traccia delle considerazioni emerse nelle fasi già citate e, soprattutto, il giusto flusso di sviluppo, che parte dai requisiti, fino ad arrivare ad un prodotto finale che è in linea con le attese del committente. \\
+Questo modulo rappresenta una fotografia del processo di sviluppo e produttivo del software. Avere una documentazione completa circa tutte le fasi (Analisi, Progettazione, Implementazione, Testing) è importante per mantenere una traccia delle considerazioni emerse nelle fasi già citate e, soprattutto, il giusto flusso di sviluppo, che parte dai requisiti, fino ad arrivare ad un prodotto finale che è in linea con le attese del committente. \\
 Possiamo approcciare i problemi che emergono in modo olistico (top-down), o riduzionistico (bottom-up). 
 Cosa s'intende per top-down o bottom-up?\\
 TOP-DOWN, cioè procedendo dall'alto verso il basso, quindi partendo da specifiche di alto livello, analizzando i sottosistemi ed arrivando ad una soluzione; questo approccio è in linea con una visione OLISTICA, ovvero che non si concentra sulle singole parti, ma ha una visione "più d'insieme" o di alto livello. \\
@@ -142,10 +142,9 @@ BOTTOM-UP, cioè procedendo dal basso verso l'alto, quindi partendo più da compon
 %===========================================================================
 \section{Vision}
 \labelsec{Vision}
-La "Visione" è una frase che fa capire come ci si approcci alle cose, ovvero come affrontare problemi.
-Lo scopo dell'analisi dei requisiti è quello di capire il problema, analizzando i requisiti ed evidenziando aspetti problematici, successivamente, produrre (in modo formale) uno o più modelli che rappresentino il sistema. \\
-Possibile affrontare un problema partendo da zero? Senza alcuna ipotesi? Molto difficile, quasi impensabile!
-Partire dal foglio bianco significa non avere alcuna ipotesi tecnologica (come se si partisse assolutamente privi di informazioni, non ho nulla su cui orientarmi). \\
+La "Visione" definisce l'approccio ai problemi emersi, ovvero come affrontarli.\\
+E' possibile affrontare un problema partendo da zero, senza alcuna ipotesi? Molto difficile, quasi impensabile!\\
+Partire dal foglio bianco significa non avere alcuna ipotesi tecnologica (come se si partisse assolutamente privi di informazioni, non si ha nulla su cui orientarsi). \\
 La questione che adesso ci si pone è l'affrontare un problema partendo da ipotesi tecnologiche e poi arrivando ad una soluzione utilizzando gli strumenti che si conoscono (approccio bottom-up). L'approccio giusto, in ogni caso, è decidere il più tardi possibile quale tecnologia utilizzare, poichè si vuole trovare quella giusta(la tecnologia), al momento giusto. Non si costruisce in funzione della "scatola lego" (cioè dei pezzi che hai a disposizione), ma si analizza quello che si vuol fare e, solo dopo si cerca la "scatola lego" più opportuna a per quello che si vuol realizzare. \\
 La visione adottata in questo caso è:
 "Dalle tecnologie alla analisi e al progetto logico e ritorno alle tecnologie." 
@@ -158,7 +157,7 @@ Altra cosa importante da tenere a mente è: "non c'è codice senza progetto, non c
 %===========================================================================
 \section{Goals}
 \labelsec{Goals}
-L'obbiettivo principale è produrre e sviluppare software con criteri di qualità, in termini di prodotto e di processo.
+L'obbiettivo principale è produrre e sviluppare software seguendo criteri di qualità, in termini di prodotto e di processo.
 %===========================================================================
 
 %===========================================================================
@@ -223,8 +222,7 @@ In base ai requisiti dati emergono alcune considerazioni e osservazioni.\\
 \begin{itemize}
 
 \item R-FloorClean: sappiamo che è presente un'entità "robot" che opera in una stanza di una abitazione, in una determinata città. La stanza di un ambiente domestico è definita come un qualsiasi spazio chiuso con pavimento solido e piatto. Il requisito ci dice anche che il robot è tenuto a pulire il pavivento della stanza.\\
-
-Per pulire il pavimento della stanza s'intende che il robot deve coprire tutta l'area del pavimento.\\
+Per "pulire il pavimento della stanza" s'intende che il robot deve coprire tutta l'area del pavimento.\\
 Apprendiamo inoltre che la stanza è dotata di due sonar che rappresentano la posizione iniziale e quella finale che il robot deve raggiungere. Non ci sono coordinate specifiche per nessuno dei due sonar.\\
 Il robot deve essere nella posizione iniziale per poter iniziare la propria attività di pulizia della stanza.\\
 In base al colloquio col committente abbiamo appreso che, in mancanza di sonar fisici, è possibile utilizzare i sonar presenti nell'ambiente virtuale per far lavorare il robot fisico (e quindi avere punti di inizio e fine).\\
@@ -236,22 +234,23 @@ Dal requisito sappiamo, inoltre, che ci deve essere una fase di autenticazione, 
 Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere il robot e cambiarne lo stato.\\
 
 \item R-TempOk: ci dà un vincolo sulla temperature massima della città tollerata dal robot, sotto la quale può lavorare. Il valore di soglia, basandoci anche sull'interrogazione del committente, è a nostra discrezione.\\
-Il requisito non specifica come il robot ottiene il valore di temperatura, in più sappiamo, anche dall'interrogazione del committente, che il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi come ottenere la temperatura sarà una valutazione da affrontare nell'analisi del problema (fornita dal pc al robot? reperita dal robot tramite un'entità/servizio esterno/a?).\\
+Il requisito non specifica come il robot ottiene il valore di temperatura, in più sappiamo, anche dall'interrogazione del committente, che il robot non è dotato di un proprio sensore in grado di rilevarla. Quindi come ottenere la temperatura sarà una valutazione da affrontare nell'analisi del problema.\\
 Il vincolo sul valore della temperatura è relativo a quello della città in cui il robot opera, ciò significa che la temperatura media della città reperita da un servizio esterno o da un termometro soddisfa i requisiti, così come è valida la temperatura di una qualsiasi stanza di un edificio presente nei confini della città stessa.\\
 
 \item R-TimeOk: il robot può lavorare soltanto all'interno di un intervallo temporale (nell'arco delle 24 ore di una giornata) prefissato. L'intervallo non è specificato nei requisiti ed è quindi a nostra discrezione.\\
-Non è specificato cosa si intenda per "current clock time", potrebbe essere il tempo interno al robot (il committente ha dichiarato che il robot possa avere un suo clock interno), o il tempo relativo al fuso orario della città in cui si trova il robot, oppure il tempo relativo alla locazione dell'utilizzatore del robot. Sono valutazioni da fare in fase di analisi del problema.\\
+Non è specificato cosa si intenda per "current clock time", potrebbe essere il tempo interno al robot (il committente ha dichiarato che il robot possa avere un suo clock interno), o il tempo relativo al fuso orario della città in cui si trova il robot, oppure il tempo relativo alla locazione dell'utilizzatore del robot. Anche queste sono valutazioni da fare in fase di analisi del problema.\\
 
-\item R-BlinkLed: apprendiamo che possa essere presente un robot reale, e, se è così, che il robot reale sia dotato di un led, non è specificato il modello. Il led deve lampeggiare qualora il robot si trovi in stato di "working". Non è specificato chi debba comandare il led.\\
+\item R-BlinkLed: apprendiamo che possa essere presente un robot reale, e, se è così, che il robot reale sia dotato di un led. Non è specificato il modello del led. Il led deve lampeggiare qualora il robot si trovi in stato di "working". Non è specificato chi debba comandare il led.\\
 
 \item R-BlinkHue: sappiamo che la casa è dotata di una Led Hue Lamp. Apprendiamo anche che possa essere presente un robot virtuale, e, se è così, che durante la sua attività debba lampeggiare la Led Hue Lamp presente nella stanza dell'abitazione.\\ 
 Non è specificato chi comandi la lampada.\\
 
 \item R-AvoidFix: ci dice che nella stanza possono essere presenti ostacoli fissi, come ad esempio il mobilio. Non ci viene data una definizione esplicita o formale degli ostacoli fissi.\\ 
+Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\
 
-Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\
 \item R-AvoidMobile: ci dice che nella stanza possono essere presenti ostacoli mobili, come ad esempio gatti o palle. Non c'è una definizione esplicita di ostacolo mobile.\\
-Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\
+Durante la sua attività il robot deve evitare questo tipo di ostacolo (se presente), ma cosa si intende per "evitare"? Non è espresso nei requisiti, sarà da valutare in fase di analisi del problema.\\\\
+
 In base ai due requisiti appena analizzati deduciamo che il robot debba poter percepire ostacoli esterni, non è espresso come.\\
 
 \item R-Stop: apprendiamo che tramite la GUI (console) fornita, l'utente autorizzato possa inviare anche comandi di STOP, i quali dovranno avere come effetto l'interruzione dell'attività del robot.\\
@@ -263,9 +262,9 @@ Il requisito ci dice anche che il comando inviato tramite GUI deve raggiungere i
 
 \item R-Obstacle: ci dice che è possibile che sia presente un ostacolo inevitabile, ma non ci viene detto cosa s'intenda per "inevitabile". Questo verrà valutato in fase di analisi del problema. Ciò che sappiamo è che quando si verifica questa condizione il robot deve arrestarsi.\\
 
-\item R-End: ci viene detto che il robot deve fermarsi quando il suo lavoro è terminato, ma come si capisce che il robot ha completato il suo lavoro? In base R-FloorClean sappiamo che è il sonar finale a rilevare la presenza del robot quando questo è nella posizione finale, quindi una volta che il robot ha raggiunto il sonar finale deve arrestarsi\\
+\item R-End: ci viene detto che il robot deve fermarsi quando il suo lavoro è terminato, ma come si capisce che il robot ha completato il suo lavoro? In base R-FloorClean sappiamo che è il sonar finale a rilevare la presenza del robot quando questo è nella posizione finale, quindi una volta che il robot ha raggiunto il sonar finale deve arrestarsi.\\
 
-\item R-Map: dobbiamo realizzare la mappa del pavimento della stanza. La mappa deve mostrare la posizione degli ostacoli fissi. La mappa può essere utilizzata per trovare il percorso ottimo dal sonar iniziale a quello finale. Cosa si intende per percorso ottimo? Valuteremo in analisi del problema.\\
+\item R-Map: dobbiamo realizzare la mappa del pavimento della stanza. La mappa deve mostrare la posizione degli ostacoli fissi. La mappa può essere utilizzata per trovare il percorso ottimo dal sonar iniziale a quello finale. Cosa si intende per percorso ottimo? Lo valuteremo in analisi del problema.\\
 \end{itemize}
 
 %===========================================================================
@@ -280,12 +279,12 @@ I possibili casi d'uso sono 3: \\
 
 \subsection{Scenarios}
 \labelssec{Scenarios}
-Un possibile scenario è dato dall'utente(e.g casalinga) che, tramite smartphone, è in grado di avviare/arrestare il robot collocato in una posizione all'interno della stanza, qualora le condizioni per l'avvio siano rispettate.
+Un possibile scenario è dato dall'utente(e.g casalinga) che, tramite smartphone, è in grado di avviare/arrestare il robot collocato in una posizione all'interno della stanza, qualora le condizioni per l'avvio siano rispettate. Il robot pulirà l'area della stanza, facendo attenzione ad evitare ostacoli fissi e mobili, e si fermerà una volta raggiunta la posizione finale.
 
 \subsection{(Domain)model}
 La modellazione può essere eseguita in maniera formale o non formale. Nel primo caso si utilizza un linguaggio (UML, QActor, ecc.) tramite il quale è possibile esprimere modelli comprensibili non solo dall'uomo ma anche da una macchina. \\
-Aspetto chiave dellla modellazione è catturare gli aspetti essenziali delle entità considerate in maniera non ambigua, in più vogliamo che che possa essere eseguito su una macchina. Il modello deve catturare struttura, interazione e comportamento, permettendoci di mettere in primo piano (foreground) aspetti fondamentali, lasciando "sullo sfondo" (background) aspetti irrilevanti a questo livello. \\
-Ci chiediamo quanti e quali linguaggi siano presenti, quali costi e quali pro/contro abbiano, magari evidenziando anche quanto costerebbe in termini di tempo l'adottare un nuovo linguaggio. Un esempio potrebbe essere UML, strumento per delineare entità coinvolte in un sistema. Ma non va bene per due motivi; il primo è che non ci troviamo in un sistema concentrato (dove il sw è in esecuzione su un solo nodo), il secondo è il non riuscire a cogliere aspetti cardine, come struttura, interazione e comportamento, oltre al fatto di non essere eseguibile. Scegliamo di utilizzare un linguaggio di modellazione QActor, messo a disposizione dalla nostra software house, in quanto riesce a cogliere tutti gli aspetti per noi rilevanti (sopra citati). 
+Aspetto chiave della modellazione è catturare gli aspetti essenziali delle entità considerate in maniera non ambigua, in più vogliamo che che possa essere eseguito su una macchina. Il modello deve catturare struttura, interazione e comportamento, permettendoci di mettere in primo piano (foreground) aspetti fondamentali, lasciando "sullo sfondo" (background) aspetti irrilevanti a questo livello. \\
+Ci chiediamo quanti e quali linguaggi siano presenti, quali costi e quali pro/contro abbiano, magari evidenziando anche quanto costerebbe in termini di tempo l'adottare un nuovo linguaggio. Un esempio potrebbe essere UML, strumento per delineare entità coinvolte in un sistema. Ma non va bene per due motivi; il primo è che non ci troviamo in un sistema concentrato (dove il sw è in esecuzione su un solo nodo), il secondo è il non riuscire a cogliere aspetti cardine, come struttura, interazione e comportamento, oltre al fatto di non essere eseguibile. Scegliamo di utilizzare il linguaggio di modellazione QActor, messo a disposizione dalla nostra software house, in quanto riesce a cogliere tutti gli aspetti per noi rilevanti (sopra citati). 
 Ci saranno sicuramente aspetti che tralasceremo a questo livello, perchè di più stretta competenza dei progettisti.
 A noi interessa modellare in maniera formale.\\
 
@@ -327,11 +326,11 @@ Elenco dei problemi emersi/punti aperti di interesse per il problema:
 \item Led: chi comanda il led (robot, altro...)?
 \item Led Hue Lamp: chi comanda la lampada? In che modo?
 \item Ostacoli: discutere cosa si intende per ostacolo fisso e mobile, capire come si indentificano gli ostacoli, capire anche cosa si intende per "evitare" un ostacolo e capire cosa si intende per ostacolo inevitabile.
-\item Mappa: cosa si intende per percorso ottimo?
+\item Mappa: cosa si intende per "mappa" e per "percorso ottimo"?
 \end{enumerate}
 
 Analisi autenticazione:\\
-Per ragioni di costi e semplicita' conviene modellare il metodo di autenticazione come autenticazione tramite username e password. Questo perche' l'utilizzo di sistemi con smart-card o lettori biometrici (retina, impronte digitali) comporta costi aggiuntivi ed elevati, oltre ad aumentare i tempi di sviluppo, rispetto al metodo tramite username e password.\\
+Per ragioni di costi e semplicita' conviene modellare il metodo di autenticazione come autenticazione tramite username e password. Questo perche' l'utilizzo di sistemi con smart-card o lettori biometrici (retina, impronte digitali) comporta costi aggiuntivi ed elevati (oltre ad aumentare i tempi di sviluppo), rispetto al metodo tramite username e password.\\
 Utilizzando username e password dobbiamo tenere traccia di questi dati. Mantenerli su Pc/smartphone vorrebbe dire più efficienza, poichè si lavora localmente, ma maggiori rischi in quanto il livello di protezione è basso.\\
 Un'alternativa sarebbe mantenere le credenziali sul robot, questo aumenta i tempi di risposta in fase di autenticazione  e il livello di sicurezza è simile al caso precedente. E' quindi una scelta poco conveniente.\\
 Altra possibilità sarebbe quella di appoggiarsi ad un servizio esterno (Google, Facebook, ...) per gestire l'autenticazione utente, questo diminuisce l'efficienza però dà maggiori garanzie dal punto di vista della sicurezza e permette di non dover gestire le credenziali. Scegliere servizi esterni consente anche di evitare l'implementazione di metodi di registrazione, necessaria nei casi descritti in precedenza. \\
@@ -348,18 +347,16 @@ La nostra scelta ricade sull'idea di utilizzare l'approccio a polling, ossia di 
 Analisi orario:\\
 Sappiamo, dall'analisi dei requisiti, che esiste un "current clock time"; Esso può essere inteso come orologio interno al robot, oppure un orologio esterno come l'orologio del sistema pc/smartphone oppure quello di un servizio esterno.\\
 Utilizzando il clock interno al robot evitiamo di dover effettuare richieste tramite rete internet, e miglioriamo l'efficienza ma bisogna fare attenzione che il clock interno sia allineato con quello della città nel quale il robot opera.
-Nel caso reperissimo i dati dell'orario da un servizio esterno potremmo considerare o il fuso orario del robot o quello del pc/smartphone (sotto l'ipotesi che siano in due ambienti a fuso orario diverso). Nel caso fossero in due ambienti sotto due fusi orari diversi, si considera ragionevole considerare il fuso orario del robot come quello valido. 
-Si mettono in evidenza due strade principali per affrontare il problema di gestire il requisito sul tempo: la prima è quella di sfruttare un'interazione a polling, cioè dove il robot prende l'iniziativa e richiede periodicamente il tempo o al pc/smartphone o ad un servizio esterno (es. servizio web).\\
+Nel caso reperissimo i dati dell'orario da un servizio esterno potremmo considerare o il fuso orario del robot o quello del pc/smartphone (sotto l'ipotesi che siano in due ambienti a fuso orario diverso). Nel caso fossero in due ambienti sotto due fusi orari diversi, si considera ragionevole considerare il fuso orario del robot come quello valido.\\
+Si mettono in evidenza due alternative principali per affrontare il problema di gestire il requisito sul tempo: la prima è quella di sfruttare un'interazione a polling, cioè dove il robot prende l'iniziativa e richiede periodicamente il tempo o al pc/smartphone o ad un servizio esterno (es. servizio web).\\
 Una seconda opzione può essere quella di far arrivare i valori al robot in maniera periodica (o di valori temporali fuori range), quindi il robot dovrà predisporsi per ricevere. L'invio dei dati, in questo caso, sarebbe a carico del pc/smartphone.\\
 Quest'ultimo approccio sposterebbe parte della logica applicativa sul pc/smartphone, in più, in caso di perdita di comunicazione tra GUI e robot, sarebbe compromessa la verifica del valore del tempo richiesta nei requisiti.\\
-La nostra scelta ricade sull'utilizzo dell'orario interno al robot, in modo da migliorare l'efficienza ed evitare di fare affidamento a servizi esterni, in quanto sappiamo che il robot dispone di un proprio orario locale. Si può pensare, in futuro, di integrare un meccanismo di modifica dell'orario interno del robot tramite interfaccia GUI.
-
+La nostra scelta ricade sull'utilizzo dell'orario interno al robot, in modo da migliorare l'efficienza ed evitare di fare affidamento a servizi esterni, in quanto sappiamo che il robot dispone di un proprio orario locale. Si può pensare, in futuro, di integrare un meccanismo di modifica dell'orario interno del robot tramite interfaccia GUI.\\
 Nel caso di perdita di comunicazione con il servizio che fornisce orario (e temperatura) si decide che il robot non potrà avviare la propria attività.\\
-Per quanto riguarda la frequenza di aggiornamento dei suddetti valori, sebbene il committente non abbia espresso vincoli a riguardo decidiamo di considerare come intervallo massimo consentito quello di 10 minuti. In fase di progetto si concretizzerà il tempo specifico di intervallo di aggiornamento.\\
+Per quanto riguarda la frequenza di aggiornamento dei suddetti valori il committente non ha espresso vincoli a riguardo, per cui in fase di progetto si concretizzerà il tempo specifico di intervallo di aggiornamento.\\
 
 Analisi led:\\
 Dall'analisi dei requisiti sappiamo che il led è posizionato sul robot, di conseguenza sarà questo a controllare il led affinchè faccia quanto richiesto dai requisiti (blink in caso di attività).\\
-
 
 Analisi Led Hue Lamp:\\
 Dall'analisi dei requisiti sappiamo che la Led Hue Lamp è presente nella casa dove il robot agisce. Il comando della lampada viene fatto tramite rete, di conseguenza potrebbe essere a carico sia del pc/smartphone che del robot.\\
@@ -367,9 +364,9 @@ Scegliamo di affidare questa responsabilità al nostro software di controllo dei 
 
 Analisi ostacoli:\\
 Da requisiti non viene specificato cosa si intende per ostacolo fisso o mobile. Per ostacolo fisso noi intendiamo un'entità immobile che ostruisce il percorso del robot dal sensore iniziale a quello finale. L'ostacolo mobile si differenzierà dal fisso solo per la sua caratteristica di movimento. In ogni caso un ostacolo occupa parte dell'area della stanza.\\
-In entrambi i casi il robot può e deve evitarli. Cosa intendiamo per "evitare"? Fare in modo che il robot non entri in contatto con l'ostacolo ma riesca a proseguire verso il sonar finale. Per fare questo può aggirare l'ostacolo (nel caso questo sia fisso) oppure attendere per un periodo limitato di tempo prima di proseguire (nel caso esso sia mobile).\\
-Per risolvere il problema di riconoscimento degli ostacoli lungo il cammino, prevediamo che il robot sia dotato di un sensore di movimento, posto sul muso. Alternative potrebbero essere videocamera, sistemi gps, che sono però più costose rispetto all'utilizzo del sensore.\\
-Un ostacolo inevitabile è un ostacolo che non può essere evitato e che impedisce il raggiungimento, al robot, del sensore finale.\\
+In entrambi i casi il robot può e deve evitarli. Cosa intendiamo per "evitare"? Fare in modo che il robot riesca a modificare la propria traiettoria al fine di coprire la più grossa porzione di stanza possibile, e che riesca a proseguire verso il sonar finale. Per fare questo può aggirare l'ostacolo (nel caso questo sia fisso) oppure attendere per un periodo limitato di tempo prima di proseguire (nel caso esso sia mobile).\\
+Per risolvere il problema di riconoscimento degli ostacoli lungo il cammino ci avvaliamo del sensore di movimento posto sul muso del robot (fisico e/o virtuale). Alternative potrebbero essere videocamera, sistemi gps, che sono però più costose rispetto all'utilizzo del sensore.\\
+Un ostacolo inevitabile è un ostacolo che non può essere aggirato in alcun modo e che impedisce il raggiungimento, al robot, del sensore finale.\\
 
 Analisi GUI:\\
 Decidiamo di avere un meccanismo ad eventi tra pc e robot, in modo da disaccoppiare e rendere flessibile il sistema.\\
@@ -381,8 +378,8 @@ Ci sono tre strade per realizzarla:
 	\item avere solo la parte di visualizzazione e comando (browser) sul dispositivo pc/smartphone, e la parte web server sul dispositivo robot
 \end{enumerate}
 In base alle valutazioni su semplicità di utilizzo, costi e flessibilità, decidiamo di intraprendere la seconda strada, ossia di avere la parte grafica della GUI su pc/smartphone e la parte web server che risiede su un dispositivo esterno al sistema pc-robot. Questo garantisce anche più flessibilità per eventuali modifiche e facilità di implementazione di estensioni future dell'interfaccia.\\
-Inoltre questa scelta ci permette di poter posizionare il server sia su un nodo della software house, che un nodo ospitato da servizi esterni (ad esempio Amazon AWS).\\
-Da analisi dei requisiti sappiamo che la GUI deve essere in esecuzione (running) sul pc/smartphone, per "running" noi intendiamo la componente di controllo che consente l'invio di comandi START/STOP al robot, quindi la parte di "browser" web.\\
+Inoltre questa scelta ci permette di poter posizionare il server sia su un nodo ospitato dalla software house, che un nodo ospitato da servizi esterni (ad esempio Amazon AWS).\\
+Da analisi dei requisiti sappiamo che la GUI deve essere in esecuzione (running) sul pc/smartphone, dove per "running" noi intendiamo la componente di controllo che consente l'invio di comandi START/STOP al robot.\\
 
 Analisi movimento/planning ostacoli:\\
 Si ipotizza di lavorare con un robot capace di muoversi in quattro direzioni (destra, sinistra, avanti, indietro).\\
@@ -400,8 +397,8 @@ La mappa è una rappresentazione grafica/logica dell'ambiente in cui il robot si 
 Costi:\\
 E' necessario fare una valutazione delle spese e dei costi da affrontare.\\
 Per l'utilizzo dell'infrastruttura meteo è stato valutato di utilizzare un servizio esterno, che offre diverse soluzioni di scalabilità (e di conseguenza costi) in base al n° di richieste effettuate al minuto. Per servizio di esempio vedere https://www.openweathermap.org/price.\\
-Un'altra valutazione economica è quella del servizio di host del server frontend. Appoggiandoci a un servizio come Amazon AWS abbiamo vantaggi dal punto di vista della scalabilità e costi crescenti agli utenti. Per servizio di esempio e costi vedere https://aws.amazon.com/it/ec2/pricing/on-demand/.\\
-Per dotare il robot Mbot di un modulo middleware si rende opportuno l'acquisto e l'utilizzo di un dispositivo Raspberry montato e collegato con il robot (https://www.raspberrypi.org/products/raspberry-pi-3-model-b/).
+Un'altra valutazione economica è quella del servizio di host del server frontend. Appoggiandoci a un servizio esterno alla software house abbiamo vantaggi dal punto di vista della scalabilità, con costi crescenti in proporzione agli utenti. Per servizio di esempio e costi vedere https://aws.amazon.com/it/ec2/pricing/on-demand/.\\
+Per dotare il robot Mbot di un modulo middleware si rende opportuno l'acquisto e l'utilizzo di un dispositivo montato e collegato con il robot, come ad esempio un Raspberry Pi (https://www.raspberrypi.org/products/raspberry-pi-3-model-b/).
 
 %===========================================================================
 \subsection{Logic architecture}
@@ -411,17 +408,16 @@ Si vedano i modelli prodotti durante l'analisi del problema.
  
 \subsection{Abstraction gap}
 Se identifichiamo una distanza significativa tra quello che abbiamo e quello che dovremmo avere, allora siamo in presenza di un abstraction gap che dobbiamo colmare.\\
-In base alle richieste del committente, al nostro lavoro di analisi e in base ai linguaggi a nostra disposizione per risolvere i problemi emersi, non abbiamo rilevato particolari abstraction gap tra quello che è possibile fare e quello che abbiamo a nostra disposizione.
+Utilizzando il linguaggio di modellazione QActor anche per la fase di progettazione del software, e' possibile incorrere in un abstraction gap. In particolare la modellazione del movimento e della logica di aggiramento ostacoli risulta particolarmente ostica, e si percepisce una difficolta' di fondo dovuta a mancanza di espressivita' totale del linguaggio in termini di cambi di stato dovuti a determinate precondizioni.
 
 \subsection{Risk analysis}
 Elenchiamo i rischi collegati alle valutazioni fatte in fase di analisi del problema:
 \begin{itemize}
-	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione tra pc/smarpthone e servizio esterno. L'utilizzo di sistemi di accesso esterni potrebbe ridurre questo rischio.
-	\item Temperatura: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio metereologico, oltre che la sola caduta del servizio considerato. 
-	\item Orario: utilizzando l'orario interno al robot possono esserci disallineamenti sull'orario in caso di spostamento del robot in una città con fuso orario diverso rispetto a quello con cui il robot è configurato. Una soluzione potrebbe essere quella di permettere la modifica dell'orario interno al robot tramite interfaccia GUI.
-	%%l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio "timestamp", oltre che la sola caduta del servizio considerato.
-	\item Led Hue Lamp: la perdita della connessione alla rete da parte del robot, potrebbe impedire l'accensione, o lo spegnimento, della lampada
-	\item Ostacoli: possono esserci ostacoli imprevisti che compromettono la corretta esecuzione dell'attività del robot (caduta oggetti)
+	\item Autenticazione: utilizzando il modello di autenticazione con username e password potremmo avere rischi aggiuntivi in termini di furto di dati di accesso, dovuto a terze parti che possono introdursi nella comunicazione tra pc/smarpthone e servizio esterno. L'utilizzo di sistemi di accesso esterni noti e sicuri può ridurre questo rischio.
+	\item Temperatura: l'approccio a polling può esporre a problemi dovuti a caduta della linea internet tra robot e servizio metereologico, oltre che la caduta del servizio stesso considerato. 
+	\item Orario: utilizzando l'orario interno al robot possono esserci disallineamenti sull'orario in caso di spostamento del robot in una città con fuso orario diverso rispetto a quello con cui il robot è configurato. Per coprire il rischio si potrebbe permettere la modifica dell'orario interno al robot tramite interfaccia GUI.
+	\item Led Hue Lamp: la perdita della connessione alla rete da parte del software di controllo del robot potrebbe impedire l'accensione, o lo spegnimento, della lampada
+	\item Ostacoli: possono esserci ostacoli imprevisti che compromettono la corretta esecuzione dell'attività del robot (ad esempio caduta oggetti)
 \end{itemize}
 
 %===========================================================================
@@ -431,7 +427,7 @@ In questa fase si valutano tempi, costi, strategie di investimento, formazione d
 Tempi e costi sono ridotti in quanto utilizziamo o prodotti open-source oppure sistemi già pronti messi a disposizione dal committente. Non necessitiamo di particolare formazione del personale, mentre per quanto riguarda le persone necessarie riteniamo sufficienti i componenti del team attuale (ossia tre persone).\\
 Ci occupiamo di scegliere l'opportuno processo produttivo, in cui ci sono due scuole in contrasto: l'agile (di cui scrum è un esempio) e model based. \\
 Agile development consiste in lavorare in gruppi auto organizzati, multifunzionali e orientati allo stretto contatto con il cliente finale, al fine di ottenere prodotti utilizzabili in tempo rapido, di migliorare costantemente i prodotti stessi e di rimanere flessibili a ipotetici cambiamenti resisi necessari nel tempo.\\
-Model based development impone che,prima di trattare il codice, sia necessario occuparsi della fase di modellazione. Solo in un secondo momento si passerà alla fase di sviluppo vero e proprio, tenendo opportunamente aggiornata la parte di modello.\\
+Model based development impone che, prima di trattare il codice, sia necessario occuparsi della fase di modellazione. Solo in un secondo momento si passerà alla fase di sviluppo vero e proprio, tenendo opportunamente aggiornata la parte di modello.\\
 In base alle nostre esigenze riteniamo sia più opportuno lavorare tramite modello Agile, in particolare Scrum. Questo ci permette di focalizzarci sulle richieste del committente, affrontando quelle più prioritarie per prime, e assicurandoci un ciclo di lavoro flessibile e costantemente monitorato.\\
 Lavoreremo quindi tramite "sprint" periodici di breve durata, dove ci suddivideremo le attività da svolgere, proponendoci meeting brevi e costanti per valutare e controllare il flusso di lavoro.\\
 Al fine di agevolare l'utilizzo della metodologia Scrum useremo uno strumento del tutto gratuito, Meistertask, che permette di tracciare le attività da svolgere, di valutarle in termini di priorità e di assegnarle ai componenti del team. Ogni task avrà diversi stati, personalizzabili, come ad esempio "open" nel caso sia ancora da prendere in carico, "in progress" nel caso qualcuno lo stia affrontando, e "done" quando il task sia stato completato.\\
@@ -442,8 +438,8 @@ Il team inoltre si avvale di lavoro cooperativo, svolto incontrandosi personalem
 %===========================================================================
 \section{Project}
 \labelsec{Project}
-La fase di progetto, svolta dal progettista, prende in input il lavoro svolto dall'analista, ovvero il modello formale che descrive il sistema e propone, a sua volta, un ulteriore modello, nel quale vengono specificati e risolti problemi lasciati in sospeso dall'analista (e.g. quale protocollo? ). 
-Anche in questo caso il sistema è specificato in termini di STRUTTURA, INTERAZIONE e COMPORTAMENTO. \\\\
+La fase di progetto, svolta dal progettista, prende in input il lavoro svolto dall'analista, ovvero il modello formale che descrive il sistema e propone, a sua volta, un ulteriore modello, nel quale vengono specificati e risolti problemi lasciati in sospeso dall'analista. 
+Anche in questo caso il sistema è specificato in termini di struttura, interazione e comportamento. \\\\
 
 Punti aperti dalla fase di analisi del problema:
 \begin{itemize}
@@ -463,18 +459,17 @@ Server:\\
 In base alle considerazioni dell'analisi sappiamo di dover utilizzare un server su piattaforma separata da quella del pc o del robot. Alla luce di questo possiamo utilizzare un web server RESTful (utilizzando tecnologia NodeJs ed Express) ospitato su un nodo esterno, che è Amazon AWS, perchè questo comporta benefici in termini di scalabilità, nel caso il n° di utenti cresca nel tempo.
 
 Autenticazione:\\
-Come provider di autenticazione decidiamo di utilizzare il servizio di autenticazione di Google, in quanto molto sicuro, diffuso e gratuito. Per fare questo ci appoggeremo ad una libreria fornita da Google stesso (https://github.com/google/google-auth-library-nodejs).
+Come provider di autenticazione decidiamo di utilizzare il servizio di autenticazione di Google, in quanto molto sicuro, diffuso e gratuito. Per fare questo ci appoggeremo ad una libreria fornita da Google stesso (https://github.com/google/google-auth-library-nodejs) per integrare il sistema di autenticazione nel frontend server.
 
 Pulizia stanza:\\
 Decidiamo di effettuare la pulizia della stanza facendo l'ipotesi che i sonar permettano di inquadrare l'area di azione, in termini di larghezza e lunghezza.\\
-L'operazione di pulizia verrà eseguita partendo dal sonar iniziale, muovendosi in linea retta fino ad intercettare il segnale del sonar finale. In tal caso si conoscono larghezza e lunghezza della stanza, e si può riconoscere la presenza dei muri in maniera automatica e invertire la direzione del robot una volta che questi vegono trovati.\\
-Nel caso, prima di arrivare al segnale del sonar finale, e quindi al primo muro, si incontri un ostacolo sarà necessario effettuare una procedura di aggiramento che porti il robot in corrispondenza del segnale del segnale del sonar finale, dandogli modo di conoscere la dimensione della stanza.\\
-Conoscendo la dimensione della stanza è possibile costruire una mappa dell'area da pulire, e suddividerla in caselle della stessa dimensione del robot (larghezza e lunghezza). In questo modo si tiene traccia del percorso eseguito e di quello da completare.\\
-Nell'operazione di svolta, da eseguire quando si incontra un muro, è necessario spostarsi di una casella verso il sonar finale, in seguito invertire la direzione e riprendere il movimento rettilineo fino al muro successivo.
+L'operazione di pulizia verrà eseguita partendo dal sonar iniziale, muovendosi in linea retta fino ad intercettare il segnale del sonar finale. In base alla distanza dal sonar finale si eseguira' una svolta o si fermera' l'attivita'. Si possono ricavare larghezza e lunghezza della stanza, e si può riconoscere la presenza dei muri in maniera automatica e invertire la direzione del robot una volta che questi vegono trovati.\\
+Nel caso, prima di arrivare al segnale del sonar finale, e quindi al primo muro, si incontri un ostacolo sarà necessario effettuare una procedura di aggiramento che porti il robot in corrispondenza del segnale del sonar finale, dandogli modo di conoscere la dimensione della stanza.\\
+Nell'operazione di svolta, da eseguire quando si incontra un muro o il sonar2, è necessario spostarsi di una casella verso il sonar finale, in seguito invertire la direzione e riprendere il movimento rettilineo fino al muro successivo.
 
 Rilevazione e aggiramento ostacoli:\\
 Per quanto riguarda la rilevazione degli ostacoli ci avvaliamo del sensore posto sul muso del robot. Il sensore ha una distanza di rilevazione di 4 metri, ma noi consideriamo solo gli ostacoli entro i 15 cm.\\
- Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà un secondo tentativo dopo alcuni secondi, per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
+Una volta rilevato un ostacolo durante il movimento, il robot si fermerà ed effettuerà un secondo tentativo dopo alcuni secondi, per verificare che l'ostacolo sia ancora presente. Se è così l'ostacolo è considerato fisso, altrimenti mobile.\\
 In caso di ostacolo fisso il robot deve cercare di evitarlo fintanto che non trova uno spazio per passare. Se durante la ricerca di uno spazio trova un muro, il robot invertirà la direzione di ricerca. Nel caso venga trovato un secondo muro, il robot dichiarerò l'ostacolo come insormontabile e si fermerà.\\
 In caso di ostacolo mobile prosegue il suo moto nella stessa direzione.
 
@@ -483,12 +478,12 @@ Per comunicare con il led posto sul robot fisico utilizzeremo degli script bash 
 Per quanto riguarda la led hue lamp, sappiamo che è possibile comunicare con essa tramite rete internet (Wifi) e con metodologie RESTful (https://www2.meethue.com/en-us/about-hue).
 
 Comunicazione con provider meteo:\\
-Come servizio per reperire informazioni su meteo si utilizza OpenWeatherMap, che è un servizio web che offre API per acquisire le informazioni di nostro interesse. \\
+Come servizio per reperire informazioni su meteo si utilizza OpenWeatherMap, che è un servizio web che offre API per acquisire le informazioni di nostro interesse.
 Per richiedere i dati occorre formulare richieste in un determinato formato (https://www.openweathermap.org/current). \\
 La struttura dei dati ricevuta è in formato JSON, a noi interessa il campo "temp" che identifica la temperatura attuale. Occorre specificare, tramite parametro dell'API, se ricevere dati in formato Celsius o Fahrenheit.
 
 Frequenza di interrogazione provider meteo / controllo orario:\\
-Dall'analisi del problema sappiamo di avere un vincolo di massimo 10 minuti di attesa tra una richiesta e la seguente. Di conseguenza decidiamo di effettuare almeno una richiesta ogni minuto, fino ad un massimo di una richiesta al secondo, in modo da tenere opportunamente aggiornate le informazioni del modello logico.\\
+Poniamo un vincolo massimo di attesa tra una richiesta e la seguente. Di conseguenza decidiamo di effettuare almeno una richiesta ogni minuto, fino ad un massimo di una richiesta al secondo, in modo da tenere opportunamente aggiornate le informazioni del modello logico.\\
 Applicheremo gli stessi vincoli di frequenza anche al controllo sull'orario.\\
 
 Protocollo per comunicazione:\\
@@ -544,7 +539,7 @@ Sonar per rilevazione entità nell'ambiente, il modello utilizzato è lo stesso mo
 \section{Implementation}
 \labelsec{Implementation}
 Nella fase di implementazione ci siamo suddivisi i compiti sfruttando servizi di tracking delle attività, in modo da bilanciare il carico in maniera equilibrata.\\
-Alcune delle attività principali sono quelle di implementazione del server e del client frontend con autenticazione, realizzazione del meccanismo di blink/spegnimento led e led hue lamp, realizzazione del movimento del robot fisico e virtuale, implementazione della logica di ritrovamento dati meteo ed orario.\\
+Alcune delle attività principali sono quelle di implementazione del server e del client frontend con autenticazione, realizzazione del meccanismo di blink/spegnimento led e led hue lamp, realizzazione del movimento del robot fisico e virtuale, implementazione della logica di ritrovamento dati meteo ed orario, creazione della logica di aggiramento ostacoli.\\
 
 Precisamente, sono stati realizzati:
 \begin{itemize}
@@ -554,14 +549,14 @@ Precisamente, sono stati realizzati:
 	\item Una serie di utils per vari scopi
 \end{itemize}
 
-Sono stati riutilizzati e riadattati moduli per pilotare il robot fisico. Adattato il frontend per far sì che supportasse l'autenticazione su un provider esterno.
+Sono stati riutilizzati e riadattati moduli per pilotare il robot fisico. E' stato adattato il frontend per far sì che supportasse l'autenticazione su un provider esterno.
 
 %===========================================================================
 
 %===========================================================================
 \section{Testing}
 \labelsec{testing}
-Molto importante la fase di testing in cui viene testato il prodotto ottenuto. Il tutto dovrebbe essere fatto il linea con la filosofia di testare tutto al fine di provare il sistema il prima possibile. \\
+Molto importante e' la fase di testing in cui viene testato il prodotto ottenuto. Il tutto dovrebbe essere fatto il linea con la filosofia di testare tutto al fine di provare il sistema il prima possibile. \\
 Si può parlare di testing manuale o automatico. Nel primo caso occorrerà dare in pasto al sistema dei valori ed assicurarsi che l'output sia in linea con le aspettative. Nel secondo caso si possono utilizzare strumenti di testing automatico (e.g. JUNIT), i quali, una volta eseguiti, testano le componenti specificate, riportando in output eventuali problemi e dove essi si sono verificati. \\
 Abbiamo deciso di utilizzare il sistema di testing Junit (versione 5).
 I nostri test sono visibili nel file allegato.
