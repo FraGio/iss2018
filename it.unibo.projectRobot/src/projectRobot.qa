@@ -51,6 +51,8 @@ QActor mind context ctxRobot -pubsub {
 		limitTimeValueMin( 9 ).
 		limitTimeValueMax( 23 ).
 		
+		
+		//R-TempKo
 		changedModelAction( temperature, temperaturevalue, V  ):-
 				limitTemperatureValue( MAX ), 
 	 		    eval( ge, V , MAX ), !,   
@@ -58,13 +60,15 @@ QActor mind context ctxRobot -pubsub {
 	 			emitevent( robotCmd,  robotCmd ('stop') ),
 	 			emitevent( coreCmdStop,  coreCmdStop ).
 	 		
+		//R-TimeKo
 	 	changedModelAction(timer,timevalue, T ):-
 				limitTimeValueMin( MIN ),
 	 		    eval( le, T , MIN ), !,  
 	 		    output('[INFO] Tempo fuori range MIN'),
 	 			emitevent( robotCmd,  robotCmd ('stop') ),
 	 			emitevent( coreCmdStop,  coreCmdStop ).
-	 			
+	 		
+		//R-TimeKo
 	 	changedModelAction(timer,timevalue, T ):-
 				limitTimeValueMax( MAX ),
 	 		    eval( ge, T , MAX ), !,   
@@ -72,12 +76,14 @@ QActor mind context ctxRobot -pubsub {
 	 			emitevent( robotCmd,  robotCmd ('stop') ),
 	 			emitevent( coreCmdStop,  coreCmdStop ).
 	 			
+		//R-BlinkLed
 	 	changedModelAction(leds,ledfisico, blink ):- 
 	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
 	 	changedModelAction(leds,ledfisico, off ):- 
 	 			emitevent( ledCmdStop,  ledCmdStop ).
 	 			
+		//R-BlinkHue
 	 	changedModelAction(leds,ledhuelamp, blink ):- 
 	 			emitevent( ledCmdBlink,  ledCmdBlink ).
 	 			
@@ -109,6 +115,7 @@ QActor mind context ctxRobot -pubsub {
 	
 	Plan waitForSonar1[
 		println("[INFO] Acquisiti valori iniziali di temperatura e tempo... attesa posizionamento su sonar1");
+		//R-TempOk e R-TimeOk e R-TimeKo e R-TempKo
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
 	]
@@ -126,6 +133,7 @@ QActor mind context ctxRobot -pubsub {
 		whenEvent coreHasFinished -> coreHasFinishedHandler
 	finally repeatPlan
 	
+	//R-TempOk e R-TimeOk e R-TimeKo e R-TempKo
 	Plan updateValues [
 		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
 			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
@@ -134,16 +142,19 @@ QActor mind context ctxRobot -pubsub {
 	Plan robotCmdHandler [
 		
 		[not !? alreadyStarted]{
+			//R-Start
 			onEvent userCmd : userCmd('START') -> {
 				println("[INFO] Ricevuto da utente comando di avvio");
 			
 				addRule alreadyStarted;
 				
 				[!? realRobot ]{
+					//R-BlinkLed
 					demo changeModelItem(leds,ledfisico,blink);
 					demo changeModelItem(robot,realrobotstatus,on)
 				};
 				[!? virtualRobot ] {
+					//R-BlinkHue
 					demo changeModelItem(leds,ledhuelamp,blink);
 					demo changeModelItem(robot,virtualrobotstatus,on)
 				};
@@ -157,6 +168,7 @@ QActor mind context ctxRobot -pubsub {
 			
 			//posso fermarlo SOLO SE E' STATO AVVIATO!
 			[!? alreadyStarted] {
+				//R-Stop
 				onEvent userCmd : userCmd('STOP') -> {
 					println("[INFO] Ricevuto da utente comando di stop");
 					emit coreCmdStop : coreCmdStop;
@@ -165,10 +177,12 @@ QActor mind context ctxRobot -pubsub {
 					addRule alreadyStopped;
 					
 					[!? realRobot ]{
+						//R-BlinkLed
 						demo changeModelItem(leds,ledfisico,off);
 						demo changeModelItem(robot,realrobotstatus,off)
 					};
 					[!? virtualRobot ]{
+						//R-BlinkHue
 						demo changeModelItem(leds,ledhuelamp,off);
 						demo changeModelItem(robot,virtualrobotstatus,off)
 					}
@@ -196,6 +210,7 @@ QActor mind context ctxRobot -pubsub {
 	]
 }
 
+
 QActor movecorelogic context ctxRobot -pubsub{  
 	 
 	Plan init normal [  
@@ -217,6 +232,7 @@ QActor movecorelogic context ctxRobot -pubsub{
   		whenEvent coreCmdStart -> forwardOn
   	finally repeatPlan 
   	
+	//R-FloorClean
   	Plan forwardOn [
 		[not !?  fixedObstacleFound]{
 			println("[INFO] Piano ForwardON ...");
@@ -233,6 +249,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 		whenEvent endRoutineAvoidObstacle -> restartForwardOn
 	finally repeatPlan
 	
+	//R-AvoidMobile
 	Plan waitForMobileObstacle [
 		//fai valutazione ostacolo fisso/mobile solo se NON si e' nella routine di aggiramento ostacoli
 		[not !? fixedObstacleFound]{
@@ -257,7 +274,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 			println("[INFO] waitForMobileObstacle : bloccato perche' attiva routine aggiramento!")
 		}
 		
-	] transition whenTime 2000 -> forwardOn	//attesa passaggio dell'ostacolo mobile
+	] transition whenTime 2000 -> forwardOn	//R-AvoidMobile : attesa passaggio dell'ostacolo mobile
 		whenEvent endRoutineAvoidObstacle -> restartForwardOn
 	finally repeatPlan
 	
@@ -267,7 +284,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 		removeRule fixedObstacleFound
 	] switchTo forwardOn
 
-		
+	//R-FloorClean
 	Plan handleVirtualSonarEvent [
 			[not !? justTurnedUpBottom ] {
 				println("[INFO] Sonar virtuale ha trovato muro!");
@@ -290,6 +307,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 		}
 	] switchTo forwardOn
 		
+	//R-FloorClean
 	Plan sonar2Detected [
 			[not !? justTurnedBottomUp ] {
 				println("[INFO] Sonar2 raggiunto, non finito, SI SVOLTA!");
@@ -324,6 +342,7 @@ QActor movecorelogic context ctxRobot -pubsub{
 }
 
 //gestisce ostacoli fissi ed immutabili
+//R-AvoidFix e R-Obstacle
 QActor fixedobstaclemanager context ctxRobot -pubsub { 
 	Plan init normal [  
 		println("[INFO] Inizializzazione fixedObstacleManager")
@@ -375,6 +394,7 @@ QActor fixedobstaclemanager context ctxRobot -pubsub {
 		[not !? firstWallFound]
 			addRule firstWallFound //inverto direzione, primo muro trovato (cerco un varco)
 		else {
+			//R-Obstacle
 			emit coreCmdStop : coreCmdStop;
 			addRule stopMove;
 			println("[INFO] Ho ritrovato il muro, ostacolo insormontabile!")
@@ -557,7 +577,7 @@ QActor sonar2 context ctxRobot -pubsub {
 		println("[INFO] Sonar 2 START")
 	] switchTo emitSonarEvent
   	
-  
+	//R-End
 	Plan emitSonarEvent [	
 		delay 1000;
 		[!? virtualRobot ]
@@ -597,6 +617,7 @@ QActor notifier context ctxRobot -pubsub {
 	
 }
 
+//R-Map
 QActor mapper context ctxRobot -pubsub {   
 	Plan init normal [  
 		println("[INFO] Inizializzazione mapper...")
