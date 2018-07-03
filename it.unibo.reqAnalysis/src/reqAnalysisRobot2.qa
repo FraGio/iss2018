@@ -1,0 +1,161 @@
+System reqAnalysisModel
+
+Event userCmd : userCmd (X)
+Event ledCmd : ledCmd (X)
+Event ledHueLampCmd : ledHueLampCmd (X)
+Event robotCmd : robotCmd(X)
+
+Context ctxRobot ip [ host="localhost"   port=8021 ]
+
+QActor robotmind context ctxRobot {   
+	Plan init normal [  
+		println("robotmind START");
+		addRule isRealRobot
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+		println("Robot in attesa di comandi")
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent userCmd -> userCmdHandler
+  	finally repeatPlan 
+  	
+  	//gestione dei comandi ricevuti da GUI
+	Plan userCmdHandler [
+		//coperto il requisito R-TimeOk, R-TimeKo, R-TempOk, R-TempKo
+		println("Valutazione TEMPERATURA ed ORARIO");
+		
+		//coperto il requisito R-FloorClean
+		onEvent userCmd : userCmd ("START") -> { 
+			println("Robot attivita' avviata"); 
+			
+			//coperto il requisito R-BlinkLed e R-BlinkHue
+			[ !? isRealRobot ] 
+				emit ledCmd : ledCmd('blink')
+					else 
+				emit ledHueLampCmd : ledHueLampCmd('blink');
+					
+			delay 5000;
+			
+			//coperto il requisito R-AvoidFix
+			println("Trovato ostacolo fisso, cerco di evitarlo");
+			
+			//coperto il requisito R-Map
+			println("Aggiungo l'ostacolo fisso alla posizione x in mappa");
+			
+			delay 5000;
+			
+			//coperto il requisito R-AvoidMobile
+			println("Trovato ostacolo mobile, cerco di evitarlo");
+			 
+			delay 5000;
+			
+			//coperto il requisito R-Obstacle
+			println("Trovato ostacolo inevitabile, mi arresto")
+			
+		};
+		
+		//coperto il requisito R-Stop
+		onEvent userCmd : userCmd ("STOP") -> { 
+			println("Robot attivita' arrestata"); 
+			
+			//coperto il requisito R-BlinkLed e R-BlinkHue
+			[ !? isRealRobot ] 
+				emit ledCmd : ledCmd('off')
+			else 
+				emit ledHueLampCmd : ledHueLampCmd('off')
+		}
+	] 
+	switchTo waitForCmd
+}
+
+
+QActor sonar2 context ctxRobot {   
+	  
+	Plan init normal [  println("sonar 2 START")   ]  
+	switchTo emituserCmd 
+  	
+  	//simulazione comandi START/STOP
+	Plan emituserCmd [	
+		delay 15000;
+		println("Sonar2: robot rilevato");	
+		
+		//coperto il requisiti R-End
+		emit userCmd : userCmd("STOP")
+	]
+}
+
+QActor sonar1 context ctxRobot {   
+	  
+	Plan init normal [  println("sonar 1 START")   ]  
+}
+
+QActor led context ctxRobot { 
+	Plan init normal [  
+		println("Inizializzazione led")
+	] 
+	switchTo waitForBlink
+	
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledCmd -> handleLedCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedCmd resumeLastPlan[
+  		onEvent ledCmd : ledCmd('blink') -> println("Blink led");
+  		onEvent ledCmd : ledCmd('off') -> println("Led off")
+	]
+}
+
+QActor ledhuelamp context ctxRobot { 
+	Plan init normal [  
+		println("Inizializzazione led hue lamp")
+	] 
+	switchTo waitForBlink 
+	 
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledHueLampCmd -> handleLedHueLampCmd
+  	finally repeatPlan 
+  	
+  	Plan handleLedHueLampCmd resumeLastPlan[
+  		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
+  		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
+	]
+}
+
+QActor realrobot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Accensione del real robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> executionRobotCmdHandler
+  	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd(X) -> println(X)
+	]
+}
+
+QActor virtualrobot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("Accensione del virtual robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+	]transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> executionRobotCmdHandler
+  	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd(X) -> println(X)
+	]
+}
