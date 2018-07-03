@@ -1,0 +1,468 @@
+System projectRobot
+
+Event userCmd : userCmd ( X ) //START - STOP
+Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra
+
+// =========== start core ===========
+Event coreCmdStart : coreCmdStart 
+Event coreCmdStop : coreCmdStop 
+Event virtualRobotSonarEvent : virtualRobotSonarEvent
+Event realRobotSonarEvent : realRobotSonarEvent  ( DISTANCE ) 
+Event roomSonar1Event : roomSonar1Event ( DISTANCE ) 
+Event roomSonar2Event : roomSonar2Event ( DISTANCE ) 
+Event coreHasFinished : coreHasFinished
+Event fixedObstacleFoundEvent : fixedObstacleFoundEvent
+Event endRoutineAvoidObstacle : endRoutineAvoidObstacle
+Event restartForwardOn : restartForwardOn
+// =========== end core ===========
+
+Event requestNotifier : requestNotifier //le richiede entrambe
+Event requestExternalProvider : requestExternalProvider //le richiede entrambe
+Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
+Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
+Event fixObstacleFound : fixObstacleFound ( X, Y )//segnalazione trovato ostacolo fisso per update map
+
+Event ledCmdBlink : ledCmdBlink
+Event ledCmdStop : ledCmdStop
+
+pubSubServer "tcp://192.168.1.112:1883"
+//pubSubServer "tcp://192.168.43.84:1883"
+//pubSubServer "tcp://192.168.1.112:1883" 
+//pubSubServer "tcp://broker.hivemq.com:1883"
+
+Context ctxRobotMind ip [ host="192.168.1.112"   port=8021 ] 
+
+EventHandler evh for coreCmdStop {	
+ 	forwardEvent movecorelogic -m coreCmdStop
+};
+
+QActor mind context ctxRobotMind -pubsub {   
+	
+	Rules {
+		limitTemperatureValue( 40 ).
+		limitTimeValueMin( 9 ).
+		limitTimeValueMax( 23 ).
+		
+		
+		//R-TempKo
+		changedModelAction( temperature, temperaturevalue, V  ):-
+				limitTemperatureValue( MAX ), 
+	 		    eval( ge, V , MAX ), !,   
+	 		    output('[INFO] Temperatura sopra limite'),
+	 			emitevent( robotCmd,  robotCmd ('stop') ),
+	 			emitevent( coreCmdStop,  coreCmdStop ).
+	 		
+		//R-TimeKo
+	 	changedModelAction(timer,timevalue, T ):-
+				limitTimeValueMin( MIN ),
+	 		    eval( le, T , MIN ), !,  
+	 		    output('[INFO] Tempo fuori range MIN'),
+	 			emitevent( robotCmd,  robotCmd ('stop') ),
+	 			emitevent( coreCmdStop,  coreCmdStop ).
+	 		
+		//R-TimeKo
+	 	changedModelAction(timer,timevalue, T ):-
+				limitTimeValueMax( MAX ),
+	 		    eval( ge, T , MAX ), !,   
+	 		    output('[INFO] Tempo fuori range MAX'),
+	 			emitevent( robotCmd,  robotCmd ('stop') ),
+	 			emitevent( coreCmdStop,  coreCmdStop ).
+	 			
+		//R-BlinkLed
+	 	changedModelAction(leds,ledfisico, blink ):- 
+	 			emitevent( ledCmdBlink,  ledCmdBlink ).
+	 			
+	 	changedModelAction(leds,ledfisico, off ):- 
+	 			emitevent( ledCmdStop,  ledCmdStop ).
+	 			
+		//R-BlinkHue
+	 	changedModelAction(leds,ledhuelamp, blink ):- 
+	 			emitevent( ledCmdBlink,  ledCmdBlink ).
+	 			
+	 	changedModelAction(leds,ledhuelamp, off ):- 
+	 			emitevent( ledCmdStop,  ledCmdStop ).
+	}
+	Plan init normal [
+		javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.initClientConn();
+		delay 500;
+		javaRun it.unibo.iss2018support.mqttUtils.mqttTools.init();
+		delay 500;
+		javaRun it.unibo.iss2018support.owmSupport.owmSupport.init();
+		
+		demo consult("./resourceModel.pl");
+		delay 1000; 
+		
+		[!? realRobot ]
+			javaRun it.unibo.iss2018support.rover.mbotConnArduino.initRasp();
+		
+		delay 2000; 
+		emit requestNotifier : requestNotifier
+	]  
+	switchTo initTempTime
+	 
+	Plan initTempTime[]
+	transition stopAfter 3600000   	//1h 
+		whenEvent temperatureTimeRequest -> waitForSonar1
+	finally repeatPlan
+	
+	Plan waitForSonar1[
+		println("[INFO] Acquisiti valori iniziali di temperatura e tempo... attesa posizionamento su sonar1");
+		//R-TempOk e R-TimeOk e R-TimeKo e R-TempKo
+		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
+			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
+	]
+	transition stopAfter 3600000   	//1h 
+		whenEvent roomSonar1Event -> doWork
+	finally repeatPlan
+	 
+	Plan doWork[
+		onEvent roomSonar1Event : roomSonar1Event(X) 
+			-> println("[INFO] Robot rilevato da sonar1, tutto pronto per ricevere comando di AVVIO")
+	]
+	transition stopAfter 3600000   	//1h 
+		whenEvent userCmd -> robotCmdHandler,
+		whenEvent temperatureTimeRequest -> updateValues,
+		whenEvent coreHasFinished -> coreHasFinishedHandler
+	finally repeatPlan
+	
+	//R-TempOk e R-TimeOk e R-TimeKo e R-TempKo
+	Plan updateValues [
+		onEvent temperatureTimeRequest : temperatureTimeRequest(V,T) 
+			-> demo changeModelItems(timer,timevalue,T,temperature,temperaturevalue,V)
+	]switchTo doWork
+	
+	Plan robotCmdHandler [
+		
+		[not !? alreadyStarted]{
+			//R-Start
+			onEvent userCmd : userCmd('START') -> {
+				println("[INFO] Ricevuto da utente comando di avvio");
+			
+				addRule alreadyStarted;
+				
+				[!? realRobot ]{
+					//R-BlinkLed
+					demo changeModelItem(leds,ledfisico,blink);
+					demo changeModelItem(robot,realrobotstatus,on)
+				};
+				[!? virtualRobot ] {
+					//R-BlinkHue
+					demo changeModelItem(leds,ledhuelamp,blink);
+					demo changeModelItem(robot,virtualrobotstatus,on)
+				};
+			
+				delay 1000;
+				emit coreCmdStart : coreCmdStart
+			}
+		};
+		
+		[not !? alreadyStopped] {
+			
+			//posso fermarlo SOLO SE E' STATO AVVIATO!
+			[!? alreadyStarted] {
+				//R-Stop
+				onEvent userCmd : userCmd('STOP') -> {
+					println("[INFO] Ricevuto da utente comando di stop");
+					emit coreCmdStop : coreCmdStop;
+					delay 1000;
+			
+					addRule alreadyStopped;
+					
+					[!? realRobot ]{
+						//R-BlinkLed
+						demo changeModelItem(leds,ledfisico,off);
+						demo changeModelItem(robot,realrobotstatus,off)
+					};
+					[!? virtualRobot ]{
+						//R-BlinkHue
+						demo changeModelItem(leds,ledhuelamp,off);
+						demo changeModelItem(robot,virtualrobotstatus,off)
+					}
+				}
+			}
+		}
+	]
+	switchTo doWork
+	
+	
+	Plan coreHasFinishedHandler [
+		println("[INFO] Mind ha ricevuto segnale di fine lavoro da coreLogic");
+			delay 1000;
+			
+			addRule alreadyStopped;
+			
+			[!? realRobot ]{
+				demo changeModelItem(leds,ledfisico,off);
+				demo changeModelItem(robot,realrobotstatus,off)
+			};
+			[!? virtualRobot ]{
+				demo changeModelItem(leds,ledhuelamp,off);
+				demo changeModelItem(robot,virtualrobotstatus,off)
+			}
+	]
+}
+
+
+QActor movecorelogic context ctxRobotMind -pubsub{  
+	 
+	Plan init normal [  
+		
+		addRule directionUpToDown;
+		
+		delay 2000;
+		emit robotCmd : robotCmd('d');
+		delay 500;
+		emit robotCmd : robotCmd('d');
+		delay 500;
+		println("[INFO] Inizializzazione del core della logica di movimento")
+	]  
+	switchTo waitForStart 
+	 
+	Plan waitForStart[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent coreCmdStart -> forwardOn
+  	finally repeatPlan 
+  	
+	//R-FloorClean
+  	Plan forwardOn [
+		[not !?  fixedObstacleFound]{
+			println("[INFO] Piano ForwardON ...");
+  			//movimento step-by-step in avanti
+  			emit robotCmd : robotCmd('w')
+		}
+		else
+			println("[INFO] Piano ForwardON : bloccato perche' trovato ostacolo fisso!")
+	] transition stopAfter 3600000   	//1h 
+		whenEvent coreCmdStop -> stopPlan,
+		whenEvent roomSonar2Event -> sonar2Detected,
+		whenEvent virtualRobotSonarEvent -> handleVirtualSonarEvent,
+		whenEvent realRobotSonarEvent -> waitForMobileObstacle,
+		whenEvent endRoutineAvoidObstacle -> restartForwardOn
+	finally repeatPlan
+	
+	//R-AvoidMobile
+	Plan waitForMobileObstacle [
+		//fai valutazione ostacolo fisso/mobile solo se NON si e' nella routine di aggiramento ostacoli
+		[not !? fixedObstacleFound]{
+			println("[INFO] Trovato un ostacolo dal sonar reale, valutazione se mobile ...");
+			
+			emit robotCmd : robotCmd('stop');
+			
+			//se e' il primo controllo aggiungo "flag"
+			[not !? firstCheck]{
+				println("[INFO] waitForMobileObstacle - 1� controllo ...");
+				addRule firstCheck
+			}
+			else{
+				//e' il secondo controllo -> emetto evento per gestione ostacolo fisso
+				removeRule firstCheck;
+				addRule fixedObstacleFound;
+				emit fixObstacleFound : fixObstacleFound( X, Y ); //mock per mappa
+				emit fixedObstacleFoundEvent : fixedObstacleFoundEvent
+			}
+		}
+		else{
+			println("[INFO] waitForMobileObstacle : bloccato perche' attiva routine aggiramento!")
+		}
+		
+	] transition whenTime 2000 -> forwardOn	//R-AvoidMobile : attesa passaggio dell'ostacolo mobile
+		whenEvent endRoutineAvoidObstacle -> restartForwardOn
+	finally repeatPlan
+	
+	//sblocco regola logica che blocca forwardOn
+	Plan restartForwardOn [
+		println("[INFO] restartForwardOn - sblocco!");
+		removeRule fixedObstacleFound
+	] switchTo forwardOn
+
+	//R-FloorClean
+	Plan handleVirtualSonarEvent [
+			[not !? justTurnedUpBottom ] {
+				println("[INFO] Sonar virtuale ha trovato muro!");
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 250;
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				addRule justTurnedUpBottom;
+				removeRule justTurnedBottomUp;
+				
+				
+				//inversione direzione
+				removeRule directionDownToUp;
+				addRule directionUpToDown;
+				
+				removeRule firstWait;
+				removeRule secondWait
+		}
+	] switchTo forwardOn
+		
+	//R-FloorClean
+	Plan sonar2Detected [
+			[not !? justTurnedBottomUp ] {
+				println("[INFO] Sonar2 raggiunto, non finito, SI SVOLTA!");
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 250;
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				addRule justTurnedBottomUp;
+				removeRule justTurnedUpBottom;
+					
+				//inversione direzione
+				removeRule directionUpToDown;
+				addRule directionDownToUp;
+				
+				removeRule firstWait;
+				removeRule secondWait
+			}
+	] switchTo forwardOn
+	
+	
+	Plan stopPlan [
+		delay 1000;
+		emit robotCmd : robotCmd('stop');
+		delay 500;
+		emit coreHasFinished : coreHasFinished;
+		println("[INFO] Corelogic fermata")
+	] transition stopAfter 3600000   	//1h 
+	
+	
+}
+
+//gestisce ostacoli fissi ed immutabili
+//R-AvoidFix e R-Obstacle
+QActor fixedobstaclemanager context ctxRobotMind -pubsub { 
+	Plan init normal [  
+		println("[INFO] Inizializzazione fixedObstacleManager")
+	] 
+	switchTo waitForFixedObstacle 
+	 
+	Plan waitForFixedObstacle [
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent fixedObstacleFoundEvent -> handleFixedObstacle1
+  	finally repeatPlan 
+	
+	//piano di gestione ostacoli fissi o immutabili
+	Plan handleFixedObstacle1 [
+		[not !? stopMove] {
+			println("[INFO] handleFixedObstacle1 - Aggiro l'ostacolo fisso!");
+			
+			
+			[not !? firstWallFound]{
+				emit robotCmd : robotCmd('stop');
+				delay 500;
+				emit robotCmd : robotCmd('d');
+				delay 500;
+				emit robotCmd : robotCmd('w');
+				delay 800;
+				emit robotCmd : robotCmd('a');
+				delay 500
+			}else {
+				emit robotCmd : robotCmd('stop');
+				delay 500;
+				emit robotCmd : robotCmd('a');
+				delay 500;
+				emit robotCmd : robotCmd('a');
+				delay 800;
+				emit robotCmd : robotCmd('w');
+				delay 500;
+				emit robotCmd : robotCmd('d');
+				delay 500
+			}
+		}
+	]
+	transition whenTime 2000 ->  handleFixedObstacle2	//1h 
+		whenEvent virtualRobotSonarEvent -> wallFound
+	finally repeatPlan
+	
+	Plan wallFound [
+		println("[INFO] Primo muro trovato!");
+		
+		[not !? firstWallFound]
+			addRule firstWallFound //inverto direzione, primo muro trovato (cerco un varco)
+		else {
+			//R-Obstacle
+			emit coreCmdStop : coreCmdStop;
+			addRule stopMove;
+			println("[INFO] Ho ritrovato il muro, ostacolo insormontabile!")
+		}
+		
+	] transition whenTime 1000 ->  handleFixedObstacle1	
+	
+	//piano di gestione ostacoli fissi o immutabili
+	Plan handleFixedObstacle2 [
+		[not !? stopMove] {
+			println("[INFO] handleFixedObstacle2 - Valuto se ostacolo fisso e' ancora presente...");
+			emit robotCmd : robotCmd('w');
+			delay 500
+		}
+	]
+	transition whenTime 1000 ->  completeHandleFixedObstacle	//1h 
+		whenEvent realRobotSonarEvent -> handleFixedObstacle1
+	finally repeatPlan
+	
+	//ultimo step in piano di gestione ostacoli fissi o immutabili
+	Plan completeHandleFixedObstacle [
+		[not !? stopMove] {
+			println("[INFO] completeHandleFixedObstacle - Finisco aggiramento dell'ostacolo fisso!");
+			
+			emit robotCmd : robotCmd('w');
+			delay 800;
+			emit robotCmd : robotCmd('w');
+			delay 800;
+			emit robotCmd : robotCmd('a');
+			delay 500;
+			emit robotCmd : robotCmd('w');
+			delay 800;
+			emit robotCmd : robotCmd('d');
+			delay 500;
+			
+			//segnalazione corretto superamento dell'ostacolo
+			emit endRoutineAvoidObstacle : endRoutineAvoidObstacle;
+			println("[INFO] handleFixedObstacle - Fine aggiramento!")
+		
+		}
+	]
+	
+}
+
+QActor notifier context ctxRobotMind -pubsub {   
+	  
+	Plan init normal [  
+		println("[INFO] Notifier START")   
+	]switchTo waitForFirstRequest
+	 
+	Plan waitForFirstRequest[]transition stopAfter 3600000   	//1h 
+  		whenEvent requestNotifier -> startPolling
+  	finally repeatPlan   
+  	
+  	Plan startPolling [
+  		javaRun it.unibo.iss2018support.owmSupport.owmSupport.acquireValues();
+  		delay 60000
+	]
+	finally repeatPlan
+	
+}
+
+//R-Map
+QActor mapper context ctxRobotMind -pubsub {   
+	Plan init normal [  
+		println("[INFO] Inizializzazione mapper...")
+	]  
+	switchTo waitForObstacle
+	 
+	Plan waitForObstacle[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent fixObstacleFound -> updateMap
+  	finally repeatPlan 
+  	
+  	Plan updateMap resumeLastPlan[
+  		println("[INFO] Aggiornamento mappa con ostacolo fisso")
+	] 
+}

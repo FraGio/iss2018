@@ -1,0 +1,34 @@
+/*
+*
+* A GraphViz DOT FSM description 
+* Please use a GraphViz visualizer (like http://www.webgraphviz.com)
+*  
+*/
+
+digraph finite_state_machine {
+	rankdir=LR
+	size="8,5"
+	
+	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
+	doWork [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	initTempTime [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	updateValues [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	waitForSonar1 [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	robotCmdHandler [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	coreHasFinishedHandler [ color = blue ][ fontcolor = blue ][ penwidth = 3 ]
+	
+	initTempTime -> initTempTime [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	doWork -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	updateValues -> doWork [ label = "switch" ][ color = black ][ fontcolor = black ]
+	initTempTime -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	initTempTime -> waitForSonar1 [ label = "temperatureTimeRequest" ][ color = black ][ fontcolor = black ]
+	doWork -> updateValues [ label = "temperatureTimeRequest" ][ color = black ][ fontcolor = black ]
+	doWork -> coreHasFinishedHandler [ label = "coreHasFinished" ][ color = black ][ fontcolor = black ]
+	robotCmdHandler -> doWork [ label = "switch" ][ color = black ][ fontcolor = black ]
+	init -> initTempTime [ label = "switch" ][ color = black ][ fontcolor = black ]
+	waitForSonar1 -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	doWork -> doWork [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	waitForSonar1 -> waitForSonar1 [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	waitForSonar1 -> doWork [ label = "roomSonar1Event" ][ color = black ][ fontcolor = black ]
+	doWork -> robotCmdHandler [ label = "userCmd" ][ color = black ][ fontcolor = black ]
+}

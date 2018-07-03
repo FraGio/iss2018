@@ -1,0 +1,39 @@
+/*
+*
+* A GraphViz DOT FSM description 
+* Please use a GraphViz visualizer (like http://www.webgraphviz.com)
+*  
+*/
+
+digraph finite_state_machine {
+	rankdir=LR
+	size="8,5"
+	
+	init [ color = red ][ fontcolor = red ][ penwidth = 3 ]
+	handleVirtualSonarEvent [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	sonar2Detected [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	restartForwardOn [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	waitForMobileObstacle [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	waitForStart [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	forwardOn [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	stopPlan [ color = black ][ fontcolor = black ][ penwidth = 3 ]
+	
+	sonar2Detected -> forwardOn [ label = "switch" ][ color = black ][ fontcolor = black ]
+	waitForStart -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	handleVirtualSonarEvent -> forwardOn [ label = "switch" ][ color = black ][ fontcolor = black ]
+	waitForMobileObstacle -> forwardOn [ label = "timeout(2000)" ][ color = green ][ fontcolor = green ]
+	waitForMobileObstacle -> restartForwardOn [ label = "endRoutineAvoidObstacle" ][ color = black ][ fontcolor = black ]
+	forwardOn -> restartForwardOn [ label = "endRoutineAvoidObstacle" ][ color = black ][ fontcolor = black ]
+	stopPlan -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	waitForStart -> forwardOn [ label = "coreCmdStart" ][ color = black ][ fontcolor = black ]
+	forwardOn -> handleToutBuiltIn [ label = "timeout(3600000)" ][ color = green ][ fontcolor = green ]
+	waitForMobileObstacle -> waitForMobileObstacle [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	forwardOn -> stopPlan [ label = "coreCmdStop" ][ color = black ][ fontcolor = black ]
+	forwardOn -> handleVirtualSonarEvent [ label = "virtualRobotSonarEvent" ][ color = black ][ fontcolor = black ]
+	forwardOn -> waitForMobileObstacle [ label = "realRobotSonarEvent" ][ color = black ][ fontcolor = black ]
+	restartForwardOn -> forwardOn [ label = "switch" ][ color = black ][ fontcolor = black ]
+	waitForStart -> waitForStart [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	forwardOn -> forwardOn [ label = "repeat "][ style = dashed ][ color = blue ][ fontcolor = blue ]
+	init -> waitForStart [ label = "switch" ][ color = black ][ fontcolor = black ]
+	forwardOn -> sonar2Detected [ label = "roomSonar2Event" ][ color = black ][ fontcolor = black ]
+}

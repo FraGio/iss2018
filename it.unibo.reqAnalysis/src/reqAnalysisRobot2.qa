@@ -7,7 +7,7 @@ Event robotCmd : robotCmd(X)
 
 Context ctxRobot ip [ host="localhost"   port=8021 ]
 
-QActor robotmind context ctxRobot {   
+QActor robot context ctxRobot {   
 	Plan init normal [  
 		println("robotmind START");
 		addRule isRealRobot
@@ -79,7 +79,7 @@ QActor sonar2 context ctxRobot {
   	//simulazione comandi START/STOP
 	Plan emituserCmd [	
 		delay 15000;
-		println("Sonar2: robot rilevato");	
+		println("Sonar2: robot rilevato molto vicino!");	
 		
 		//coperto il requisiti R-End
 		emit userCmd : userCmd("STOP")
@@ -124,38 +124,5 @@ QActor ledhuelamp context ctxRobot {
   	Plan handleLedHueLampCmd resumeLastPlan[
   		onEvent ledHueLampCmd : ledHueLampCmd('blink') -> println("Blink led hue lamp...");
   		onEvent ledHueLampCmd : ledHueLampCmd('off') -> println("Led hue lamp off...")
-	]
-}
-
-QActor realrobot context ctxRobot -pubsub {   
-	Plan init normal [  
-		println("Accensione del real robot completata!")
-	]  
-	switchTo waitForCmd 
-	 
-	Plan waitForCmd[
-	]
-	transition stopAfter 3600000   	//1h 
-  		whenEvent robotCmd -> executionRobotCmdHandler
-  	finally repeatPlan 
-  	
-  	Plan executionRobotCmdHandler resumeLastPlan [
-		onEvent robotCmd : robotCmd(X) -> println(X)
-	]
-}
-
-QActor virtualrobot context ctxRobot -pubsub {   
-	Plan init normal [  
-		println("Accensione del virtual robot completata!")
-	]  
-	switchTo waitForCmd 
-	 
-	Plan waitForCmd[
-	]transition stopAfter 3600000   	//1h 
-  		whenEvent robotCmd -> executionRobotCmdHandler
-  	finally repeatPlan 
-  	
-  	Plan executionRobotCmdHandler resumeLastPlan [
-		onEvent robotCmd : robotCmd(X) -> println(X)
 	]
 }
