@@ -1,13 +1,13 @@
-System reqAnalysisModel
+System problemAnalysisModel
 
 Event userCmd : userCmd ( X ) //START - STOP
-Event robotCmd : robotCmd ( Y ) // h-d-r-l-stop
+Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra
 Event coreCmd : coreCmd ( Z ) //START - STOP
 Event robotSonarEvent : robotSonarEvent
 Event roomSonar1Event : roomSonar1Event ( DISTANCE ) //DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
 Event roomSonar2Event : roomSonar2Event ( DISTANCE ) //DISTANCE: DISTANZA DALL'OGGETTO RILEVATO
-Event requestNotifier : requestNotifier //le richiede entrambe
-Event requestExternalProvider : requestExternalProvider //le richiede entrambe
+Event requestNotifier : requestNotifier 
+Event requestExternalProvider : requestExternalProvider 
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
 Event temperatureTimeRequest : temperatureTimeRequest(V,T) //temperatura e tempo
 Event obstacleFound : obstacleFound ( X, Y )

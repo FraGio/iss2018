@@ -1,4 +1,4 @@
-System reqAnalysisModel
+System problemAnalysisModel
 
 Event requestExternalProvider : requestExternalProvider //le richiede entrambe
 Event temperatureTimeProviderResponse : temperatureTimeProviderResponse(V,T) //temperatura e tempo
