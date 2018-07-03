@@ -11,8 +11,8 @@ import it.unibo.qactors.akka.QActor;
 public class mqttTools {
 	private static String topic = "unibo/qasys";
 	private static int qos = 0;
-	private static String broker = "tcp://192.168.1.112:1883";
-//	private static String broker = "tcp://192.168.43.84:1883";
+//	private static String broker = "tcp://192.168.1.112:1883";
+	private static String broker = "tcp://192.168.43.84:1883";
 	// private static String broker = "tcp://iot.eclipse.org:1883";
 //	private static String broker = "tcp://broker.hivemq.com:1883";
 	private static String clientId = "MqttUtils";

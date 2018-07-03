@@ -1,4 +1,4 @@
-System projectRobot
+System project2Robot
 
 Event userCmd : userCmd ( X ) //START - STOP
 Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra

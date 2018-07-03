@@ -10,7 +10,7 @@ public static QActorContext initTheContext() throws Exception{
 	IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
 	String webDir = null;
 	return QActorContext.initQActorSystem(
-		"ctxrobotmind", "./srcMore/it/unibo/ctxRobotMind/projectrobot.pl", 
+		"ctxrobotmind", "./srcMore/it/unibo/ctxRobotMind/project2robot.pl", 
 		"./srcMore/it/unibo/ctxRobotMind/sysRules.pl", outEnvView,webDir,false);
 }
 public static void main(String[] args) throws Exception{

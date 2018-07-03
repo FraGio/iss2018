@@ -82,7 +82,7 @@ public abstract class AbstractLed extends QActor {
 	    	solveGoal( parg ); //sept2017
 	    	temporaryStr = "\"[INFO] Inizializzazione led\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo waitForBlink
 	        switchToPlanAsNextState(pr, myselfName, "led_"+myselfName, 
 	              "waitForBlink",false, false, null); 

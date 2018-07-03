@@ -80,7 +80,7 @@ public abstract class AbstractFixedobstaclemanager extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"[INFO] Inizializzazione fixedObstacleManager\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo waitForFixedObstacle
 	        switchToPlanAsNextState(pr, myselfName, "fixedobstaclemanager_"+myselfName, 
 	              "waitForFixedObstacle",false, false, null); 

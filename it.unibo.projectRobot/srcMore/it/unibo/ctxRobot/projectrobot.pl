@@ -1,7 +1,7 @@
 %====================================================================================
 % Context ctxRobot  SYSTEM-configuration: file it.unibo.ctxRobot.projectRobot.pl 
 %====================================================================================
-context(ctxrobot, "192.168.1.112",  "TCP", "8021" ).  		 
+context(ctxrobot, "192.168.43.84",  "TCP", "8021" ).  		 
 %%% -------------------------------------------
 qactor( mind , ctxrobot, "it.unibo.mind.MsgHandle_Mind"   ). %%store msgs 
 qactor( mind_ctrl , ctxrobot, "it.unibo.mind.Mind"   ). %%control-driven 
