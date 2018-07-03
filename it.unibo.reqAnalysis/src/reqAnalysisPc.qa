@@ -6,7 +6,6 @@ Event mockUserCmd : mockUserCmd ( X )
 //evento che rappresenta il comand (START o STOP) inviato da GUI a robot
 Event userCmd : userCmd ( X )
 
-//contesto PC
 Context ctxPC ip [ host="localhost"   port=8020 ]
 
 
@@ -50,9 +49,7 @@ QActor user context ctxPC {
 	Plan init normal [  println("utente START")   ]  
 	switchTo simulateClick 
   	
-  	//simulazione comandi START/STOP
 	Plan simulateClick [		
-		//simulazione comandi utente
 		delay 5000;
 		println("Simulazione comando utente START da GUI");
 		emit mockUserCmd : mockUserCmd("START");

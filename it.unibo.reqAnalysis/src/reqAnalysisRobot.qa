@@ -1,24 +1,15 @@
 System reqAnalysisModel
 
-
-//evento che rappresenta il comand (START o STOP) inviato da GUI a robot
 Event userCmd : userCmd ( X )
-
 Event ledCmd : ledCmd ( X )
-
 Event ledHueLampCmd : ledHueLampCmd ( X )
 
-//contesto Robot
 Context ctxRobot ip [ host="localhost"   port=8021 ]
 
 QActor robot context ctxRobot {   
 	
-	
 	Rules{
 		//copre requisito R-TempOk e R-TempKo
-		//NB: da requisiti il robot NON ha sonar di temperatura,
-		//quindi la temperatura deve essere fornita al robot da qualcuno
-		//o reperita dal robot stesso tramite un'entità/servizio esterno/a.
 		limitTemperatureValue( 25 ).
 		
 		changedModelAction( temperature, tempAmbiente, V  ):-
