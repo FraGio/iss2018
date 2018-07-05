@@ -1,3 +1,0 @@
-plan(1,init, sentence(true,move(print("robot START")),'','' ))
-plan(1,printCmd, sentence(true,eventswitch(robotCmd, Â»robotCmd( X), move(print(X)) ),'','' ))
-plan(2,printCmd, sentence(true,move(resumeplan),'','' ))

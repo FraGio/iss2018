@@ -1,4 +1,0 @@
-plan(1,init, sentence(true,move(print("realrobot START")),'','' ))
-plan(1,handleEvent, sentence(true,eventswitch(robotCmd, »robotCmd( "START"), move(print("robot fisico avviato")) ),'','' ))
-plan(2,handleEvent, sentence(true,eventswitch(robotCmd, »robotCmd( "STOP"), move(print("robot fisico arrestato")) ),'','' ))
-plan(3,handleEvent, sentence(true,move(resumeplan),'','' ))

@@ -1,4 +1,0 @@
-plan(1,init, sentence(true,move(print("appl START")),'','' ))
-plan(1,waitForMessages, sentence(true,eventswitch(temperatureData, Â»temperatureData( X), not here StateMoveNormal ),'','' ))
-plan(1,handleMsg, sentence(true,msgswitch(cmd, cmd( X) , raise( robotCmd , robotCmd( X) )')),'','' ))
-plan(2,handleMsg, sentence(true,move(resumeplan),'','' ))
