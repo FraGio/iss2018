@@ -58,7 +58,7 @@ public abstract class AbstractPc extends QActor {
 	    	stateTab.put("init",init);
 	    	stateTab.put("authenticateUser",authenticateUser);
 	    	stateTab.put("waitForUserCommand",waitForUserCommand);
-	    	stateTab.put("userCmdHandler",userCmdHandler);
+	    	stateTab.put("mockUserCmdHandler",mockUserCmdHandler);
 	    }
 	    StateFun handleToutBuiltIn = () -> {	
 	    	try{	
@@ -78,7 +78,6 @@ public abstract class AbstractPc extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"pc START\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://localhost");
 	    	//switchTo authenticateUser
 	        switchToPlanAsNextState(pr, myselfName, "pc_"+myselfName, 
 	              "authenticateUser",false, false, null); 
@@ -112,8 +111,8 @@ public abstract class AbstractPc extends QActor {
 	    	println( temporaryStr );  
 	    	//bbb
 	     msgTransition( pr,myselfName,"pc_"+myselfName,false,
-	          new StateFun[]{stateTab.get("userCmdHandler") }, 
-	          new String[]{"true","E","userCmd" },
+	          new StateFun[]{stateTab.get("mockUserCmdHandler") }, 
+	          new String[]{"true","E","mockUserCmd" },
 	          3600000, "handleToutBuiltIn" );//msgTransition
 	    }catch(Exception e_waitForUserCommand){  
 	    	 println( getName() + " plan=waitForUserCommand WARNING:" + e_waitForUserCommand.getMessage() );
@@ -121,46 +120,46 @@ public abstract class AbstractPc extends QActor {
 	    }
 	    };//waitForUserCommand
 	    
-	    StateFun userCmdHandler = () -> {	
+	    StateFun mockUserCmdHandler = () -> {	
 	    try{	
-	     PlanRepeat pr = PlanRepeat.setUp("userCmdHandler",-1);
-	    	String myselfName = "userCmdHandler";  
+	     PlanRepeat pr = PlanRepeat.setUp("mockUserCmdHandler",-1);
+	    	String myselfName = "mockUserCmdHandler";  
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("userCmd(\"START\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("userCmd") && 
-	    		pengine.unify(curT, Term.createTerm("userCmd(X)")) && 
+	    	curT = Term.createTerm("mockUserCmd(\"START\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("mockUserCmd") && 
+	    		pengine.unify(curT, Term.createTerm("mockUserCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
 	    			temporaryStr = "\"Eseguito comando START\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(X)","robotCmd(\"START\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"START\")", guardVars ).toString();
+	    			emit( "userCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 
-	    	curT = Term.createTerm("userCmd(\"STOP\")");
-	    	if( currentEvent != null && currentEvent.getEventId().equals("userCmd") && 
-	    		pengine.unify(curT, Term.createTerm("userCmd(X)")) && 
+	    	curT = Term.createTerm("mockUserCmd(\"STOP\")");
+	    	if( currentEvent != null && currentEvent.getEventId().equals("mockUserCmd") && 
+	    		pengine.unify(curT, Term.createTerm("mockUserCmd(X)")) && 
 	    		pengine.unify(curT, Term.createTerm( currentEvent.getMsg() ) )){ 
 	    			//println("WARNING: variable substitution not yet fully implemented " ); 
 	    			{//actionseq
 	    			temporaryStr = "\"Eseguito comando STOP\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "robotCmd(X)","robotCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "robotCmd", temporaryStr );
+	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
+	    			emit( "userCmd", temporaryStr );
 	    			};//actionseq
 	    	}
 	    	//switchTo waitForUserCommand
 	        switchToPlanAsNextState(pr, myselfName, "pc_"+myselfName, 
 	              "waitForUserCommand",false, false, null); 
-	    }catch(Exception e_userCmdHandler){  
-	    	 println( getName() + " plan=userCmdHandler WARNING:" + e_userCmdHandler.getMessage() );
+	    }catch(Exception e_mockUserCmdHandler){  
+	    	 println( getName() + " plan=mockUserCmdHandler WARNING:" + e_mockUserCmdHandler.getMessage() );
 	    	 QActorContext.terminateQActorSystem(this); 
 	    }
-	    };//userCmdHandler
+	    };//mockUserCmdHandler
 	    
 	    protected void initSensorSystem(){
 	    	//doing nothing in a QActor

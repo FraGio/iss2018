@@ -1,4 +1,4 @@
-System reqAnalysisModel
+System projectRobot
 
 Event userCmd : userCmd ( X ) //START - STOP
 Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra
@@ -25,12 +25,12 @@ Event fixObstacleFound : fixObstacleFound ( X, Y )//segnalazione trovato ostacol
 Event ledCmdBlink : ledCmdBlink
 Event ledCmdStop : ledCmdStop
 
-pubSubServer "tcp://192.168.1.112:1883"
-//pubSubServer "tcp://192.168.43.84:1883"
+//pubSubServer "tcp://192.168.1.112:1883"
+pubSubServer "tcp://192.168.43.84:1883"
 //pubSubServer "tcp://192.168.1.112:1883" 
 //pubSubServer "tcp://broker.hivemq.com:1883"
 
-Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
+Context ctxRobot ip [ host="192.168.43.84"   port=8021 ] 
 
 EventHandler evh for coreCmdStop {	
  	forwardEvent movecorelogic -m coreCmdStop

@@ -1,0 +1,190 @@
+System project2Robot
+
+Event userCmd : userCmd ( X ) //START - STOP
+Event robotCmd : robotCmd ( Y ) // w=avanti, s=indietro, a=sinistra, d=destra
+Event virtualRobotSonarEvent : virtualRobotSonarEvent
+Event realRobotSonarEvent : realRobotSonarEvent  ( DISTANCE ) 
+Event roomSonar1Event : roomSonar1Event ( DISTANCE ) 
+Event roomSonar2Event : roomSonar2Event ( DISTANCE ) 
+Event coreHasFinished : coreHasFinished
+Event ledCmdBlink : ledCmdBlink
+Event ledCmdStop : ledCmdStop
+
+pubSubServer "tcp://192.168.1.112:1883"
+//pubSubServer "tcp://192.168.43.84:1883"
+//pubSubServer "tcp://192.168.1.112:1883" 
+//pubSubServer "tcp://broker.hivemq.com:1883"
+
+Context ctxRobot ip [ host="192.168.1.112"   port=8021 ] 
+
+EventHandler evh1 for robotCmd {	
+ 	forwardEvent virtualrobot -m robotCmd
+};
+
+EventHandler evh2 for robotCmd {	
+ 	forwardEvent realrobot -m robotCmd
+};
+
+
+QActor realrobot context ctxRobot -pubsub {   
+	Plan init normal [  
+		demo consult("./resourceModel.pl"); 
+		
+		[!? realRobot]
+			println("[INFO] Accensione del real robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> executionRobotCmdHandler
+  	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd('w') -> {
+			[!? realRobot]
+				javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("forward","0","0")
+		};
+		onEvent robotCmd : robotCmd('s') -> {
+			[!? realRobot]
+				javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("backward","0","0")
+		};
+		onEvent robotCmd : robotCmd('a') -> {
+			[!? realRobot]
+				javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("left","0","0")
+		};
+		onEvent robotCmd : robotCmd('d') -> {
+			[!? realRobot]
+				javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("right","0","0")
+		};
+		onEvent robotCmd : robotCmd('stop') -> {
+			[!? realRobot]
+				javaRun it.unibo.iss2018support.utils.robotMixMoves.moveRobotAndAvatar("stop","0","0")
+		}
+	]
+}
+
+QActor virtualrobot context ctxRobot -pubsub {   
+	Plan init normal [  
+		println("[INFO] Accensione del virtual robot completata!")
+	]  
+	switchTo waitForCmd 
+	 
+	Plan waitForCmd[
+	]transition stopAfter 3600000   	//1h 
+  		whenEvent robotCmd -> executionRobotCmdHandler
+  	finally repeatPlan 
+  	
+  	Plan executionRobotCmdHandler resumeLastPlan [
+		onEvent robotCmd : robotCmd('w') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotForward();
+		onEvent robotCmd : robotCmd('s') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotBackward();
+		onEvent robotCmd : robotCmd('a') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotLeft();
+		onEvent robotCmd : robotCmd('d') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotRight();
+		onEvent robotCmd : robotCmd('stop') -> javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.mbotStop()
+	]
+}
+
+QActor led context ctxRobot -pubsub { 
+	Plan init normal [  
+		demo consult("./resourceModel.pl");
+		println("[INFO] Inizializzazione led")
+	] 
+	switchTo waitForBlink 
+	 
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledCmdBlink -> ledOnPlan
+  	finally repeatPlan 
+  	
+	//R-BlinkLed
+  	Plan ledOnPlan [
+  		[!? realRobot]
+  			javaRun it.unibo.iss2018support.ledfis.led.ledOn()
+	] transition whenTime 500 -> ledOffPlan
+	
+	Plan ledOffPlan [
+		[!? realRobot]
+  			javaRun it.unibo.iss2018support.ledfis.led.ledOff()
+	] transition whenTime 500 -> ledOnPlan
+		whenEvent ledCmdStop -> stopLed
+	finally repeatPlan
+	
+	Plan stopLed[
+  		println("[INFO] Led finisce fase di blink")
+	]  transition stopAfter 3600000
+}
+
+QActor ledhuelamp context ctxRobot -pubsub { 
+	Plan init normal [  
+		println("[INFO] Inizializzazione led hue lamp")
+	] 
+	switchTo waitForBlink 
+	 
+	Plan waitForBlink[
+	]
+	transition stopAfter 3600000   	//1h 
+  		whenEvent ledCmdBlink -> ledOnPlan
+  	finally repeatPlan 
+  	
+	//R-BlinkHue
+  	Plan ledOnPlan [
+  		println("[INFO] Led hue lamp ON")
+	] transition whenTime 500 -> ledOffPlan
+	
+	Plan ledOffPlan [
+  		println("[INFO] Led hue lamp OFF")
+	] transition whenTime 500 -> ledOnPlan
+		whenEvent ledCmdStop -> stopLed
+	finally repeatPlan
+	
+	Plan stopLed[
+  		println("[INFO] Led hue lamp finisce fase di blink")
+	] transition stopAfter 3600000
+}
+
+QActor sonar1 context ctxRobot -pubsub {   
+	  
+	Plan init normal [ 
+		demo consult("./resourceModel.pl"); 
+		println("[INFO] Sonar 1 START")
+	]  switchTo emitSonarEvent 
+  	
+	Plan emitSonarEvent [	
+		delay 1000;
+		[!? virtualRobot ]
+			javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual()
+	]
+	finally repeatPlan
+}
+
+QActor sonar2 context ctxRobot -pubsub {   
+	  
+	Plan init normal [  
+		demo consult("./resourceModel.pl");
+		println("[INFO] Sonar 2 START")
+	] switchTo emitSonarEvent
+  	
+	//R-End
+	Plan emitSonarEvent [	
+		delay 1000;
+		[!? virtualRobot ]
+			javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual()
+	]
+	finally repeatPlan
+}
+
+QActor robotsonar context ctxRobot -pubsub {   
+	Plan init normal [  
+		demo consult("./resourceModel.pl");
+		println("[INFO] Sonar robot START")
+	] switchTo emitSonarRobotEvent 
+  	
+	Plan emitSonarRobotEvent[	
+			[!? virtualRobot ]
+				javaRun it.unibo.iss2018support.supportVirtualEnv.supportVirtualEnv.retriveEventFromVirtual()
+	]
+	finally repeatPlan
+}
+

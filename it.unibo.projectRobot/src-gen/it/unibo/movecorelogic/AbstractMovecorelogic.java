@@ -100,7 +100,7 @@ public abstract class AbstractMovecorelogic extends QActor {
 	    	if( ! aar.getGoon() ) return ;
 	    	temporaryStr = "\"[INFO] Inizializzazione del core della logica di movimento\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo waitForStart
 	        switchToPlanAsNextState(pr, myselfName, "movecorelogic_"+myselfName, 
 	              "waitForStart",false, false, null); 

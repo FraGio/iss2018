@@ -93,7 +93,7 @@ public abstract class AbstractSonar2 extends QActor {
 	    	aar = delayReactive(15000,"" , "");
 	    	if( aar.getInterrupted() ) curPlanInExec   = "emituserCmd";
 	    	if( ! aar.getGoon() ) return ;
-	    	temporaryStr = "\"Sonar2: robot rilevato\"";
+	    	temporaryStr = "\"Sonar2: robot rilevato molto vicino!\"";
 	    	println( temporaryStr );  
 	    	temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
 	    	emit( "userCmd", temporaryStr );

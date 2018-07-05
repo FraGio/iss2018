@@ -77,7 +77,7 @@ public abstract class AbstractMapper extends QActor {
 	    	String myselfName = "init";  
 	    	temporaryStr = "\"[INFO] Inizializzazione mapper...\"";
 	    	println( temporaryStr );  
-	     connectToMqttServer("tcp://192.168.1.112:1883");
+	     connectToMqttServer("tcp://192.168.43.84:1883");
 	    	//switchTo waitForObstacle
 	        switchToPlanAsNextState(pr, myselfName, "mapper_"+myselfName, 
 	              "waitForObstacle",false, false, null); 

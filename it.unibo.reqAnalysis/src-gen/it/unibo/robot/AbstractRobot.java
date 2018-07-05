@@ -75,11 +75,10 @@ public abstract class AbstractRobot extends QActor {
 	    try{	
 	     PlanRepeat pr = PlanRepeat.setUp("init",-1);
 	    	String myselfName = "init";  
-	    	parg = "consult(\"./resourceModel.pl\")";
-	    	//QActorUtils.solveGoal(myself,parg,pengine );  //sets currentActionResult		
-	    	solveGoal( parg ); //sept2017
-	    	temporaryStr = "\"robot START\"";
+	    	temporaryStr = "\"robotmind START\"";
 	    	println( temporaryStr );  
+	    	temporaryStr = "isRealRobot";
+	    	addRule( temporaryStr );  
 	    	//switchTo waitForCmd
 	        switchToPlanAsNextState(pr, myselfName, "robot_"+myselfName, 
 	              "waitForCmd",false, false, null); 
@@ -149,17 +148,7 @@ public abstract class AbstractRobot extends QActor {
 	    			if( ! aar.getGoon() ) return ;
 	    			temporaryStr = "\"Trovato ostacolo inevitabile, mi arresto\"";
 	    			println( temporaryStr );  
-	    			temporaryStr = "\"Aggiungo l'ostacolo fisso alla posizione y in mappa\"";
-	    			println( temporaryStr );  
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "userCmd(X)","userCmd(\"STOP\")", guardVars ).toString();
-	    			emit( "userCmd", temporaryStr );
-	    			if( (guardVars = QActorUtils.evalTheGuard(this, " !?isRealRobot" )) != null ){
-	    			temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledCmd(X)","ledCmd(\"off\")", guardVars ).toString();
-	    			emit( "ledCmd", temporaryStr );
-	    			}
-	    			else{ temporaryStr = QActorUtils.unifyMsgContent(pengine, "ledHueLampCmd(X)","ledHueLampCmd(\"off\")", guardVars ).toString();
-	    			emit( "ledHueLampCmd", temporaryStr );
-	    			}};//actionseq
+	    			};//actionseq
 	    	}
 	    	//onEvent 
 	    	setCurrentMsgFromStore(); 

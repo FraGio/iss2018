@@ -10,7 +10,7 @@ public static QActorContext initTheContext() throws Exception{
 	IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
 	String webDir = null;
 	return QActorContext.initQActorSystem(
-		"ctxprovider", "./srcMore/it/unibo/ctxProvider/reqanalysismodel.pl", 
+		"ctxprovider", "./srcMore/it/unibo/ctxProvider/problemanalysismodel.pl", 
 		"./srcMore/it/unibo/ctxProvider/sysRules.pl", outEnvView,webDir,false);
 }
 public static void main(String[] args) throws Exception{
